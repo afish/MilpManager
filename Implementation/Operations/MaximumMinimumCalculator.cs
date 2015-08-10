@@ -10,13 +10,13 @@ namespace MilpManager.Implementation.Operations
             return (type == OperationType.Maximum || type == OperationType.Minimum) && arguments.Length >= 2;
         }
 
-        public IVariable Calculate(BaseMilpManager baseMilpManager, OperationType type, params IVariable[] arguments)
+        public IVariable Calculate(IMilpManager milpManager, OperationType type, params IVariable[] arguments)
         {
             var first = arguments[0];
             var second = arguments[1];
 
-            IVariable max = baseMilpManager.CreateAnonymous(CalculateDomain(arguments));
-            IVariable min = baseMilpManager.CreateAnonymous(CalculateDomain(arguments));
+            IVariable max = milpManager.CreateAnonymous(CalculateDomain(arguments));
+            IVariable min = milpManager.CreateAnonymous(CalculateDomain(arguments));
 
             max.Set(ConstraintType.GreaterOrEqual, first);
             max.Set(ConstraintType.GreaterOrEqual, second);

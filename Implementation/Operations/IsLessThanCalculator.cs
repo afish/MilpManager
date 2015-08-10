@@ -9,9 +9,9 @@ namespace MilpManager.Implementation.Operations
             return type == OperationType.IsLessThan && arguments.Length == 2;
         }
 
-        public IVariable Calculate(BaseMilpManager baseMilpManager, OperationType type, params IVariable[] arguments)
+        public IVariable Calculate(IMilpManager milpManager, OperationType type, params IVariable[] arguments)
         {
-            return baseMilpManager.Operation(OperationType.IsGreaterThan, arguments[1], arguments[0]);
+            return milpManager.Operation(OperationType.IsGreaterThan, arguments[1], arguments[0]);
         }
     }
 }

@@ -10,15 +10,15 @@ namespace MilpManager.Implementation.Operations
             return type == OperationType.Conjunction && arguments.Length >= 1 && arguments.All(a => a.IsBinary());
         }
 
-        public IVariable Calculate(BaseMilpManager baseMilpManager, OperationType type, params IVariable[] arguments)
+        public IVariable Calculate(IMilpManager milpManager, OperationType type, params IVariable[] arguments)
         {
-            var variable = baseMilpManager.CreateAnonymous(arguments.Any(a => a.IsNotConstant()) ? Domain.BinaryInteger : Domain.BinaryConstantInteger);
-            var sum = baseMilpManager.Operation(OperationType.Addition, arguments);
+            var variable = milpManager.CreateAnonymous(arguments.Any(a => a.IsNotConstant()) ? Domain.BinaryInteger : Domain.BinaryConstantInteger);
+            var sum = milpManager.Operation(OperationType.Addition, arguments);
             var argumentsCount = arguments.Length;
             sum.Operation(OperationType.Subtraction,
-                baseMilpManager.FromConstant(argumentsCount).Operation(OperationType.Multiplication, variable))
-                .Set(ConstraintType.LessOrEqual, baseMilpManager.FromConstant(argumentsCount - 1))
-                .Set(ConstraintType.GreaterOrEqual, baseMilpManager.FromConstant(0));
+                milpManager.FromConstant(argumentsCount).Operation(OperationType.Multiplication, variable))
+                .Set(ConstraintType.LessOrEqual, milpManager.FromConstant(argumentsCount - 1))
+                .Set(ConstraintType.GreaterOrEqual, milpManager.FromConstant(0));
 
             return variable;
         }

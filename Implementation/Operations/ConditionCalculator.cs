@@ -9,9 +9,9 @@ namespace MilpManager.Implementation.Operations
             return type == OperationType.Condition &&  arguments.Length == 3 && arguments[0].IsBinary() && arguments[1].IsInteger() && arguments[2].IsInteger();
         }
 
-        public IVariable Calculate(BaseMilpManager baseMilpManager, OperationType type, params IVariable[] arguments)
+        public IVariable Calculate(IMilpManager milpManager, OperationType type, params IVariable[] arguments)
         {
-            return baseMilpManager.Create(baseMilpManager.Operation(OperationType.Addition,
+            return milpManager.Create(milpManager.Operation(OperationType.Addition,
                 arguments[0].Operation(OperationType.Multiplication, arguments[1]),
                 arguments[0].Operation(OperationType.BinaryNegation)
                     .Operation(OperationType.Multiplication, arguments[2])

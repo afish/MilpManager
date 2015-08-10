@@ -12,16 +12,15 @@ namespace MilpManager.Implementation.CompositeOperations
             return type == CompositeOperationType.UnsignedMagnitudeDecomposition && arguments.Length == 1 && (arguments[0].IsPositiveOrZero() || arguments[0].IsBinary());
         }
 
-        public IEnumerable<IVariable> Calculate(BaseMilpManager baseMilpManager, CompositeOperationType type,
-            ICompositeOperationParameters parameters, params IVariable[] arguments)
+        public IEnumerable<IVariable> Calculate(IMilpManager milpManager, CompositeOperationType type, ICompositeOperationParameters parameters, params IVariable[] arguments)
         {
             List<Tuple<IVariable, int>> variables =
-                Enumerable.Range(0, baseMilpManager.IntegerWidth)
-                    .Select(i => Tuple.Create(baseMilpManager.CreateAnonymous(Domain.BinaryInteger), (int)Math.Pow(2, i)))
+                Enumerable.Range(0, milpManager.IntegerWidth)
+                    .Select(i => Tuple.Create(milpManager.CreateAnonymous(Domain.BinaryInteger), (int)Math.Pow(2, i)))
                     .ToList();
 
-            baseMilpManager.Operation(OperationType.Addition,
-                variables.Select(v => v.Item1.Operation(OperationType.Multiplication, baseMilpManager.FromConstant(v.Item2)))
+            milpManager.Operation(OperationType.Addition,
+                variables.Select(v => v.Item1.Operation(OperationType.Multiplication, milpManager.FromConstant(v.Item2)))
                     .ToArray()).Set(ConstraintType.Equal, arguments[0]);
 
             return variables.Select(v => v.Item1);

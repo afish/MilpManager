@@ -6,6 +6,6 @@ namespace MilpManager.Implementation.Operations
     {
         bool SupportsOperation(OperationType type, params IVariable[] arguments);
 
-        IVariable Calculate(BaseMilpManager baseMilpManager, OperationType type, params IVariable[] arguments);
+        IVariable Calculate(IMilpManager milpManager, OperationType type, params IVariable[] arguments);
     }
 }

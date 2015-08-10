@@ -34,7 +34,7 @@ namespace MilpManager.Implementation.Operations
             return arguments.Length >= 1;
         }
 
-        public IVariable Calculate(BaseMilpManager baseMilpManager, OperationType type, params IVariable[] arguments)
+        public IVariable Calculate(IMilpManager milpManager, OperationType type, params IVariable[] arguments)
         {
             if (arguments.Length == 1)
             {
@@ -45,18 +45,18 @@ namespace MilpManager.Implementation.Operations
 
             if (MultiplyAtMostOneNonconstant(arguments))
             {
-                return arguments.Aggregate((x,y) => baseMilpManager.MultiplyVariableByConstant(x, y, domain));
+                return arguments.Aggregate((x,y) => milpManager.MultiplyVariableByConstant(x, y, domain));
             }
 
             if (MultiplyBinaryVariables(arguments))
             {
-                return baseMilpManager.Operation(OperationType.Conjunction, arguments);
+                return milpManager.Operation(OperationType.Conjunction, arguments);
             }
 
-            return MultiplyIntegers(baseMilpManager, domain, arguments);
+            return MultiplyIntegers(milpManager, domain, arguments);
         }
 
-        private IVariable MultiplyIntegers(BaseMilpManager baseMilpManager, Domain domain, IVariable[] arguments)
+        private IVariable MultiplyIntegers(IMilpManager baseMilpManager, Domain domain, IVariable[] arguments)
         {
             var binaries = arguments.Where(a => a.IsBinary()).ToArray();
             var nonBinaries = arguments.Where(a => !a.IsBinary()).ToArray();
@@ -115,7 +115,7 @@ namespace MilpManager.Implementation.Operations
             return variable;
         }
 
-        private IVariable MultipleByBinaryDigit(BaseMilpManager baseMilpManager, IVariable number, IVariable digit)
+        private IVariable MultipleByBinaryDigit(IMilpManager baseMilpManager, IVariable number, IVariable digit)
         {
             if (number.Domain == Domain.AnyConstantInteger || number.Domain == Domain.AnyInteger)
             {

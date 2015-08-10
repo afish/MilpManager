@@ -9,18 +9,18 @@ namespace MilpManager.Implementation.Operations
             return type == OperationType.IsGreaterThan && arguments.Length == 2;
         }
 
-        public IVariable Calculate(BaseMilpManager baseMilpManager, OperationType type, params IVariable[] arguments)
+        public IVariable Calculate(IMilpManager milpManager, OperationType type, params IVariable[] arguments)
         {
-            var result = baseMilpManager.CreateAnonymous(Domain.BinaryInteger);
+            var result = milpManager.CreateAnonymous(Domain.BinaryInteger);
 
             var first = arguments[0];
             var second = arguments[1];
 
             second.Operation(OperationType.Subtraction, first)
                 .Operation(OperationType.Addition,
-                    result.Operation(OperationType.Multiplication, baseMilpManager.FromConstant(baseMilpManager.IntegerInfinity)))
-                .Set(ConstraintType.GreaterOrEqual, baseMilpManager.FromConstant(0))
-                .Set(ConstraintType.LessOrEqual, baseMilpManager.FromConstant(baseMilpManager.IntegerInfinity - 1));
+                    result.Operation(OperationType.Multiplication, milpManager.FromConstant(milpManager.IntegerInfinity)))
+                .Set(ConstraintType.GreaterOrEqual, milpManager.FromConstant(0))
+                .Set(ConstraintType.LessOrEqual, milpManager.FromConstant(milpManager.IntegerInfinity - 1));
 
             return result;
         }

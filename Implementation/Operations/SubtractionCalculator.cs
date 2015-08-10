@@ -10,7 +10,7 @@ namespace MilpManager.Implementation.Operations
             return type == OperationType.Subtraction && arguments.Length == 2;
         }
 
-        public IVariable Calculate(BaseMilpManager baseMilpManager, OperationType type, params IVariable[] arguments)
+        public IVariable Calculate(IMilpManager milpManager, OperationType type, params IVariable[] arguments)
         {
             return
                 arguments.Aggregate(

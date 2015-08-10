@@ -13,16 +13,16 @@ namespace MilpManager.Implementation.Operations
                     (arguments.All(a => a.IsPositiveOrZero()) && arguments.All(a => a.IsInteger())));
         }
 
-        public IVariable Calculate(BaseMilpManager baseMilpManager, OperationType type, params IVariable[] arguments)
+        public IVariable Calculate(IMilpManager milpManager, OperationType type, params IVariable[] arguments)
         {
             if (arguments.Count(a => a.IsNotConstant()) <= 1)
             {
                 var domain = CalculateDomain(arguments);
-                return arguments.Aggregate((x, y) => baseMilpManager.DivideVariableByConstant(x, y, domain));
+                return arguments.Aggregate((x, y) => milpManager.DivideVariableByConstant(x, y, domain));
             }
 
-            IVariable one = baseMilpManager.FromConstant(1);
-            var result = baseMilpManager.CreateAnonymous(Domain.PositiveOrZeroInteger);
+            IVariable one = milpManager.FromConstant(1);
+            var result = milpManager.CreateAnonymous(Domain.PositiveOrZeroInteger);
             result.Operation(OperationType.Multiplication, arguments[1])
                 .Set(ConstraintType.LessOrEqual, arguments[0]);
             result.Operation(OperationType.Addition, one)

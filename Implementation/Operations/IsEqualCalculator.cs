@@ -9,9 +9,9 @@ namespace MilpManager.Implementation.Operations
             return type == OperationType.IsEqual && arguments.Length == 2;
         }
 
-        public IVariable Calculate(BaseMilpManager baseMilpManager, OperationType type, params IVariable[] arguments)
+        public IVariable Calculate(IMilpManager milpManager, OperationType type, params IVariable[] arguments)
         {
-            return baseMilpManager.Operation(OperationType.IsNotEqual, arguments).Operation(OperationType.BinaryNegation);
+            return milpManager.Operation(OperationType.IsNotEqual, arguments).Operation(OperationType.BinaryNegation);
         }
     }
 }

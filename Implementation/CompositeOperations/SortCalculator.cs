@@ -11,10 +11,9 @@ namespace MilpManager.Implementation.CompositeOperations
             return type == CompositeOperationType.Sort && arguments.All(a => a.IsInteger());
         }
 
-        public IEnumerable<IVariable> Calculate(BaseMilpManager baseMilpManager, CompositeOperationType type, ICompositeOperationParameters parameters, 
-            params IVariable[] arguments)
+        public IEnumerable<IVariable> Calculate(IMilpManager milpManager, CompositeOperationType type, ICompositeOperationParameters parameters, params IVariable[] arguments)
         {
-            return baseMilpManager.CompositeOperation(CompositeOperationType.NthElements,
+            return milpManager.CompositeOperation(CompositeOperationType.NthElements,
                 new NthElementsParameters {Indexes = Enumerable.Range(0, arguments.Length).ToArray()},
                 arguments);
         }

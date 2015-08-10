@@ -10,9 +10,9 @@ namespace MilpManager.Implementation.Operations
             return type == OperationType.BinaryNegation && arguments.Length == 1 && arguments.All(a => a.IsBinary());
         }
 
-        public IVariable Calculate(BaseMilpManager baseMilpManager, OperationType type, params IVariable[] arguments)
+        public IVariable Calculate(IMilpManager milpManager, OperationType type, params IVariable[] arguments)
         {
-            return baseMilpManager.FromConstant(1).Operation(OperationType.Subtraction, arguments[0]).ChangeDomain(Domain.BinaryInteger).Create();
+            return milpManager.FromConstant(1).Operation(OperationType.Subtraction, arguments[0]).ChangeDomain(Domain.BinaryInteger).Create();
         }
     }
 }

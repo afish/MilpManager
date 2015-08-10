@@ -12,11 +12,11 @@ namespace MilpManager.Implementation.Operations
             return type == OperationType.Addition && arguments.Length > 0;
         }
 
-        public IVariable Calculate(BaseMilpManager baseMilpManager, OperationType type, params IVariable[] arguments)
+        public IVariable Calculate(IMilpManager milpManager, OperationType type, params IVariable[] arguments)
         {
             var domain = CalculateDomain(arguments);
 
-            return arguments.Aggregate((x,y) => baseMilpManager.SumVariables(x, y, domain));
+            return arguments.Aggregate((x,y) => milpManager.SumVariables(x, y, domain));
         }
 
         private Domain CalculateDomain(IVariable[] arguments)

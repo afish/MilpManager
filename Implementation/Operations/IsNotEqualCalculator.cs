@@ -9,7 +9,7 @@ namespace MilpManager.Implementation.Operations
             return type == OperationType.IsNotEqual && arguments.Length == 2;
         }
 
-        public IVariable Calculate(BaseMilpManager baseMilpManager, OperationType type, params IVariable[] arguments)
+        public IVariable Calculate(IMilpManager milpManager, OperationType type, params IVariable[] arguments)
         {
             var first = arguments[0];
             var second = arguments[1];

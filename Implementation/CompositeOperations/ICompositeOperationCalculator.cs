@@ -7,6 +7,6 @@ namespace MilpManager.Implementation.CompositeOperations
     {
         bool SupportsOperation(CompositeOperationType type, ICompositeOperationParameters parameters, params IVariable[] arguments);
 
-        IEnumerable<IVariable> Calculate(BaseMilpManager baseMilpManager, CompositeOperationType type, ICompositeOperationParameters parameters, params IVariable[] arguments);
+        IEnumerable<IVariable> Calculate(IMilpManager milpManager, CompositeOperationType type, ICompositeOperationParameters parameters, params IVariable[] arguments);
     }
 }

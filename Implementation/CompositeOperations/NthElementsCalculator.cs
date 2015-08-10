@@ -12,23 +12,21 @@ namespace MilpManager.Implementation.CompositeOperations
             return type == CompositeOperationType.NthElements && arguments.All(a => a.IsInteger()) && parameters is NthElementsParameters;
         }
 
-        public IEnumerable<IVariable> Calculate(BaseMilpManager baseMilpManager, CompositeOperationType type,
-            ICompositeOperationParameters parameters,
-            params IVariable[] arguments)
+        public IEnumerable<IVariable> Calculate(IMilpManager milpManager, CompositeOperationType type, ICompositeOperationParameters parameters, params IVariable[] arguments)
         {
             var typedParameters = parameters as NthElementsParameters;
             var variables = new List<IVariable>();
-            var sums = arguments.Select(a => Tuple.Create(a, baseMilpManager.Operation(OperationType.Addition,
+            var sums = arguments.Select(a => Tuple.Create(a, milpManager.Operation(OperationType.Addition,
                 arguments.Where(b => a != b).Select(b => a.Operation(OperationType.IsGreaterOrEqual, b).Create()).ToArray()).Create())).ToArray();
 
-            var huge = baseMilpManager.FromConstant(baseMilpManager.MaximumIntegerValue);
+            var huge = milpManager.FromConstant(milpManager.MaximumIntegerValue);
             foreach(var index in typedParameters.Indexes)
             {
                 var result = huge;
-                IVariable indexVariable = baseMilpManager.FromConstant(index);
+                IVariable indexVariable = milpManager.FromConstant(index);
                 foreach (var sum in sums)
                 {
-                    result = result.Operation(OperationType.Minimum, baseMilpManager.Operation(OperationType.Condition,
+                    result = result.Operation(OperationType.Minimum, milpManager.Operation(OperationType.Condition,
                         sum.Item2.Operation(OperationType.IsGreaterOrEqual, indexVariable),
                         sum.Item1,
                         huge
