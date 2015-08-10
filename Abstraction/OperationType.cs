@@ -20,6 +20,7 @@
         Condition,
         IsGreaterOrEqual,
         IsLessOrEqual,
-        Remainder
+        Remainder,
+        GCD
     }
 }

@@ -67,6 +67,7 @@
     <Compile Include="Implementation\Operations\ConjunctionCalculator.cs" />
     <Compile Include="Implementation\Operations\DisjunctionCalculator.cs" />
     <Compile Include="Implementation\Operations\DivisionCalculator.cs" />
+    <Compile Include="Implementation\Operations\GcdCalculator.cs" />
     <Compile Include="Implementation\Operations\IOperationCalculator.cs" />
     <Compile Include="Implementation\Operations\IsEqualCalculator.cs" />
     <Compile Include="Implementation\Operations\IsGreaterOrEqualCalculator.cs" />

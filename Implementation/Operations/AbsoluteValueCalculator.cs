@@ -1,5 +1,4 @@
-﻿using System.Runtime.CompilerServices;
-using MilpManager.Abstraction;
+﻿using MilpManager.Abstraction;
 
 namespace MilpManager.Implementation.Operations
 {
@@ -13,15 +12,16 @@ namespace MilpManager.Implementation.Operations
         public IVariable Calculate(IMilpManager milpManager, OperationType type, params IVariable[] arguments)
         {
             var number = arguments[0];
+            var numberNegated = number.Operation(OperationType.Negation);
             var result = milpManager.CreateAnonymous(number.IsInteger() ? Domain.PositiveOrZeroInteger : Domain.PositiveOrZeroReal);
 
             result.Set(ConstraintType.GreaterOrEqual, number)
-                .Set(ConstraintType.GreaterOrEqual, number.Operation(OperationType.Negation));
+                .Set(ConstraintType.GreaterOrEqual, numberNegated);
 
-            milpManager.Operation(OperationType.Disjunction,
-                    result.Operation(OperationType.Addition, number).Operation(OperationType.IsEqual, milpManager.FromConstant(0)),
-                    result.Operation(OperationType.Subtraction, number).Operation(OperationType.IsEqual, milpManager.FromConstant(0)))
-                .Set(ConstraintType.Equal, milpManager.FromConstant(1));
+            milpManager.Operation(OperationType.Addition,
+                    result.Operation(OperationType.IsEqual, number),
+                    result.Operation(OperationType.IsEqual, numberNegated))
+                .Set(ConstraintType.GreaterOrEqual, milpManager.FromConstant(1));
 
             return result;
         }
