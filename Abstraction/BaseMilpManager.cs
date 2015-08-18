@@ -49,7 +49,8 @@ namespace MilpManager.Abstraction
             {OperationType.IsGreaterOrEqual, new IsGreaterOrEqualCalculator()},
             {OperationType.IsLessOrEqual, new IsLessOrEqualCalculator()},
             {OperationType.Remainder, new RemainderCalculator()},
-            {OperationType.GCD, new GcdCalculator()}
+            {OperationType.GCD, new GcdCalculator()},
+            {OperationType.Exponentation, new ExponentationCalculator()}
         };
 
         public BaseMilpManager(int integerWidth)

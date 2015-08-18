@@ -21,6 +21,7 @@
         IsGreaterOrEqual,
         IsLessOrEqual,
         Remainder,
-        GCD
+        GCD,
+        Exponentation
     }
 }
