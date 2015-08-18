@@ -17,12 +17,12 @@ namespace MilpManager.Implementation
 
         public static IVariable Operation(this IVariable variable, OperationType type, params IVariable[] variables)
         {
-            return variable.MilpManager.Operation(type, new[]{variable}.Union(variables).ToArray());
+            return variable.MilpManager.Operation(type, new[]{variable}.Concat(variables).ToArray());
         }
 
         public static IEnumerable<IVariable> CompositeOperation(this IVariable variable, CompositeOperationType type, params IVariable[] variables)
         {
-            return variable.MilpManager.CompositeOperation(type, new[]{variable}.Union(variables).ToArray());
+            return variable.MilpManager.CompositeOperation(type, new[]{variable}.Concat(variables).ToArray());
         }
 
         public static IVariable Set(this IVariable variable, ConstraintType type, IVariable right)
