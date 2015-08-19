@@ -24,13 +24,13 @@ namespace MilpManager.Implementation.Operations
             var isPowerOne = power.Operation(OperationType.IsEqual, one);
             var isEdgeCase = milpManager.Operation(OperationType.Disjunction, isNumberLessOrEqualOne, isPowerZero, isPowerOne);
             var result = milpManager.Operation(
-                OperationType.Condition, 
-                isNumberLessOrEqualOne, 
-                number, 
+                OperationType.Condition,
+                isPowerZero,
+                one,
                 milpManager.Operation(
                     OperationType.Condition,
-                    isPowerZero,
-                    one,
+                    isNumberLessOrEqualOne,
+                    number,
                     milpManager.Operation(
                         OperationType.Condition,
                         isPowerOne,
@@ -47,7 +47,8 @@ namespace MilpManager.Implementation.Operations
         {
             var digits = (int)Math.Ceiling(Math.Log(milpManager.IntegerWidth, 2.0));
 
-            var currentPower = milpManager.Operation(OperationType.Minimum, number, isEdgeCase.Operation(OperationType.BinaryNegation).Operation(OperationType.Multiplication, milpManager.FromConstant(milpManager.MaximumIntegerValue)));
+            var infinity = milpManager.FromConstant(milpManager.MaximumIntegerValue);
+            var currentPower = milpManager.Operation(OperationType.Minimum, number, isEdgeCase.Operation(OperationType.BinaryNegation).Operation(OperationType.Multiplication, infinity));
             var decomposition = power.CompositeOperation(CompositeOperationType.UnsignedMagnitudeDecomposition).Take(digits).ToArray();
             var one = milpManager.FromConstant(1);
             var result = one;
@@ -56,7 +57,9 @@ namespace MilpManager.Implementation.Operations
             {
                 if (i > 0)
                 {
-                    currentPower = currentPower.Operation(OperationType.Multiplication, currentPower);
+                    var isAnyNonzeroDigitLater = milpManager.Operation(OperationType.Disjunction, decomposition.Skip(i).ToArray());
+                    var numberToMultiply = milpManager.Operation(OperationType.Minimum, currentPower, isAnyNonzeroDigitLater.Operation(OperationType.Multiplication, infinity));
+                    currentPower = numberToMultiply.Operation(OperationType.Multiplication, numberToMultiply);
                 }
 
                 result = result.Operation(OperationType.Multiplication, one.Operation(OperationType.Maximum, currentPower.Operation(OperationType.Multiplication, decomposition[i])));
