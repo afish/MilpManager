@@ -22,6 +22,7 @@
         IsLessOrEqual,
         Remainder,
         GCD,
-        Exponentation
+        Exponentation,
+        Factorial
     }
 }

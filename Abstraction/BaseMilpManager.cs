@@ -50,7 +50,8 @@ namespace MilpManager.Abstraction
             {OperationType.IsLessOrEqual, new IsLessOrEqualCalculator()},
             {OperationType.Remainder, new RemainderCalculator()},
             {OperationType.GCD, new GcdCalculator()},
-            {OperationType.Exponentation, new ExponentationCalculator()}
+            {OperationType.Exponentation, new ExponentationCalculator()},
+            {OperationType.Factorial, new FactorialCalculator()}
         };
 
         public BaseMilpManager(int integerWidth)
