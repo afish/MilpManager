@@ -24,7 +24,8 @@ namespace MilpManager.Abstraction
         {
             {CompositeOperationType.UnsignedMagnitudeDecomposition, new UnsignedMagnitudeDecompositionCalculator()},
             {CompositeOperationType.Sort, new SortCalculator()},
-            {CompositeOperationType.NthElements, new NthElementsCalculator()}
+            {CompositeOperationType.NthElements, new NthElementsCalculator()},
+            {CompositeOperationType.Loop, new LoopCalculator()}
         };
 
         protected readonly IDictionary<OperationType, IOperationCalculator> Operations = new Dictionary

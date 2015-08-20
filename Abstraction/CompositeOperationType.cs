@@ -4,6 +4,7 @@
     {
         UnsignedMagnitudeDecomposition,
         Sort,
-        NthElements
+        NthElements,
+        Loop
     }
 }

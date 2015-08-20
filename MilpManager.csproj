@@ -57,6 +57,8 @@
     <Compile Include="Implementation\Comparisons\IConstraintCalculator.cs" />
     <Compile Include="Implementation\Comparisons\MultipleOfCalculator.cs" />
     <Compile Include="Implementation\CompositeOperations\ICompositeOperationCalculator.cs" />
+    <Compile Include="Implementation\CompositeOperations\LoopCalculator.cs" />
+    <Compile Include="Implementation\CompositeOperations\LoopCalculatorParameters.cs" />
     <Compile Include="Implementation\CompositeOperations\NthElementsCalculator.cs" />
     <Compile Include="Implementation\CompositeOperations\NthElementsParameters.cs" />
     <Compile Include="Implementation\CompositeOperations\SortCalculator.cs" />
