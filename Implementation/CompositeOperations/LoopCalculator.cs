@@ -9,7 +9,7 @@ namespace MilpManager.Implementation.CompositeOperations
         public bool SupportsOperation(CompositeOperationType type, ICompositeOperationParameters parameters,
             params IVariable[] arguments)
         {
-            return type == CompositeOperationType.Loop && parameters is LoopCalculatorParameters && (parameters as LoopCalculatorParameters).Body.Length == arguments.Length;
+            return type == CompositeOperationType.Loop && (parameters as LoopCalculatorParameters)?.Body?.Length == arguments.Length;
         }
 
         public IEnumerable<IVariable> Calculate(IMilpManager milpManager, CompositeOperationType type, ICompositeOperationParameters parameters,
