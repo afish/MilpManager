@@ -32,7 +32,26 @@ namespace MilpManager.Implementation.Operations
 
         private Domain CalculateDomain(params IVariable[] arguments)
         {
-            return arguments.All(a => a.IsInteger()) ? Domain.AnyInteger : Domain.AnyReal;
+            if (arguments.Any(a => a.IsReal()))
+            {
+                if (arguments.All(a => a.IsPositiveOrZero()))
+                {
+                    return Domain.PositiveOrZeroReal;
+                }
+                return Domain.AnyReal;
+            }
+
+            if (arguments.All(a => a.IsBinary()))
+            {
+                return Domain.BinaryInteger;
+            }
+
+            if (arguments.All(a => a.IsPositiveOrZero() || a.IsBinary()))
+            {
+                return Domain.PositiveOrZeroInteger;
+            }
+
+            return Domain.AnyInteger;
         }
     }
 }

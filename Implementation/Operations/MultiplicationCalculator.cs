@@ -45,7 +45,7 @@ namespace MilpManager.Implementation.Operations
 
             if (MultiplyAtMostOneNonconstant(arguments))
             {
-                return arguments.Aggregate((x,y) => milpManager.MultiplyVariableByConstant(x, y, domain));
+                return arguments.Aggregate((x,y) => y.IsConstant() ? milpManager.MultiplyVariableByConstant(x, y, domain) : milpManager.MultiplyVariableByConstant(y, x, domain));
             }
 
             if (MultiplyBinaryVariables(arguments))
@@ -64,7 +64,7 @@ namespace MilpManager.Implementation.Operations
             if (binaries.Any())
             {
                 IVariable conjucted = binaries.Length > 1 ? baseMilpManager.Operation(OperationType.Conjunction, binaries) : binaries[0];
-                return MultipleByBinaryDigit(baseMilpManager, nonBinaries[0], conjucted)
+                return MultipleByBinaryDigit(baseMilpManager, nonBinaries[0], conjucted).ChangeDomain(domain)
                     .Operation(OperationType.Multiplication, nonBinaries.Skip(1).ToArray());
             }
 
@@ -120,7 +120,7 @@ namespace MilpManager.Implementation.Operations
             if (number.Domain == Domain.AnyConstantInteger || number.Domain == Domain.AnyInteger)
             {
                 var absoluteNumber = number.Operation(OperationType.AbsoluteValue);
-                var result = MultipleByBinaryDigit(baseMilpManager, absoluteNumber, digit).ChangeDomain(Domain.PositiveOrZeroInteger);
+                var result = MultipleByBinaryDigit(baseMilpManager, absoluteNumber, digit);
                 var two = baseMilpManager.FromConstant(2);
                 return MultipleByBinaryDigit(baseMilpManager, result, number.Operation(OperationType.IsGreaterOrEqual, baseMilpManager.FromConstant(0)))
                         .Operation(OperationType.Subtraction,
@@ -142,7 +142,7 @@ namespace MilpManager.Implementation.Operations
                 return arguments.Any(a => a.IsNotConstant()) ? Domain.BinaryInteger : Domain.BinaryConstantInteger;
             }
 
-            if (arguments.All(a => a.IsPositiveOrZero()))
+            if (arguments.All(a => a.IsPositiveOrZero() || a.IsBinary()))
             {
                 if (arguments.Any(a => a.IsReal()))
                 {

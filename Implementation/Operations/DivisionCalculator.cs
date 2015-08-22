@@ -41,7 +41,7 @@ namespace MilpManager.Implementation.Operations
 
             var isRealDivision = arguments.Count(a => a.IsNotConstant()) <= 1;
 
-            if (arguments.All(a => a.IsPositiveOrZero()))
+            if (arguments.All(a => a.IsPositiveOrZero() || a.IsBinary()))
             {
                 if (arguments.Any(a => a.IsReal()) || isRealDivision)
                 {

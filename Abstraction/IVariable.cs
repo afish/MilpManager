@@ -4,5 +4,6 @@
     {
         IMilpManager MilpManager { get; }
         Domain Domain { get; }
+        string Name { get; }
     }
 }
