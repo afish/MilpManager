@@ -25,7 +25,7 @@ namespace MilpManager.Implementation
             return variable.MilpManager.CompositeOperation(type, new[]{variable}.Concat(variables).ToArray());
         }
 
-        public static IVariable Set(this IVariable variable, ConstraintType type, IVariable right)
+        public static IVariable Set(this IVariable variable, ConstraintType type, params IVariable[] right)
         {
             return variable.MilpManager.Set(type, variable, right);
         }

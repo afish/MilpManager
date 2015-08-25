@@ -53,9 +53,12 @@
     <Compile Include="Abstraction\IVariable.cs" />
     <Compile Include="Abstraction\OperationType.cs" />
     <Compile Include="Abstraction\SolutionStatus.cs" />
-    <Compile Include="Implementation\Comparisons\CanonicalConstraintCalculator.cs" />
-    <Compile Include="Implementation\Comparisons\IConstraintCalculator.cs" />
-    <Compile Include="Implementation\Comparisons\MultipleOfCalculator.cs" />
+    <Compile Include="Implementation\Constraints\CanonicalConstraintCalculator.cs" />
+    <Compile Include="Implementation\Constraints\AllDifferentCalculator.cs" />
+    <Compile Include="Implementation\Constraints\NotFromSetCalculator.cs" />
+    <Compile Include="Implementation\Constraints\FromSetCalculator.cs" />
+    <Compile Include="Implementation\Constraints\IConstraintCalculator.cs" />
+    <Compile Include="Implementation\Constraints\MultipleOfCalculator.cs" />
     <Compile Include="Implementation\CompositeOperations\ICompositeOperationCalculator.cs" />
     <Compile Include="Implementation\CompositeOperations\LoopCalculator.cs" />
     <Compile Include="Implementation\CompositeOperations\LoopCalculatorParameters.cs" />
@@ -73,6 +76,7 @@
     <Compile Include="Implementation\Operations\FactorialCalculator.cs" />
     <Compile Include="Implementation\Operations\GcdCalculator.cs" />
     <Compile Include="Implementation\Operations\IOperationCalculator.cs" />
+    <Compile Include="Implementation\Operations\DifferentValuesCountCalculator.cs" />
     <Compile Include="Implementation\Operations\IsEqualCalculator.cs" />
     <Compile Include="Implementation\Operations\IsGreaterOrEqualCalculator.cs" />
     <Compile Include="Implementation\Operations\IsGreaterThanCalculator.cs" />

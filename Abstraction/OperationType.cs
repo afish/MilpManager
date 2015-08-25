@@ -23,6 +23,7 @@
         Remainder,
         GCD,
         Exponentation,
-        Factorial
+        Factorial,
+        DifferentValuesCount
     }
 }

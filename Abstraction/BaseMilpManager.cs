@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using MilpManager.Implementation;
-using MilpManager.Implementation.Comparisons;
 using MilpManager.Implementation.CompositeOperations;
+using MilpManager.Implementation.Constraints;
 using MilpManager.Implementation.Operations;
 
 namespace MilpManager.Abstraction
@@ -16,7 +16,10 @@ namespace MilpManager.Abstraction
             {ConstraintType.Equal, new CanonicalConstraintCalculator()},
             {ConstraintType.LessOrEqual, new CanonicalConstraintCalculator()},
             {ConstraintType.GreaterOrEqual, new CanonicalConstraintCalculator()},
-            {ConstraintType.MultipleOf, new MultipleOfCalculator()}
+            {ConstraintType.MultipleOf, new MultipleOfCalculator()},
+            {ConstraintType.FromSet, new FromSetCalculator()},
+            {ConstraintType.NotFromSet, new NotFromSetCalculator()},
+            {ConstraintType.AllDifferent, new AllDifferentCalculator()}
         };
 
         protected readonly IDictionary<CompositeOperationType, ICompositeOperationCalculator> CompositeOperations = new Dictionary
@@ -52,7 +55,8 @@ namespace MilpManager.Abstraction
             {OperationType.Remainder, new RemainderCalculator()},
             {OperationType.GCD, new GcdCalculator()},
             {OperationType.Exponentation, new ExponentationCalculator()},
-            {OperationType.Factorial, new FactorialCalculator()}
+            {OperationType.Factorial, new FactorialCalculator()},
+            {OperationType.DifferentValuesCount, new DifferentValuesCountCalculator()}
         };
 
         public BaseMilpManager(int integerWidth)
@@ -119,7 +123,7 @@ namespace MilpManager.Abstraction
                                             "] not supported");
         }
 
-        public virtual IVariable Set(ConstraintType type, IVariable left, IVariable right)
+        public virtual IVariable Set(ConstraintType type, IVariable left, params IVariable[] right)
         {
             return Comparisons[type].Set(this, type, left, right);
         }

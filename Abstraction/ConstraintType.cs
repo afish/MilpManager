@@ -5,6 +5,9 @@
         Equal,
         LessOrEqual,
         GreaterOrEqual,
-        MultipleOf
+        MultipleOf,
+        FromSet,
+        NotFromSet,
+        AllDifferent
     }
 }

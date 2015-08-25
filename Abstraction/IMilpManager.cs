@@ -10,7 +10,7 @@ namespace MilpManager.Abstraction
         IVariable Create(string name, IVariable value);
         IVariable Create(IVariable value);
         IVariable Operation(OperationType type, params IVariable[] variables);
-        IVariable Set(ConstraintType type, IVariable left, IVariable right);
+        IVariable Set(ConstraintType type, IVariable left, params IVariable[] right);
 
         IEnumerable<IVariable> CompositeOperation(CompositeOperationType type,
             params IVariable[] variables);
