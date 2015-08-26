@@ -10,7 +10,7 @@ This package contains only implementation of common mathematical functions (e.g.
 ## Some examples
 First you need to create solver. Let's use CPLEX implementation:
 ```
-var solver = new CplexMilpSolver.Implementation.CplexMilpSolver(10);
+var solver = new CplexMilpSolver(10);
 ```
 Now we are able to define variables:
 ```
@@ -34,7 +34,7 @@ Above code uses only functions from IMilpManager. If you want to solve the probl
 ```
 solver.AddGoal("dummy_goal", sumOfXAndY);
 solver.Solve();
-Assert.That(solver.GetStatus(), Is.EqualTo(SolutionStatus.Optimal, "Model cannot be solved!");
+Assert.That(solver.GetStatus(), Is.EqualTo(SolutionStatus.Optimal), "Model cannot be solved!");
 double result = solver.GetValue(sumOfXAndY);
 ```
 You can easily use different solvers, just replace implementation of IMilpManager (or IMilpSolver).
