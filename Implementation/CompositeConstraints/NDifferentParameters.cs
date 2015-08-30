@@ -4,13 +4,11 @@ namespace MilpManager.Implementation.CompositeConstraints
 {
     public class NDifferentParameters : ICompositeConstraintParameters
     {
-        public NDifferentParameters(int valuesCount, Domain preferredDomain)
+        public NDifferentParameters(int valuesCount)
         {
             ValuesCount = valuesCount;
-            PreferredDomain = preferredDomain;
         }
 
         public int ValuesCount { get; private set; }
-        public Domain PreferredDomain { get; private set; }
     }
 }
