@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using MilpManager.Implementation;
+using MilpManager.Implementation.CompositeConstraints;
 using MilpManager.Implementation.CompositeOperations;
 using MilpManager.Implementation.Constraints;
 using MilpManager.Implementation.Operations;
@@ -10,16 +11,22 @@ namespace MilpManager.Abstraction
 {
     public abstract class BaseMilpManager : IMilpManager
     {
-        protected readonly IDictionary<ConstraintType, IConstraintCalculator> Comparisons = new Dictionary
+        protected readonly IDictionary<ConstraintType, IConstraintCalculator> Constraints = new Dictionary
             <ConstraintType, IConstraintCalculator>
         {
             {ConstraintType.Equal, new CanonicalConstraintCalculator()},
             {ConstraintType.LessOrEqual, new CanonicalConstraintCalculator()},
             {ConstraintType.GreaterOrEqual, new CanonicalConstraintCalculator()},
-            {ConstraintType.MultipleOf, new MultipleOfCalculator()},
-            {ConstraintType.FromSet, new FromSetCalculator()},
-            {ConstraintType.NotFromSet, new NotFromSetCalculator()},
-            {ConstraintType.AllDifferent, new AllDifferentCalculator()}
+            {ConstraintType.MultipleOf, new MultipleOfCalculator()}
+        };
+
+        protected readonly IDictionary<CompositeConstraintType, ICompositeConstraintCalculator> CompositeConstraints = new Dictionary
+            <CompositeConstraintType, ICompositeConstraintCalculator>
+        {
+            {CompositeConstraintType.FromSet, new FromSetCalculator()},
+            {CompositeConstraintType.NotFromSet, new NotFromSetCalculator()},
+            {CompositeConstraintType.AllDifferent, new AllDifferentCalculator()},
+            {CompositeConstraintType.NDifferent, new NDifferentCalculator()}
         };
 
         protected readonly IDictionary<CompositeOperationType, ICompositeOperationCalculator> CompositeOperations = new Dictionary
@@ -123,9 +130,9 @@ namespace MilpManager.Abstraction
                                             "] not supported");
         }
 
-        public virtual IVariable Set(ConstraintType type, IVariable left, params IVariable[] right)
+        public virtual IVariable Set(ConstraintType type, IVariable left, IVariable right)
         {
-            return Comparisons[type].Set(this, type, left, right);
+            return Constraints[type].Set(this, type, left, right);
         }
 
         public virtual IEnumerable<IVariable> CompositeOperation(CompositeOperationType type,
@@ -142,7 +149,20 @@ namespace MilpManager.Abstraction
                 return CompositeOperations[type].Calculate(this, type, parameters, variables);
             }
 
-            throw new NotSupportedException("Operation " + type + " with supplied variables not supported");
+            throw new NotSupportedException("Operation " + type + " with supplied variables [" +
+                                            string.Join(", ", variables.Select(v => v.Domain.ToString()).ToArray()) +
+                                            "] with parameters [" + parameters + "] not supported");
+        }
+
+        public IVariable Set(CompositeConstraintType type, IVariable left, params IVariable[] variables)
+        {
+            return Set(type, null, left, variables);
+        }
+
+        public IVariable Set(CompositeConstraintType type, ICompositeConstraintParameters parameters, IVariable left,
+            params IVariable[] variables)
+        {
+            return CompositeConstraints[type].Set(this, type, parameters, left, variables);
         }
 
         public virtual void SetGreaterOrEqual(IVariable variable, IVariable bound)

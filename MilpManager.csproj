@@ -44,8 +44,10 @@
   <ItemGroup>
     <Compile Include="Abstraction\BaseMilpManager.cs" />
     <Compile Include="Abstraction\BaseMilpSolver.cs" />
+    <Compile Include="Abstraction\CompositeConstraintType.cs" />
+    <Compile Include="Abstraction\ICompositeConstraintParameters.cs" />
     <Compile Include="Abstraction\IMilpSolver.cs" />
-    <Compile Include="Abstraction\CompositeOperationParameters.cs" />
+    <Compile Include="Abstraction\ICompositeOperationParameters.cs" />
     <Compile Include="Abstraction\CompositeOperationType.cs" />
     <Compile Include="Abstraction\ConstraintType.cs" />
     <Compile Include="Abstraction\Domain.cs" />
@@ -53,10 +55,13 @@
     <Compile Include="Abstraction\IVariable.cs" />
     <Compile Include="Abstraction\OperationType.cs" />
     <Compile Include="Abstraction\SolutionStatus.cs" />
+    <Compile Include="Implementation\CompositeConstraints\ICompositeConstraintCalculator.cs" />
+    <Compile Include="Implementation\CompositeConstraints\NDifferentCalculator.cs" />
+    <Compile Include="Implementation\CompositeConstraints\NDifferentParameters.cs" />
     <Compile Include="Implementation\Constraints\CanonicalConstraintCalculator.cs" />
-    <Compile Include="Implementation\Constraints\AllDifferentCalculator.cs" />
-    <Compile Include="Implementation\Constraints\NotFromSetCalculator.cs" />
-    <Compile Include="Implementation\Constraints\FromSetCalculator.cs" />
+    <Compile Include="Implementation\CompositeConstraints\AllDifferentCalculator.cs" />
+    <Compile Include="Implementation\CompositeConstraints\NotFromSetCalculator.cs" />
+    <Compile Include="Implementation\CompositeConstraints\FromSetCalculator.cs" />
     <Compile Include="Implementation\Constraints\IConstraintCalculator.cs" />
     <Compile Include="Implementation\Constraints\MultipleOfCalculator.cs" />
     <Compile Include="Implementation\CompositeOperations\ICompositeOperationCalculator.cs" />

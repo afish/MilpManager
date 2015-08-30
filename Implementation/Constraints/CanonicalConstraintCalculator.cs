@@ -5,19 +5,19 @@ namespace MilpManager.Implementation.Constraints
     internal class CanonicalConstraintCalculator : IConstraintCalculator
     {
         public IVariable Set(IMilpManager milpManager, ConstraintType type, IVariable leftVariable,
-            params IVariable[] rightVariable)
+            IVariable rightVariable)
         {
             if (type == ConstraintType.Equal)
             {
-                milpManager.SetEqual(leftVariable, rightVariable[0]);
+                milpManager.SetEqual(leftVariable, rightVariable);
             }
             else if (type == ConstraintType.GreaterOrEqual)
             {
-                milpManager.SetGreaterOrEqual(leftVariable, rightVariable[0]);
+                milpManager.SetGreaterOrEqual(leftVariable, rightVariable);
             }
             else if (type == ConstraintType.LessOrEqual)
             {
-                milpManager.SetLessOrEqual(leftVariable, rightVariable[0]);
+                milpManager.SetLessOrEqual(leftVariable, rightVariable);
             }
             return leftVariable;
         }

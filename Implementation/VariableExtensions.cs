@@ -25,9 +25,13 @@ namespace MilpManager.Implementation
             return variable.MilpManager.CompositeOperation(type, new[]{variable}.Concat(variables).ToArray());
         }
 
-        public static IVariable Set(this IVariable variable, ConstraintType type, params IVariable[] right)
+        public static IVariable Set(this IVariable variable, ConstraintType type, IVariable right)
         {
             return variable.MilpManager.Set(type, variable, right);
+        }
+        public static IVariable Set(this IVariable variable, CompositeConstraintType type, ICompositeConstraintParameters parameters, params IVariable[] right)
+        {
+            return variable.MilpManager.Set(type, parameters, variable, right);
         }
         public static IVariable ChangeDomain(this IVariable variable, Domain newDomain)
         {

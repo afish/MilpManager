@@ -1,11 +1,12 @@
 ﻿using System.Linq;
 using MilpManager.Abstraction;
 
-namespace MilpManager.Implementation.Constraints
+namespace MilpManager.Implementation.CompositeConstraints
 {
-    public class FromSetCalculator : IConstraintCalculator
+    public class FromSetCalculator : ICompositeConstraintCalculator
     {
-        public IVariable Set(IMilpManager milpManager, ConstraintType type, IVariable leftVariable, params IVariable[] rightVariable)
+        public IVariable Set(IMilpManager milpManager, CompositeConstraintType type, ICompositeConstraintParameters parameters,
+            IVariable leftVariable, params IVariable[] rightVariable)
         {
             rightVariable.Aggregate(milpManager.FromConstant(0),
                 (current, variable) =>
