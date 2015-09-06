@@ -58,6 +58,8 @@
     <Compile Include="Implementation\CompositeConstraints\ICompositeConstraintCalculator.cs" />
     <Compile Include="Implementation\CompositeConstraints\NDifferentCalculator.cs" />
     <Compile Include="Implementation\CompositeConstraints\NDifferentParameters.cs" />
+    <Compile Include="Implementation\CompositeOperations\CountingSortParameters.cs" />
+    <Compile Include="Implementation\CompositeOperations\CountingSortCalculator.cs" />
     <Compile Include="Implementation\Constraints\CanonicalConstraintCalculator.cs" />
     <Compile Include="Implementation\CompositeConstraints\AllDifferentCalculator.cs" />
     <Compile Include="Implementation\CompositeConstraints\NotFromSetCalculator.cs" />
@@ -66,10 +68,10 @@
     <Compile Include="Implementation\Constraints\MultipleOfCalculator.cs" />
     <Compile Include="Implementation\CompositeOperations\ICompositeOperationCalculator.cs" />
     <Compile Include="Implementation\CompositeOperations\LoopCalculator.cs" />
-    <Compile Include="Implementation\CompositeOperations\LoopCalculatorParameters.cs" />
+    <Compile Include="Implementation\CompositeOperations\LoopParameters.cs" />
     <Compile Include="Implementation\CompositeOperations\NthElementsCalculator.cs" />
     <Compile Include="Implementation\CompositeOperations\NthElementsParameters.cs" />
-    <Compile Include="Implementation\CompositeOperations\SortCalculator.cs" />
+    <Compile Include="Implementation\CompositeOperations\SelectionSortCalculator.cs" />
     <Compile Include="Implementation\CompositeOperations\UnsignedMagnitudeDecompositionCalculator.cs" />
     <Compile Include="Implementation\Operations\AbsoluteValueCalculator.cs" />
     <Compile Include="Implementation\Operations\BinaryNegationCalculator.cs" />

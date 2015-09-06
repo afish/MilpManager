@@ -12,6 +12,15 @@ namespace MilpManager.Implementation.Operations
 
         public IVariable Calculate(IMilpManager milpManager, OperationType type, params IVariable[] arguments)
         {
+            if (arguments.Length > 2)
+            {
+                return arguments[0].Operation(type, milpManager.Operation(type, arguments.Skip(1).ToArray()));
+            }
+            return CalculateForTwoVariables(milpManager, type, arguments);
+        }
+
+        private IVariable CalculateForTwoVariables(IMilpManager milpManager, OperationType type, IVariable[] arguments)
+        {
             var first = arguments[0];
             var second = arguments[1];
 

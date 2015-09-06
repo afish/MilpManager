@@ -3,8 +3,9 @@
     public enum CompositeOperationType
     {
         UnsignedMagnitudeDecomposition,
-        Sort,
+        SelectionSort,
         NthElements,
-        Loop
+        Loop,
+        CountingSort
     }
 }

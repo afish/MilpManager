@@ -1,4 +1,5 @@
-﻿using MilpManager.Abstraction;
+﻿using System;
+using MilpManager.Abstraction;
 
 namespace MilpManager.Implementation.Constraints
 {
@@ -7,17 +8,31 @@ namespace MilpManager.Implementation.Constraints
         public IVariable Set(IMilpManager milpManager, ConstraintType type, IVariable leftVariable,
             IVariable rightVariable)
         {
-            if (type == ConstraintType.Equal)
+            switch (type)
             {
-                milpManager.SetEqual(leftVariable, rightVariable);
-            }
-            else if (type == ConstraintType.GreaterOrEqual)
-            {
-                milpManager.SetGreaterOrEqual(leftVariable, rightVariable);
-            }
-            else if (type == ConstraintType.LessOrEqual)
-            {
-                milpManager.SetLessOrEqual(leftVariable, rightVariable);
+                case ConstraintType.Equal:
+                    milpManager.SetEqual(leftVariable, rightVariable);
+                    break;
+                case ConstraintType.LessOrEqual:
+                    milpManager.SetLessOrEqual(leftVariable, rightVariable);
+                    break;
+                case ConstraintType.GreaterOrEqual:
+                    milpManager.SetGreaterOrEqual(leftVariable, rightVariable);
+                    break;
+                case ConstraintType.LessThan:
+                    milpManager.Operation(OperationType.IsLessThan, leftVariable, rightVariable)
+                        .Set(ConstraintType.Equal, milpManager.FromConstant(1));
+                    break;
+                case ConstraintType.GreaterThan:
+                    milpManager.Operation(OperationType.IsGreaterThan, leftVariable, rightVariable)
+                        .Set(ConstraintType.Equal, milpManager.FromConstant(1));
+                    break;
+                case ConstraintType.NotEqual:
+                    milpManager.Operation(OperationType.IsNotEqual, leftVariable, rightVariable)
+                        .Set(ConstraintType.Equal, milpManager.FromConstant(1));
+                    break;
+                default:
+                    throw new InvalidOperationException("Cannot set constraint");
             }
             return leftVariable;
         }

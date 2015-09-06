@@ -9,13 +9,13 @@ namespace MilpManager.Implementation.CompositeOperations
         public bool SupportsOperation(CompositeOperationType type, ICompositeOperationParameters parameters,
             params IVariable[] arguments)
         {
-            return type == CompositeOperationType.Loop && (parameters as LoopCalculatorParameters)?.Body?.Length == arguments.Length;
+            return type == CompositeOperationType.Loop && (parameters as LoopParameters)?.Body?.Length == arguments.Length;
         }
 
         public IEnumerable<IVariable> Calculate(IMilpManager milpManager, CompositeOperationType type, ICompositeOperationParameters parameters,
             params IVariable[] arguments)
         {
-            var options = parameters as LoopCalculatorParameters;
+            var options = parameters as LoopParameters;
 
             var totalBound = milpManager.CreateAnonymous(Domain.PositiveOrZeroInteger);
             totalBound.Set(ConstraintType.LessOrEqual, milpManager.FromConstant(options.MaxIterations));

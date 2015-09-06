@@ -17,6 +17,9 @@ namespace MilpManager.Abstraction
             {ConstraintType.Equal, new CanonicalConstraintCalculator()},
             {ConstraintType.LessOrEqual, new CanonicalConstraintCalculator()},
             {ConstraintType.GreaterOrEqual, new CanonicalConstraintCalculator()},
+            {ConstraintType.LessThan, new CanonicalConstraintCalculator()},
+            {ConstraintType.GreaterThan, new CanonicalConstraintCalculator()},
+            {ConstraintType.NotEqual, new CanonicalConstraintCalculator()},
             {ConstraintType.MultipleOf, new MultipleOfCalculator()}
         };
 
@@ -33,9 +36,10 @@ namespace MilpManager.Abstraction
             <CompositeOperationType, ICompositeOperationCalculator>
         {
             {CompositeOperationType.UnsignedMagnitudeDecomposition, new UnsignedMagnitudeDecompositionCalculator()},
-            {CompositeOperationType.Sort, new SortCalculator()},
+            {CompositeOperationType.SelectionSort, new SelectionSortCalculator()},
             {CompositeOperationType.NthElements, new NthElementsCalculator()},
-            {CompositeOperationType.Loop, new LoopCalculator()}
+            {CompositeOperationType.Loop, new LoopCalculator()},
+            {CompositeOperationType.CountingSort, new CountingSortCalculator()}
         };
 
         protected readonly IDictionary<OperationType, IOperationCalculator> Operations = new Dictionary

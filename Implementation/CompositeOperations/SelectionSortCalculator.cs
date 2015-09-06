@@ -4,11 +4,11 @@ using MilpManager.Abstraction;
 
 namespace MilpManager.Implementation.CompositeOperations
 {
-    internal class SortCalculator : ICompositeOperationCalculator
+    internal class SelectionSortCalculator : ICompositeOperationCalculator
     {
         public bool SupportsOperation(CompositeOperationType type, ICompositeOperationParameters parameters, params IVariable[] arguments)
         {
-            return type == CompositeOperationType.Sort && arguments.All(a => a.IsInteger());
+            return type == CompositeOperationType.SelectionSort && arguments.All(a => a.IsInteger());
         }
 
         public IEnumerable<IVariable> Calculate(IMilpManager milpManager, CompositeOperationType type, ICompositeOperationParameters parameters, params IVariable[] arguments)
