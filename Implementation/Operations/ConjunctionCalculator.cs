@@ -12,7 +12,7 @@ namespace MilpManager.Implementation.Operations
 
         public IVariable Calculate(IMilpManager milpManager, OperationType type, params IVariable[] arguments)
         {
-            var variable = milpManager.CreateAnonymous(arguments.Any(a => a.IsNotConstant()) ? Domain.BinaryInteger : Domain.BinaryConstantInteger);
+            var variable = milpManager.CreateAnonymous(Domain.BinaryInteger);
             var sum = milpManager.Operation(OperationType.Addition, arguments);
             var argumentsCount = arguments.Length;
             sum.Operation(OperationType.Subtraction,
