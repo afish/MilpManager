@@ -1,4 +1,5 @@
-﻿using MilpManager.Abstraction;
+﻿using System.Linq;
+using MilpManager.Abstraction;
 
 namespace MilpManager.Implementation.Operations
 {
@@ -6,7 +7,7 @@ namespace MilpManager.Implementation.Operations
     {
         public bool SupportsOperation(OperationType type, params IVariable[] arguments)
         {
-            return type == OperationType.IsGreaterThan && arguments.Length == 2;
+            return type == OperationType.IsGreaterThan && arguments.Length == 2 && arguments.All(x => x.IsInteger());
         }
 
         public IVariable Calculate(IMilpManager milpManager, OperationType type, params IVariable[] arguments)
