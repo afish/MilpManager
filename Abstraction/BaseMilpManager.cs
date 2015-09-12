@@ -180,11 +180,10 @@ namespace MilpManager.Abstraction
             variable.Set(ConstraintType.LessOrEqual, bound);
         }
 
-        public abstract IVariable SumVariables(IVariable first, IVariable second, Domain domain);
-        public abstract IVariable NegateVariable(IVariable variable, Domain domain);
-        public abstract IVariable MultiplyVariableByConstant(IVariable variable, IVariable constant, Domain domain);
-        public abstract IVariable DivideVariableByConstant(IVariable variable, IVariable constant, Domain domain);
-        public abstract void SetLessOrEqual(IVariable variable, IVariable bound);
+        public virtual IVariable FromConstant(double value)
+        {
+            return FromConstant(value, value < 0 ? Domain.AnyConstantReal : Domain.PositiveOrZeroConstantReal);
+        }
 
         public virtual IVariable FromConstant(int value)
         {
@@ -194,14 +193,13 @@ namespace MilpManager.Abstraction
             return FromConstant(value, domain);
         }
 
+        public abstract IVariable SumVariables(IVariable first, IVariable second, Domain domain);
+        public abstract IVariable NegateVariable(IVariable variable, Domain domain);
+        public abstract IVariable MultiplyVariableByConstant(IVariable variable, IVariable constant, Domain domain);
+        public abstract IVariable DivideVariableByConstant(IVariable variable, IVariable constant, Domain domain);
+        public abstract void SetLessOrEqual(IVariable variable, IVariable bound);
         public abstract IVariable FromConstant(int value, Domain domain);
         public abstract IVariable FromConstant(double value, Domain domain);
-
-        public virtual IVariable FromConstant(double value)
-        {
-            return FromConstant(value, value < 0 ? Domain.AnyConstantReal : Domain.PositiveOrZeroConstantReal);
-        }
-
         public abstract IVariable Create(string name, Domain domain);
         public abstract IVariable CreateAnonymous(Domain domain);
     }
