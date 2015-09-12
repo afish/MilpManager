@@ -13,8 +13,7 @@ namespace MilpManager.Implementation.Operations
         public IVariable Calculate(IMilpManager milpManager, OperationType type, params IVariable[] arguments)
         {
             return
-                arguments.Aggregate(
-                    (left, right) => left.Operation(OperationType.Addition, right.Operation(OperationType.Negation)));
+                arguments.Aggregate((left, right) => left.Operation(OperationType.Addition, right.Operation(OperationType.Negation)));
         }
     }
 }

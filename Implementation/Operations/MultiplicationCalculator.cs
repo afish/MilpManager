@@ -45,7 +45,14 @@ namespace MilpManager.Implementation.Operations
 
             if (MultiplyAtMostOneNonconstant(arguments))
             {
-                return arguments.Aggregate((x,y) => y.IsConstant() ? milpManager.MultiplyVariableByConstant(x, y, domain) : milpManager.MultiplyVariableByConstant(y, x, domain));
+                return arguments.Aggregate((x, y) =>
+                {
+                    var result = y.IsConstant()
+                        ? milpManager.MultiplyVariableByConstant(x, y, domain)
+                        : milpManager.MultiplyVariableByConstant(y, x, domain);
+                    result.ConstantValue = x.ConstantValue*y.ConstantValue;
+                    return result;
+                });
             }
 
             if (MultiplyBinaryVariables(arguments))

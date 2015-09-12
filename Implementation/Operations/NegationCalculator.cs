@@ -11,12 +11,13 @@ namespace MilpManager.Implementation.Operations
 
         public IVariable Calculate(IMilpManager milpManager, OperationType type, params IVariable[] arguments)
         {
-            Domain domain = arguments[0].IsConstant()
-                ? (arguments[0].IsReal() ? Domain.AnyConstantReal : Domain.AnyConstantInteger)
-                : (arguments[0].IsReal() ? Domain.AnyReal : Domain.AnyInteger);
+            Domain domain = arguments[0].IsReal() ? Domain.AnyReal : Domain.AnyInteger;
+            domain = arguments[0].IsConstant() ? domain.MakeConstant() : domain;
 
 
-            return milpManager.NegateVariable(arguments[0], domain);
+            var result = milpManager.NegateVariable(arguments[0], domain);
+            result.ConstantValue = -arguments[0].ConstantValue;
+            return result;
         }
     }
 }

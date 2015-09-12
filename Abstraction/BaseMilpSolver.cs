@@ -11,30 +11,30 @@ namespace MilpManager.Abstraction
         {
             Variables = new Dictionary<string, IVariable>();
         }
-        public IVariable GetByName(string name)
+        public virtual IVariable GetByName(string name)
         {
             return Variables[name];
         }
 
-        public IVariable TryGetByName(string name)
+        public virtual IVariable TryGetByName(string name)
         {
             IVariable variable;
             return Variables.TryGetValue(name, out variable) ? variable : null;
         }
 
-        public override sealed IVariable Create(string name, Domain domain)
+        public override IVariable Create(string name, Domain domain)
         {
             var variable = InternalCreate(name, domain);
             Variables[name] = variable;
             return variable;
         }
 
-        public override sealed IVariable CreateAnonymous(Domain domain)
+        public override IVariable CreateAnonymous(Domain domain)
         {
             return Create(NewVariableName(), domain);
         }
 
-        public override sealed IVariable FromConstant(int value, Domain domain)
+        public override IVariable FromConstant(int value, Domain domain)
         {
             var variableName = NewVariableName();
             var variable = InternalFromConstant(variableName, value, domain);
@@ -43,7 +43,7 @@ namespace MilpManager.Abstraction
             return variable;
         }
 
-        public override sealed IVariable FromConstant(double value, Domain domain)
+        public override IVariable FromConstant(double value, Domain domain)
         {
             var variableName = NewVariableName();
             var variable = InternalFromConstant(variableName, value, domain);
@@ -51,39 +51,32 @@ namespace MilpManager.Abstraction
             variable.ConstantValue = value;
             return variable;
         }
-        public override sealed IVariable SumVariables(IVariable first, IVariable second, Domain domain)
+        public override IVariable SumVariables(IVariable first, IVariable second, Domain domain)
         {
             var newVariable = InternalSumVariables(first, second, domain);
-            newVariable.ConstantValue = first.ConstantValue + second.ConstantValue;
+            Variables[newVariable.Name] = newVariable;
             return newVariable;
         }
 
-        public override sealed IVariable NegateVariable(IVariable variable, Domain domain)
+        public override IVariable NegateVariable(IVariable variable, Domain domain)
         {
             var newVariable = InternalNegateVariable(variable, domain);
-            newVariable.ConstantValue = -variable.ConstantValue;
+            Variables[newVariable.Name] = newVariable;
             return newVariable;
         }
 
-        public override sealed IVariable MultiplyVariableByConstant(IVariable variable, IVariable constant, Domain domain)
+        public override IVariable MultiplyVariableByConstant(IVariable variable, IVariable constant, Domain domain)
         {
             var newVariable = InternalMultiplyVariableByConstant(variable, constant, domain);
-            newVariable.ConstantValue = variable.ConstantValue * constant.ConstantValue;
+            Variables[newVariable.Name] = newVariable;
             return newVariable;
         }
 
-        public override sealed IVariable DivideVariableByConstant(IVariable variable, IVariable constant, Domain domain)
+        public override IVariable DivideVariableByConstant(IVariable variable, IVariable constant, Domain domain)
         {
             var newVariable = InternalDivideVariableByConstant(variable, constant, domain);
-            newVariable.ConstantValue = variable.ConstantValue / constant.ConstantValue;
+            Variables[newVariable.Name] = newVariable;
             return newVariable;
-        }
-
-        public override sealed void SetEqual(IVariable variable, IVariable bound)
-        {
-            InternalSetEqual(variable, bound);
-            variable.ConstantValue = bound.ConstantValue ?? variable.ConstantValue;
-            bound.ConstantValue = variable.ConstantValue ?? bound.ConstantValue;
         }
 
         public abstract void AddGoal(string name, IVariable operation);
@@ -101,11 +94,7 @@ namespace MilpManager.Abstraction
         protected abstract IVariable InternalNegateVariable(IVariable variable, Domain domain);
         protected abstract IVariable InternalMultiplyVariableByConstant(IVariable variable, IVariable constant, Domain domain);
         protected abstract IVariable InternalDivideVariableByConstant(IVariable variable, IVariable constant,Domain domain);
-        protected virtual void InternalSetEqual(IVariable variable, IVariable bound)
-        {
-            base.SetEqual(variable, bound);
-        }
-        protected string NewVariableName()
+        protected virtual string NewVariableName()
         {
             return $"_v_{VariableIndex++}";
         }

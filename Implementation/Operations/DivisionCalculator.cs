@@ -9,16 +9,18 @@ namespace MilpManager.Implementation.Operations
         public bool SupportsOperation(OperationType type, params IVariable[] arguments)
         {
             return type == OperationType.Division && arguments.Length == 2 &&
-                   (IsPhysicalDivision(arguments) || arguments.All(a => (a.IsPositiveOrZero() || a.IsBinary()) && a.IsInteger()));
+                   (IsDividingByConstant(arguments) || arguments.All(a => (a.IsPositiveOrZero() || a.IsBinary()) && a.IsInteger()));
         }
 
         public IVariable Calculate(IMilpManager milpManager, OperationType type, params IVariable[] arguments)
         {
             var domain = CalculateDomain(arguments);
-            if (IsPhysicalDivision(arguments))
+            if (IsDividingByConstant(arguments))
             {
                 var finalDomain = arguments.All(x => x.IsConstant()) ? domain.MakeConstant() : domain;
-                return milpManager.DivideVariableByConstant(arguments[0], arguments[1], finalDomain);
+                var physicalResult = milpManager.DivideVariableByConstant(arguments[0], arguments[1], finalDomain);
+                physicalResult.ConstantValue = arguments[0].ConstantValue/arguments[1].ConstantValue;
+                return physicalResult;
             }
 
             IVariable one = milpManager.FromConstant(1);
@@ -39,7 +41,7 @@ namespace MilpManager.Implementation.Operations
                 return Domain.BinaryInteger;
             }
 
-            if (IsPhysicalDivision(arguments))
+            if (IsDividingByConstant(arguments))
             {
                 if (arguments.All(a => a.IsPositiveOrZero() || a.IsBinary()))
                 {
@@ -55,7 +57,7 @@ namespace MilpManager.Implementation.Operations
             return Domain.AnyInteger;
         }
 
-        private static bool IsPhysicalDivision(IVariable[] arguments)
+        private static bool IsDividingByConstant(IVariable[] arguments)
         {
             return arguments[1].IsConstant();
         }

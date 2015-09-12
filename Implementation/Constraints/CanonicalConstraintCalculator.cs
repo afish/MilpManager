@@ -12,6 +12,8 @@ namespace MilpManager.Implementation.Constraints
             {
                 case ConstraintType.Equal:
                     milpManager.SetEqual(leftVariable, rightVariable);
+                    leftVariable.ConstantValue = rightVariable.ConstantValue ?? leftVariable.ConstantValue;
+                    rightVariable.ConstantValue = leftVariable.ConstantValue ?? rightVariable.ConstantValue;
                     break;
                 case ConstraintType.LessOrEqual:
                     milpManager.SetLessOrEqual(leftVariable, rightVariable);

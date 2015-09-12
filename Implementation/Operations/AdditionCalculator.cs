@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using MilpManager.Abstraction;
 using Domain = MilpManager.Abstraction.Domain;
 
@@ -16,7 +15,12 @@ namespace MilpManager.Implementation.Operations
         {
             var domain = CalculateDomain(arguments);
 
-            return arguments.Aggregate((x,y) => milpManager.SumVariables(x, y, domain));
+            return arguments.Aggregate((x, y) =>
+            {
+                var result = milpManager.SumVariables(x, y, domain);
+                result.ConstantValue = x.ConstantValue + y.ConstantValue;
+                return result;
+            });
         }
 
         private Domain CalculateDomain(IVariable[] arguments)
