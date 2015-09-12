@@ -9,20 +9,20 @@ namespace MilpManager.Implementation.Operations
         public bool SupportsOperation(OperationType type, params IVariable[] arguments)
         {
             return type == OperationType.Division && arguments.Length == 2 &&
-                   (arguments.Count(a => a.IsNotConstant()) <= 1 ||
-                    (arguments.All(a => a.IsPositiveOrZero()) && arguments.All(a => a.IsInteger())));
+                   (IsPhysicalDivision(arguments) || arguments.All(a => (a.IsPositiveOrZero() || a.IsBinary()) && a.IsInteger()));
         }
 
         public IVariable Calculate(IMilpManager milpManager, OperationType type, params IVariable[] arguments)
         {
-            if (arguments.Count(a => a.IsNotConstant()) <= 1)
+            var domain = CalculateDomain(arguments);
+            if (IsPhysicalDivision(arguments))
             {
-                var domain = CalculateDomain(arguments);
-                return arguments.Aggregate((x, y) => milpManager.DivideVariableByConstant(x, y, domain));
+                var finalDomain = arguments.All(x => x.IsConstant()) ? domain.MakeConstant() : domain;
+                return milpManager.DivideVariableByConstant(arguments[0], arguments[1], finalDomain);
             }
 
             IVariable one = milpManager.FromConstant(1);
-            var result = milpManager.CreateAnonymous(Domain.PositiveOrZeroInteger);
+            var result = milpManager.CreateAnonymous(domain);
             result.Operation(OperationType.Multiplication, arguments[1])
                 .Set(ConstraintType.LessOrEqual, arguments[0]);
             result.Operation(OperationType.Addition, one)
@@ -36,27 +36,28 @@ namespace MilpManager.Implementation.Operations
         {
             if (arguments.All(a => a.IsBinary()))
             {
-                return arguments.Any(a => a.IsNotConstant()) ? Domain.BinaryInteger : Domain.BinaryConstantInteger;
+                return Domain.BinaryInteger;
             }
 
-            var isRealDivision = arguments.Count(a => a.IsNotConstant()) <= 1;
+            if (IsPhysicalDivision(arguments))
+            {
+                if (arguments.All(a => a.IsPositiveOrZero() || a.IsBinary()))
+                {
+                    return Domain.PositiveOrZeroReal;
+                }
+                return Domain.AnyReal;
+            }
 
             if (arguments.All(a => a.IsPositiveOrZero() || a.IsBinary()))
             {
-                if (arguments.Any(a => a.IsReal()) || isRealDivision)
-                {
-                    return arguments.Any(a => a.IsNotConstant()) ? Domain.PositiveOrZeroReal : Domain.PositiveOrZeroConstantReal;
-                }
-
-                return arguments.Any(a => a.IsNotConstant()) ? Domain.PositiveOrZeroInteger : Domain.PositiveOrZeroConstantInteger;
+                return Domain.PositiveOrZeroInteger;
             }
+            return Domain.AnyInteger;
+        }
 
-            if (arguments.Any(a => a.IsReal()) || isRealDivision)
-            {
-                return arguments.Any(a => a.IsNotConstant()) ? Domain.AnyReal : Domain.AnyConstantReal;
-            }
-
-            return arguments.Any(a => a.IsNotConstant()) ? Domain.AnyInteger : Domain.AnyConstantInteger;
+        private static bool IsPhysicalDivision(IVariable[] arguments)
+        {
+            return arguments[1].IsConstant();
         }
     }
 }

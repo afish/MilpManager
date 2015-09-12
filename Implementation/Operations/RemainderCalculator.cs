@@ -7,8 +7,7 @@ namespace MilpManager.Implementation.Operations
     {
         public bool SupportsOperation(OperationType type, params IVariable[] arguments)
         {
-            return type == OperationType.Remainder && arguments.Length == 2 &&
-                   arguments.All(a => a.IsPositiveOrZero() || a.IsBinary());
+            return type == OperationType.Remainder && arguments.Length == 2 && arguments.All(x => x.IsPositiveOrZero() || x.IsBinary());
         }
 
         public IVariable Calculate(IMilpManager milpManager, OperationType type, params IVariable[] arguments)
@@ -16,12 +15,18 @@ namespace MilpManager.Implementation.Operations
             IVariable numerator = arguments[0];
             IVariable denominator = arguments[1];
 
+            var one = milpManager.FromConstant(1);
+            var any = milpManager.CreateAnonymous(Domain.PositiveOrZeroInteger);
+            any.Operation(OperationType.Multiplication, denominator).Set(ConstraintType.LessOrEqual, numerator);
+            any.Operation(OperationType.Addition, one)
+                .Operation(OperationType.Multiplication, denominator)
+                .Set(ConstraintType.GreaterOrEqual, numerator.Operation(OperationType.Addition, one));
+            
             IVariable result = milpManager.CreateAnonymous(Domain.PositiveOrZeroInteger);
-            result.Set(ConstraintType.LessOrEqual, denominator.Operation(OperationType.Subtraction, milpManager.FromConstant(1)));
-
-            IVariable any = milpManager.CreateAnonymous(Domain.PositiveOrZeroInteger);
-            numerator.Set(ConstraintType.Equal,
-                any.Operation(OperationType.Multiplication, denominator).Operation(OperationType.Addition, result));
+            result.Set(ConstraintType.LessOrEqual, denominator);
+            result.Set(ConstraintType.Equal,
+                numerator.Operation(OperationType.Subtraction,
+                    denominator.Operation(OperationType.Multiplication, any)));
 
             return result;
         }

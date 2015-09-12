@@ -73,6 +73,7 @@
     <Compile Include="Implementation\CompositeOperations\NthElementsParameters.cs" />
     <Compile Include="Implementation\CompositeOperations\SelectionSortCalculator.cs" />
     <Compile Include="Implementation\CompositeOperations\UnsignedMagnitudeDecompositionCalculator.cs" />
+    <Compile Include="Implementation\DomainExtensions.cs" />
     <Compile Include="Implementation\Operations\AbsoluteValueCalculator.cs" />
     <Compile Include="Implementation\Operations\BinaryNegationCalculator.cs" />
     <Compile Include="Implementation\Operations\ConditionCalculator.cs" />

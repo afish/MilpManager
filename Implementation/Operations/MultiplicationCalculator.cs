@@ -63,10 +63,16 @@ namespace MilpManager.Implementation.Operations
 
             if (binaries.Any())
             {
-                IVariable conjucted = binaries.Length > 1 ? baseMilpManager.Operation(OperationType.Conjunction, binaries) : binaries[0];
+                IVariable conjucted = baseMilpManager.Operation(OperationType.Multiplication, binaries);
                 return MultipleByBinaryDigit(baseMilpManager, nonBinaries[0], conjucted).ChangeDomain(domain)
                     .Operation(OperationType.Multiplication, nonBinaries.Skip(1).ToArray());
             }
+
+            return MultiplyNonBinaryIntegers(baseMilpManager, nonBinaries, domain);
+        }
+
+        private IVariable MultiplyNonBinaryIntegers(IMilpManager baseMilpManager, IVariable[] nonBinaries, Domain domain)
+        {
 
             var first = nonBinaries[0];
             var second = nonBinaries[1];
@@ -74,18 +80,18 @@ namespace MilpManager.Implementation.Operations
                      second.Domain == Domain.AnyInteger || second.Domain == Domain.AnyConstantInteger;
             first = MakePositiveIfNeeded(first);
             second = MakePositiveIfNeeded(second);
-            
-            var secondDigits = second.CompositeOperation(CompositeOperationType.UnsignedMagnitudeDecomposition).ToArray();
+
             var zero = baseMilpManager.FromConstant(0);
-            var result = zero;
+            var result = MakeLongMultiplication(baseMilpManager, domain, zero, second, first);
+            result = FixSign(baseMilpManager, nonBinaries, mightBeNegatives, zero, result);
+            result = result.ChangeDomain(domain);
 
-            for (int index = 0, power = 1; index < secondDigits.Length; ++index, power = power * 2)
-            {
-                result = result.Operation(OperationType.Addition,
-                    MultipleByBinaryDigit(baseMilpManager, first, secondDigits[index]).ChangeDomain(domain).Operation(OperationType.Multiplication, baseMilpManager.FromConstant(power))
-                );
-            }
+            return result.Operation(OperationType.Multiplication, nonBinaries.Skip(2).ToArray());
+        }
 
+        private IVariable FixSign(IMilpManager baseMilpManager, IVariable[] nonBinaries, bool mightBeNegatives, IVariable zero,
+            IVariable result)
+        {
             if (mightBeNegatives)
             {
                 var sign =
@@ -99,10 +105,24 @@ namespace MilpManager.Implementation.Operations
                             result.Operation(OperationType.Division, two))
                         .Operation(OperationType.Multiplication, two);
             }
+            return result;
+        }
 
-            result = result.ChangeDomain(domain);
+        private IVariable MakeLongMultiplication(IMilpManager baseMilpManager, Domain domain, IVariable zero, IVariable second,
+            IVariable first)
+        {
+            var result = zero;
 
-            return result.Operation(OperationType.Multiplication, nonBinaries.Skip(2).ToArray());
+            var secondDigits = second.CompositeOperation(CompositeOperationType.UnsignedMagnitudeDecomposition).ToArray();
+            for (int index = 0, power = 1; index < secondDigits.Length; ++index, power = power*2)
+            {
+                result = result.Operation(OperationType.Addition,
+                    MultipleByBinaryDigit(baseMilpManager, first, secondDigits[index])
+                        .ChangeDomain(domain)
+                        .Operation(OperationType.Multiplication, baseMilpManager.FromConstant(power))
+                    );
+            }
+            return result;
         }
 
         private IVariable MakePositiveIfNeeded(IVariable variable)
@@ -137,27 +157,21 @@ namespace MilpManager.Implementation.Operations
 
         private Domain CalculateDomain(IVariable[] arguments)
         {
+            Domain domain;
             if (MultiplyBinaryVariables(arguments))
             {
-                return arguments.Any(a => a.IsNotConstant()) ? Domain.BinaryInteger : Domain.BinaryConstantInteger;
+                domain = Domain.BinaryInteger;
             }
-
-            if (arguments.All(a => a.IsPositiveOrZero() || a.IsBinary()))
+            else if (arguments.All(a => a.IsPositiveOrZero() || a.IsBinary()))
             {
-                if (arguments.Any(a => a.IsReal()))
-                {
-                    return arguments.Any(a => a.IsNotConstant()) ? Domain.PositiveOrZeroReal : Domain.PositiveOrZeroConstantReal;
-                }
-
-                return arguments.Any(a => a.IsNotConstant()) ? Domain.PositiveOrZeroInteger : Domain.PositiveOrZeroConstantInteger;
+                domain = arguments.Any(a => a.IsReal()) ? Domain.PositiveOrZeroReal : Domain.PositiveOrZeroInteger;
             }
-
-            if (arguments.Any(a => a.IsReal()))
+            else
             {
-                return arguments.Any(a => a.IsNotConstant()) ? Domain.AnyReal : Domain.AnyConstantReal;
+                domain = arguments.Any(a => a.IsReal()) ? Domain.AnyReal : Domain.AnyInteger;
             }
 
-            return arguments.Any(a => a.IsNotConstant()) ? Domain.AnyInteger : Domain.AnyConstantInteger;
+            return arguments.All(a => a.IsConstant()) ? domain.MakeConstant() : domain;
         }
     }
 }
