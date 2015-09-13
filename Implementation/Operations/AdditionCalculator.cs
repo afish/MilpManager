@@ -21,6 +21,7 @@ namespace MilpManager.Implementation.Operations
             {
                 var result = milpManager.SumVariables(x, y, domain);
                 result.ConstantValue = x.ConstantValue + y.ConstantValue;
+                result.Expression = $"({x.Expression} + {y.Expression})";
                 return result;
             });
         }

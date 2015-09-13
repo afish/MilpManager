@@ -16,9 +16,9 @@ namespace MilpManager.Implementation.Operations
             Domain domain = arguments[0].IsReal() ? Domain.AnyReal : Domain.AnyInteger;
             domain = arguments[0].IsConstant() ? domain.MakeConstant() : domain;
 
-
             var result = milpManager.NegateVariable(arguments[0], domain);
             result.ConstantValue = -arguments[0].ConstantValue;
+            result.Expression = $"(-{arguments[0].Expression})";
             return result;
         }
     }

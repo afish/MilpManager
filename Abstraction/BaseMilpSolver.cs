@@ -8,10 +8,12 @@ namespace MilpManager.Abstraction
     {
         protected IDictionary<string, IVariable> Variables;
         protected int VariableIndex;
+        protected IDictionary<string, IVariable> Goals;
 
         protected BaseMilpSolver(int integerWidth) : base(integerWidth)
         {
             Variables = new Dictionary<string, IVariable>();
+            Goals = new Dictionary<string, IVariable>();
         }
         public virtual IVariable GetByName(string name)
         {
@@ -27,6 +29,10 @@ namespace MilpManager.Abstraction
         public override IVariable Create(string name, Domain domain)
         {
             var variable = InternalCreate(name, domain);
+            variable.Name = name;
+            variable.Domain = domain;
+            variable.MilpManager = this;
+            variable.Expression = $"({name})";
             Variables[name] = variable;
             return variable;
         }
@@ -42,6 +48,9 @@ namespace MilpManager.Abstraction
             var variable = InternalFromConstant(variableName, value, domain);
             Variables[variableName] = variable;
             variable.ConstantValue = value;
+            variable.Domain = domain;
+            variable.MilpManager = this;
+            variable.Expression = $"({value})";
             return variable;
         }
 
@@ -51,11 +60,16 @@ namespace MilpManager.Abstraction
             var variable = InternalFromConstant(variableName, value, domain);
             Variables[variableName] = variable;
             variable.ConstantValue = value;
+            variable.Domain = domain;
+            variable.MilpManager = this;
+            variable.Expression = $"({value})";
             return variable;
         }
         public override IVariable SumVariables(IVariable first, IVariable second, Domain domain)
         {
             var newVariable = InternalSumVariables(first, second, domain);
+            newVariable.Domain = domain;
+            newVariable.MilpManager = this;
             Variables[newVariable.Name] = newVariable;
             return newVariable;
         }
@@ -63,6 +77,8 @@ namespace MilpManager.Abstraction
         public override IVariable NegateVariable(IVariable variable, Domain domain)
         {
             var newVariable = InternalNegateVariable(variable, domain);
+            newVariable.Domain = domain;
+            newVariable.MilpManager = this;
             Variables[newVariable.Name] = newVariable;
             return newVariable;
         }
@@ -70,6 +86,8 @@ namespace MilpManager.Abstraction
         public override IVariable MultiplyVariableByConstant(IVariable variable, IVariable constant, Domain domain)
         {
             var newVariable = InternalMultiplyVariableByConstant(variable, constant, domain);
+            newVariable.Domain = domain;
+            newVariable.MilpManager = this;
             Variables[newVariable.Name] = newVariable;
             return newVariable;
         }
@@ -77,6 +95,8 @@ namespace MilpManager.Abstraction
         public override IVariable DivideVariableByConstant(IVariable variable, IVariable constant, Domain domain)
         {
             var newVariable = InternalDivideVariableByConstant(variable, constant, domain);
+            newVariable.Domain = domain;
+            newVariable.MilpManager = this;
             Variables[newVariable.Name] = newVariable;
             return newVariable;
         }
@@ -99,8 +119,16 @@ namespace MilpManager.Abstraction
             InternalDeserialize(deserialized.Length > 1 ? deserialized[1] : null);
         }
 
-        public abstract void AddGoal(string name, IVariable operation);
-        public abstract string GetGoalExpression(string name);
+        public virtual void AddGoal(string name, IVariable operation)
+        {
+            Goals[name] = operation;
+            InternalAddGoal(name, operation);
+        }
+
+        public virtual string GetGoalExpression(string name)
+        {
+            return Goals[name].Expression;
+        }
         public abstract void SaveModelToFile(string modelPath);
         public abstract void Solve();
         public abstract double GetValue(IVariable variable);
@@ -115,6 +143,7 @@ namespace MilpManager.Abstraction
         protected abstract object GetObjectsToSerialize();
         protected abstract void InternalDeserialize(object o);
         protected abstract void InternalLoadModelFromFile(string modelPath);
+        protected abstract void InternalAddGoal(string name, IVariable operation);
         protected virtual string NewVariableName()
         {
             return $"_v_{VariableIndex++}";
