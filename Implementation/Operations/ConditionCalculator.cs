@@ -1,4 +1,5 @@
-﻿using MilpManager.Abstraction;
+﻿using System;
+using MilpManager.Abstraction;
 
 namespace MilpManager.Implementation.Operations
 {
@@ -11,6 +12,7 @@ namespace MilpManager.Implementation.Operations
 
         public IVariable Calculate(IMilpManager milpManager, OperationType type, params IVariable[] arguments)
         {
+            if (!SupportsOperation(type, arguments)) throw new NotSupportedException($"Operation {type} with supplied variables [{string.Join(", ", (object[])arguments)}] not supported");
             return milpManager.Create(milpManager.Operation(OperationType.Addition,
                 arguments[0].Operation(OperationType.Multiplication, arguments[1]),
                 arguments[0].Operation(OperationType.BinaryNegation)

@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.IO;
 
 namespace MilpManager.Abstraction
 {
@@ -7,8 +8,8 @@ namespace MilpManager.Abstraction
         void AddGoal(string name, IVariable operation);
         string GetGoalExpression(string name);
         void SaveModelToFile(string modelPath);
-        void LoadModelFromFile(string modelPath, string solverDataPath);
-        void SaveSolverDataToFile(string solverOutput);
+        void LoadModel(string modelPath, Stream solverData);
+        void SaveSolverData(Stream solverData);
         IVariable GetByName(string name);
         IVariable TryGetByName(string name);
         void Solve();

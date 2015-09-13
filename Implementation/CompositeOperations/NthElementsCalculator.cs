@@ -14,6 +14,7 @@ namespace MilpManager.Implementation.CompositeOperations
 
         public IEnumerable<IVariable> Calculate(IMilpManager milpManager, CompositeOperationType type, ICompositeOperationParameters parameters, params IVariable[] arguments)
         {
+            if (!SupportsOperation(type, parameters, arguments)) throw new NotSupportedException($"Operation {type} with supplied variables [{string.Join(", ", (object[])arguments)}] with parameters {parameters} not supported");
             var typedParameters = parameters as NthElementsParameters;
             var variables = new List<IVariable>();
             var sums = arguments.Select(a => Tuple.Create(a, milpManager.Operation(OperationType.Addition,

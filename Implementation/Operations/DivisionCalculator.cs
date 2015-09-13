@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using MilpManager.Abstraction;
 using Domain = MilpManager.Abstraction.Domain;
 
@@ -14,6 +15,7 @@ namespace MilpManager.Implementation.Operations
 
         public IVariable Calculate(IMilpManager milpManager, OperationType type, params IVariable[] arguments)
         {
+            if (!SupportsOperation(type, arguments)) throw new NotSupportedException($"Operation {type} with supplied variables [{string.Join(", ", (object[])arguments)}] not supported");
             var domain = CalculateDomain(arguments);
             if (IsDividingByConstant(arguments))
             {

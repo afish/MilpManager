@@ -14,6 +14,7 @@ namespace MilpManager.Implementation.CompositeOperations
 
         public IEnumerable<IVariable> Calculate(IMilpManager milpManager, CompositeOperationType type, ICompositeOperationParameters parameters, params IVariable[] arguments)
         {
+            if (!SupportsOperation(type, parameters, arguments)) throw new NotSupportedException($"Operation {type} with supplied variables [{string.Join(", ", (object[])arguments)}] with parameters {parameters} not supported");
             List<Tuple<IVariable, int>> variables =
                 Enumerable.Range(0, milpManager.IntegerWidth)
                     .Select(i => Tuple.Create(milpManager.CreateAnonymous(Domain.BinaryInteger), (int)Math.Pow(2, i)))

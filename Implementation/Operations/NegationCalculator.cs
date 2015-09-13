@@ -1,4 +1,5 @@
-﻿using MilpManager.Abstraction;
+﻿using System;
+using MilpManager.Abstraction;
 
 namespace MilpManager.Implementation.Operations
 {
@@ -11,6 +12,7 @@ namespace MilpManager.Implementation.Operations
 
         public IVariable Calculate(IMilpManager milpManager, OperationType type, params IVariable[] arguments)
         {
+            if (!SupportsOperation(type, arguments)) throw new NotSupportedException($"Operation {type} with supplied variables [{string.Join(", ", (object[])arguments)}] not supported");
             Domain domain = arguments[0].IsReal() ? Domain.AnyReal : Domain.AnyInteger;
             domain = arguments[0].IsConstant() ? domain.MakeConstant() : domain;
 

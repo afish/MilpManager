@@ -70,36 +70,10 @@ namespace MilpManager.Abstraction
             {OperationType.DifferentValuesCount, new DifferentValuesCountCalculator()}
         };
 
-        public BaseMilpManager(int integerWidth)
+        protected BaseMilpManager(int integerWidth)
         {
             IntegerWidth = integerWidth;
         }
-
-        public BaseMilpManager()
-        {
-            IntegerWidth = 10;
-        }
-
-        public int IntegerWidth { get; private set; }
-
-        public int IntegerInfinity
-        {
-            get { return (int) Math.Pow(2, IntegerWidth + 4) + 1; }
-        }
-
-        public int MaximumIntegerValue
-        {
-            get { return (int) Math.Pow(2, IntegerWidth) - 1; }
-        }
-
-        public virtual IVariable Create(string name, IVariable value)
-        {
-            var variable = Create(name,
-                SelectDomainForConstant(value));
-            Set(ConstraintType.Equal, variable, value);
-            return variable;
-        }
-
         private static Domain SelectDomainForConstant(IVariable value)
         {
             return value.Domain == Domain.AnyConstantInteger
@@ -113,6 +87,26 @@ namespace MilpManager.Abstraction
                             : value.Domain == Domain.PositiveOrZeroConstantReal
                                 ? Domain.PositiveOrZeroReal
                                 : value.Domain;
+        }
+
+        public virtual int IntegerWidth { get; private set; }
+
+        public virtual int IntegerInfinity
+        {
+            get { return (int) Math.Pow(2, IntegerWidth + 4) + 1; }
+        }
+
+        public virtual int MaximumIntegerValue
+        {
+            get { return (int) Math.Pow(2, IntegerWidth) - 1; }
+        }
+
+        public virtual IVariable Create(string name, IVariable value)
+        {
+            var variable = Create(name,
+                SelectDomainForConstant(value));
+            Set(ConstraintType.Equal, variable, value);
+            return variable;
         }
 
         public virtual IVariable Create(IVariable value)
@@ -153,17 +147,16 @@ namespace MilpManager.Abstraction
                 return CompositeOperations[type].Calculate(this, type, parameters, variables);
             }
 
-            throw new NotSupportedException("Operation " + type + " with supplied variables [" +
-                                            string.Join(", ", variables.Select(v => v.Domain.ToString()).ToArray()) +
-                                            "] with parameters [" + parameters + "] not supported");
+            throw new NotSupportedException(
+                $"Operation {type} with supplied variables [{string.Join(", ", variables.Select(v => v.Domain.ToString()).ToArray())}] with parameters {parameters} not supported");
         }
 
-        public IVariable Set(CompositeConstraintType type, IVariable left, params IVariable[] variables)
+        public virtual IVariable Set(CompositeConstraintType type, IVariable left, params IVariable[] variables)
         {
             return Set(type, null, left, variables);
         }
 
-        public IVariable Set(CompositeConstraintType type, ICompositeConstraintParameters parameters, IVariable left,
+        public virtual IVariable Set(CompositeConstraintType type, ICompositeConstraintParameters parameters, IVariable left,
             params IVariable[] variables)
         {
             return CompositeConstraints[type].Set(this, type, parameters, left, variables);
