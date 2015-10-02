@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using MilpManager.Abstraction;
+﻿using MilpManager.Abstraction;
 
 namespace MilpManager.Implementation.CompositeConstraints
 {

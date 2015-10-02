@@ -3,7 +3,7 @@ using MilpManager.Abstraction;
 
 namespace MilpManager.Implementation.Constraints
 {
-    internal class CanonicalConstraintCalculator : IConstraintCalculator
+    public class CanonicalConstraintCalculator : IConstraintCalculator
     {
         public IVariable Set(IMilpManager milpManager, ConstraintType type, IVariable leftVariable,
             IVariable rightVariable)

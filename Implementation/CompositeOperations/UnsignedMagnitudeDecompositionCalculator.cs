@@ -5,7 +5,7 @@ using MilpManager.Abstraction;
 
 namespace MilpManager.Implementation.CompositeOperations
 {
-    internal class UnsignedMagnitudeDecompositionCalculator : ICompositeOperationCalculator
+    public class UnsignedMagnitudeDecompositionCalculator : ICompositeOperationCalculator
     {
         public bool SupportsOperation(CompositeOperationType type, ICompositeOperationParameters parameters, params IVariable[] arguments)
         {

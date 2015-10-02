@@ -2,7 +2,7 @@
 
 namespace MilpManager.Implementation.Constraints
 {
-    internal class MultipleOfCalculator : IConstraintCalculator
+    public class MultipleOfCalculator : IConstraintCalculator
     {
         public IVariable Set(IMilpManager baseMilpManager, ConstraintType type, IVariable leftVariable, IVariable rightVariable)
         {

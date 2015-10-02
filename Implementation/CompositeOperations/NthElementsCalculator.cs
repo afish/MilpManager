@@ -5,7 +5,7 @@ using MilpManager.Abstraction;
 
 namespace MilpManager.Implementation.CompositeOperations
 {
-    internal class NthElementsCalculator : ICompositeOperationCalculator
+    public class NthElementsCalculator : ICompositeOperationCalculator
     {
         public bool SupportsOperation(CompositeOperationType type, ICompositeOperationParameters parameters, params IVariable[] arguments)
         {

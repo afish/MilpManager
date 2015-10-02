@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using MilpManager.Abstraction;
 
 namespace MilpManager.Implementation.CompositeOperations
