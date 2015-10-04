@@ -15,6 +15,15 @@ namespace MilpManager.Implementation.Operations
         public IVariable Calculate(IMilpManager milpManager, OperationType type, params IVariable[] arguments)
         {
             if (!SupportsOperation(type, arguments)) throw new NotSupportedException($"Operation {type} with supplied variables [{string.Join(", ", (object[])arguments)}] not supported");
+            if (arguments.All(x => x.IsConstant()))
+            {
+                var sum = arguments.Select(x => x.ConstantValue.Value).Sum();
+                if (arguments.All(x => x.IsInteger()))
+                {
+                    return milpManager.FromConstant((int) sum);
+                }
+                return milpManager.FromConstant(sum);
+            }
             var domain = CalculateDomain(arguments);
 
             return arguments.Aggregate((x, y) =>

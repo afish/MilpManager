@@ -13,6 +13,14 @@ namespace MilpManager.Implementation.Operations
         public IVariable Calculate(IMilpManager milpManager, OperationType type, params IVariable[] arguments)
         {
             if (!SupportsOperation(type, arguments)) throw new NotSupportedException($"Operation {type} with supplied variables [{string.Join(", ", (object[])arguments)}] not supported");
+            if (arguments[0].IsConstant())
+            {
+                if (arguments[0].ConstantValue.Value <= 0.00001)
+                {
+                    return arguments[2];
+                }
+                return arguments[1];
+            }
             return milpManager.Create(milpManager.Operation(OperationType.Addition,
                 arguments[0].Operation(OperationType.Multiplication, arguments[1]),
                 arguments[0].Operation(OperationType.BinaryNegation)

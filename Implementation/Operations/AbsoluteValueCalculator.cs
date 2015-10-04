@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using MilpManager.Abstraction;
 
 namespace MilpManager.Implementation.Operations
@@ -12,7 +13,15 @@ namespace MilpManager.Implementation.Operations
 
         public IVariable Calculate(IMilpManager milpManager, OperationType type, params IVariable[] arguments)
         {
-            if(!SupportsOperation(type,arguments))throw new NotSupportedException($"Operation {type} with supplied variables [{string.Join(", ", (object[])arguments)}] not supported");
+            if(!SupportsOperation(type,arguments)) throw new NotSupportedException($"Operation {type} with supplied variables [{string.Join(", ", (object[])arguments)}] not supported");
+            if (arguments.All(x => x.IsConstant()))
+            {
+                if (arguments[0].IsInteger())
+                {
+                    return milpManager.FromConstant(Math.Abs((int)arguments[0].ConstantValue.Value));
+                }
+                return milpManager.FromConstant(Math.Abs(arguments[0].ConstantValue.Value));
+            }
 
             var number = arguments[0];
             var numberNegated = number.Operation(OperationType.Negation);
