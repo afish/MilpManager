@@ -15,6 +15,10 @@ namespace MilpManager.Implementation.CompositeOperations
         public IEnumerable<IVariable> Calculate(IMilpManager milpManager, CompositeOperationType type, ICompositeOperationParameters parameters, params IVariable[] arguments)
         {
             if (!SupportsOperation(type, parameters, arguments)) throw new NotSupportedException($"Operation {type} with supplied variables [{string.Join(", ", (object[])arguments)}] with parameters {parameters} not supported");
+            if (arguments.All(a => a.IsConstant()))
+            {
+                return arguments.OrderBy(a => a.ConstantValue.Value);
+            }
             var castedParameters = parameters as CountingSortParameters;
             var values = castedParameters.Values.OrderBy(x => x).Select(milpManager.FromConstant).ToArray();
             var valuesWithCounts = new Dictionary<IVariable, IVariable>();

@@ -8,12 +8,17 @@ namespace MilpManager.Implementation.Operations
     {
         public bool SupportsOperation(OperationType type, params IVariable[] arguments)
         {
-            return type == OperationType.Remainder && arguments.Length == 2 && arguments.All(x => x.IsPositiveOrZero() || x.IsBinary());
+            return type == OperationType.Remainder && arguments.Length == 2 && arguments.All(x => x.IsPositiveOrZero() || x.IsBinary()) && arguments.All(a => a.IsInteger());
         }
 
         public IVariable Calculate(IMilpManager milpManager, OperationType type, params IVariable[] arguments)
         {
             if (!SupportsOperation(type, arguments)) throw new NotSupportedException($"Operation {type} with supplied variables [{string.Join(", ", (object[])arguments)}] not supported");
+            if (arguments.All(a => a.IsConstant()))
+            {
+                var constantResult = (int) arguments[0].ConstantValue.Value%(int) arguments[1].ConstantValue.Value;
+                return milpManager.FromConstant((int)constantResult);
+            }
             IVariable numerator = arguments[0];
             IVariable denominator = arguments[1];
 

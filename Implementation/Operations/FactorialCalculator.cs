@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Runtime.Remoting.Messaging;
 using MilpManager.Abstraction;
 
 namespace MilpManager.Implementation.Operations
@@ -15,6 +16,12 @@ namespace MilpManager.Implementation.Operations
         public IVariable Calculate(IMilpManager milpManager, OperationType type, params IVariable[] arguments)
         {
             if (!SupportsOperation(type, arguments)) throw new NotSupportedException($"Operation {type} with supplied variables [{string.Join(", ", (object[])arguments)}] not supported");
+            if (arguments.All(a => a.IsConstant()))
+            {
+                var constantArgument = (int) arguments[0].ConstantValue.Value;
+                var constantResult = constantArgument == 0 ? 1 : Enumerable.Range(1, constantArgument).Aggregate((a, b) => a*b);
+                return milpManager.FromConstant(constantResult);
+            }
             var number = arguments[0];
             var one = milpManager.FromConstant(1);
             var result = one;
@@ -25,7 +32,7 @@ namespace MilpManager.Implementation.Operations
                         number.Operation(OperationType.Subtraction, milpManager.FromConstant(i))));
             }
 
-            return result;
+            return result.ChangeDomain(Domain.PositiveOrZeroInteger);
         }
 
         private int SoundBoundary(int maximumInteger)

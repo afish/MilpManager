@@ -9,12 +9,24 @@ namespace MilpManager.Implementation.Operations
         public bool SupportsOperation(OperationType type, params IVariable[] arguments)
         {
             return type == OperationType.Exponentation && arguments.Length == 2 &&
-                   arguments.All(a => (a.IsPositiveOrZero() || a.IsBinary()) && a.IsInteger());
+                   ((arguments.All(a => (a.IsPositiveOrZero() || a.IsBinary()) && a.IsInteger())) || arguments.All(a => a.IsConstant()));
         }
 
         public IVariable Calculate(IMilpManager milpManager, OperationType type, params IVariable[] arguments)
         {
             if (!SupportsOperation(type, arguments)) throw new NotSupportedException($"Operation {type} with supplied variables [{string.Join(", ", (object[])arguments)}] not supported");
+            if (arguments.All(a => a.IsConstant()))
+            {
+                var constantResult = Math.Pow(arguments[0].ConstantValue.Value, arguments[1].ConstantValue.Value);
+                if (arguments.All(a => a.IsInteger()))
+                {
+                    return milpManager.FromConstant((int) constantResult);
+                }
+                else
+                {
+                    return milpManager.FromConstant(constantResult);
+                }
+            }
             var number = arguments[0];
             var power = arguments[1];
 

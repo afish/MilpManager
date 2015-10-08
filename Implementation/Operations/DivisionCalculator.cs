@@ -16,6 +16,18 @@ namespace MilpManager.Implementation.Operations
         public IVariable Calculate(IMilpManager milpManager, OperationType type, params IVariable[] arguments)
         {
             if (!SupportsOperation(type, arguments)) throw new NotSupportedException($"Operation {type} with supplied variables [{string.Join(", ", (object[])arguments)}] not supported");
+            if (arguments.All(a => a.IsConstant()))
+            {
+                var constantResult = arguments[0].ConstantValue.Value/arguments[1].ConstantValue.Value;
+                if (arguments.All(a => a.IsInteger()))
+                {
+                    return milpManager.FromConstant((int) constantResult);
+                }
+                else
+                {
+                    return milpManager.FromConstant(constantResult);
+                }
+            }
             var domain = CalculateDomain(arguments);
             if (IsDividingByConstant(arguments))
             {
@@ -46,11 +58,23 @@ namespace MilpManager.Implementation.Operations
 
             if (IsDividingByConstant(arguments))
             {
-                if (arguments.All(a => a.IsPositiveOrZero() || a.IsBinary()))
+                if (arguments.All(a => a.IsInteger()))
                 {
-                    return Domain.PositiveOrZeroReal;
+
+                    if (arguments.All(a => a.IsPositiveOrZero() || a.IsBinary()))
+                    {
+                        return Domain.PositiveOrZeroInteger;
+                    }
+                    return Domain.AnyInteger;
                 }
-                return Domain.AnyReal;
+                else
+                {
+                    if (arguments.All(a => a.IsPositiveOrZero() || a.IsBinary()))
+                    {
+                        return Domain.PositiveOrZeroReal;
+                    }
+                    return Domain.AnyReal;
+                }
             }
 
             if (arguments.All(a => a.IsPositiveOrZero() || a.IsBinary()))

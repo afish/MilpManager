@@ -10,6 +10,7 @@ namespace MilpManager.Implementation.Operations
         public bool SupportsOperation(OperationType type, params IVariable[] arguments)
         {
             return type == OperationType.Multiplication && HasVariablesToMultiply(arguments) && (
+                MultiplyOnlyConstants(arguments) ||
                 MultiplyBinaryVariables(arguments) || 
                 MultiplyAtMostOneNonconstant(arguments) || 
                 MultiplyAnyIntegers(arguments));
@@ -18,6 +19,11 @@ namespace MilpManager.Implementation.Operations
         private static bool MultiplyAnyIntegers(IVariable[] arguments)
         {
             return arguments.All(a => a.IsInteger());
+        }
+
+        private static bool MultiplyOnlyConstants(IVariable[] arguments)
+        {
+            return arguments.All(a => a.IsConstant());
         }
 
         private static bool MultiplyAtMostOneNonconstant(IVariable[] arguments)
@@ -41,6 +47,18 @@ namespace MilpManager.Implementation.Operations
             if (arguments.Length == 1)
             {
                 return arguments[0];
+            }
+            if (MultiplyOnlyConstants(arguments))
+            {
+                var result = arguments.Select(a => a.ConstantValue.Value).Aggregate((a, b) => a*b);
+                if (arguments.All(a => a.IsInteger()))
+                {
+                    return milpManager.FromConstant((int) result);
+                }
+                else
+                {
+                    return milpManager.FromConstant(result);
+                }
             }
 
             var domain = CalculateDomain(arguments);

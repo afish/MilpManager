@@ -14,6 +14,10 @@ namespace MilpManager.Implementation.Operations
         public IVariable Calculate(IMilpManager milpManager, OperationType type, params IVariable[] arguments)
         {
             if (!SupportsOperation(type, arguments)) throw new NotSupportedException($"Operation {type} with supplied variables [{string.Join(", ", (object[])arguments)}] not supported");
+            if (arguments.All(a => a.IsConstant()))
+            {
+                return milpManager.FromConstant(arguments.Select(a => (int)a.ConstantValue).Aggregate(Math.Max));
+            }
             var variable = milpManager.CreateAnonymous(Domain.BinaryInteger);
             var sum = milpManager.Operation(OperationType.Addition, arguments);
             var argumentsCount = arguments.Length;

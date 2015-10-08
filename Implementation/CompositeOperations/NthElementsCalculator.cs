@@ -16,6 +16,11 @@ namespace MilpManager.Implementation.CompositeOperations
         {
             if (!SupportsOperation(type, parameters, arguments)) throw new NotSupportedException($"Operation {type} with supplied variables [{string.Join(", ", (object[])arguments)}] with parameters {parameters} not supported");
             var typedParameters = parameters as NthElementsParameters;
+            if (arguments.All(a => a.IsConstant()))
+            {
+                var sorted = arguments.OrderBy(a => a.ConstantValue.Value).ToArray();
+                return typedParameters.Indexes.Select(i => sorted[i]);
+            }
             var variables = new List<IVariable>();
             var sums = arguments.Select(a => Tuple.Create(a, milpManager.Operation(OperationType.Addition,
                 arguments.Where(b => a != b).Select(b => a.Operation(OperationType.IsGreaterOrEqual, b).Create()).ToArray()).Create())).ToArray();

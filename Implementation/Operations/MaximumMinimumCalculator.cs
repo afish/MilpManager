@@ -23,6 +23,19 @@ namespace MilpManager.Implementation.Operations
 
         private IVariable CalculateForTwoVariables(IMilpManager milpManager, OperationType type, IVariable[] arguments)
         {
+            if (arguments.All(a => a.IsConstant()))
+            {
+                var values = arguments.Select(a => a.ConstantValue.Value);
+                var result = type == OperationType.Maximum ? values.Max() : values.Min();
+                if (arguments.All(a => a.IsInteger()))
+                {
+                    return milpManager.FromConstant((int) result);
+                }
+                else
+                {
+                    return milpManager.FromConstant(result);
+                }
+            }
             var first = arguments[0];
             var second = arguments[1];
 

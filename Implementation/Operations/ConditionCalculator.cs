@@ -7,7 +7,8 @@ namespace MilpManager.Implementation.Operations
     {
         public bool SupportsOperation(OperationType type, params IVariable[] arguments)
         {
-            return type == OperationType.Condition &&  arguments.Length == 3 && arguments[0].IsBinary() && arguments[1].IsInteger() && arguments[2].IsInteger();
+            return type == OperationType.Condition && arguments.Length == 3 && arguments[0].IsBinary() &&
+                   ((arguments[1].IsInteger() && arguments[2].IsInteger()) || arguments[0].IsConstant());
         }
 
         public IVariable Calculate(IMilpManager milpManager, OperationType type, params IVariable[] arguments)

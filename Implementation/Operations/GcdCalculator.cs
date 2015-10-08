@@ -15,6 +15,10 @@ namespace MilpManager.Implementation.Operations
         public IVariable Calculate(IMilpManager milpManager, OperationType type, params IVariable[] arguments)
         {
             if (!SupportsOperation(type, arguments)) throw new NotSupportedException($"Operation {type} with supplied variables [{string.Join(", ", (object[])arguments)}] not supported");
+            if (arguments.All(v => v.IsConstant()))
+            {
+                return milpManager.FromConstant(Gcd((int) arguments[0].ConstantValue.Value, (int) arguments[1].ConstantValue.Value));
+            }
             var a = arguments[0];
             var b = arguments[1];
             var gcd = CalculateInternal(milpManager, a, b);
@@ -22,7 +26,7 @@ namespace MilpManager.Implementation.Operations
             return gcd;
         }
 
-        public IVariable CalculateInternal(IMilpManager milpManager, params IVariable[] arguments)
+        private IVariable CalculateInternal(IMilpManager milpManager, params IVariable[] arguments)
         {
             var a = arguments[0];
             var b = arguments[1];
@@ -38,6 +42,10 @@ namespace MilpManager.Implementation.Operations
             gcd.Set(ConstraintType.Equal, m.Operation(OperationType.Multiplication, a).Operation(OperationType.Addition, n.Operation(OperationType.Multiplication, b)));
 
             return gcd;
+        }
+        private static int Gcd(int a, int b)
+        {
+            return b == 0 ? a : Gcd(b, a % b);
         }
     }
 }
