@@ -18,7 +18,9 @@ namespace MilpManager.Implementation.Operations
             {
                 return milpManager.FromConstant((int) (1 - arguments[0].ConstantValue.Value));
             }
-            return milpManager.FromConstant(1).Operation(OperationType.Subtraction, arguments[0]).ChangeDomain(Domain.BinaryInteger).Create();
+            var result = milpManager.FromConstant(1).Operation(OperationType.Subtraction, arguments[0]).ChangeDomain(Domain.BinaryInteger).Create();
+            result.Expression = $"(!{arguments[0].Expression})";
+            return result;
         }
     }
 }

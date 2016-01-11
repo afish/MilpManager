@@ -35,6 +35,7 @@ namespace MilpManager.Implementation.Operations
                     result.Operation(OperationType.IsEqual, numberNegated))
                 .Set(ConstraintType.GreaterOrEqual, milpManager.FromConstant(1));
 
+            result.Expression = $"(|{arguments[0].Expression}|)";
             return result;
         }
     }

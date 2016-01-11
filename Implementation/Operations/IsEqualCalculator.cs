@@ -18,7 +18,9 @@ namespace MilpManager.Implementation.Operations
             {
                 return milpManager.FromConstant(arguments[0].ConstantValue.Value == arguments[1].ConstantValue.Value ? 1 : 0);
             }
-            return milpManager.Operation(OperationType.IsNotEqual, arguments).Operation(OperationType.BinaryNegation);
+            var result = milpManager.Operation(OperationType.IsNotEqual, arguments).Operation(OperationType.BinaryNegation);
+            result.Expression = $"({arguments[0].Expression} ?= {arguments[1].Expression})";
+            return result;
         }
     }
 }

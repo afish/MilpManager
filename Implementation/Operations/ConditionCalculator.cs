@@ -22,11 +22,13 @@ namespace MilpManager.Implementation.Operations
                 }
                 return arguments[1];
             }
-            return milpManager.Create(milpManager.Operation(OperationType.Addition,
+            var result = milpManager.Create(milpManager.Operation(OperationType.Addition,
                 arguments[0].Operation(OperationType.Multiplication, arguments[1]),
                 arguments[0].Operation(OperationType.BinaryNegation)
                     .Operation(OperationType.Multiplication, arguments[2])
                 ));
+            result.Expression = $"({arguments[0].Expression} ? {arguments[1].Expression} : {arguments[2].Expression})";
+            return result;
         }
     }
 }

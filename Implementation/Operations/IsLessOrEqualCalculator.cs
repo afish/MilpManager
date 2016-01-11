@@ -18,8 +18,11 @@ namespace MilpManager.Implementation.Operations
             {
                 return milpManager.FromConstant(arguments[0].ConstantValue.Value <= arguments[1].ConstantValue.Value ? 1 : 0);
             }
-            return arguments[0].Operation(OperationType.IsGreaterThan, arguments[1])
+            var result = arguments[0].Operation(OperationType.IsGreaterThan, arguments[1])
                 .Operation(OperationType.BinaryNegation);
+
+            result.Expression = $"({arguments[0].Expression} ?<= {arguments[1].Expression})";
+            return result;
         }
     }
 }

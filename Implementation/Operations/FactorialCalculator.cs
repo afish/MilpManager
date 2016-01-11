@@ -32,7 +32,9 @@ namespace MilpManager.Implementation.Operations
                         number.Operation(OperationType.Subtraction, milpManager.FromConstant(i))));
             }
 
-            return result.ChangeDomain(Domain.PositiveOrZeroInteger);
+            var finalResult = result.ChangeDomain(Domain.PositiveOrZeroInteger);
+            finalResult.Expression = $"({number.Expression}!)";
+            return finalResult;
         }
 
         private int SoundBoundary(int maximumInteger)

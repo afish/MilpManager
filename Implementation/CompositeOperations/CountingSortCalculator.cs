@@ -41,11 +41,13 @@ namespace MilpManager.Implementation.CompositeOperations
             var results = Enumerable.Range(1, arguments.Length).Select(p =>
             {
                 var position = milpManager.FromConstant(p);
-                return milpManager.Operation(OperationType.Minimum,
+                var result = milpManager.Operation(OperationType.Minimum,
                     values.Select(value =>
                         milpManager.Operation(OperationType.Condition,
                             position.Operation(OperationType.IsLessOrEqual, valuesWithCounts[value]), value, infinity)
                         ).ToArray());
+                result.Expression = $"(countingSort(position: {p}, {string.Join(",", arguments.Select(a => a.Expression).ToArray())}))";
+                return result;
             }).ToArray();
 
             return results;

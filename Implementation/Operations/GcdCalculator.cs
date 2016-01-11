@@ -41,6 +41,7 @@ namespace MilpManager.Implementation.Operations
             b.Set(ConstraintType.Equal, y.Operation(OperationType.Multiplication, gcd));
             gcd.Set(ConstraintType.Equal, m.Operation(OperationType.Multiplication, a).Operation(OperationType.Addition, n.Operation(OperationType.Multiplication, b)));
 
+            gcd.Expression = $"(gcd({a.Expression}, {b.Expression}))";
             return gcd;
         }
         private static int Gcd(int a, int b)

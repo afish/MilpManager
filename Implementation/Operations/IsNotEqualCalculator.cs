@@ -25,6 +25,7 @@ namespace MilpManager.Implementation.Operations
             var isLess = first.Operation(OperationType.IsLessThan, second);
             var disjunction = isGreater.Operation(OperationType.Disjunction, isLess);
 
+            disjunction.Expression = $"({arguments[0].Expression} ?!= {arguments[1].Expression})";
             return disjunction;
         }
     }

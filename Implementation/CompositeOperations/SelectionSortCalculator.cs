@@ -19,9 +19,14 @@ namespace MilpManager.Implementation.CompositeOperations
             {
                 return arguments.OrderBy(a => a.ConstantValue.Value);
             }
-            return milpManager.CompositeOperation(CompositeOperationType.NthElements,
+            var results = milpManager.CompositeOperation(CompositeOperationType.NthElements,
                 new NthElementsParameters {Indexes = Enumerable.Range(0, arguments.Length).ToArray()},
-                arguments);
+                arguments).ToArray();
+            for (int i = 0; i < results.Length; ++i)
+            {
+                results[i].Expression = $"(selectionSort(position: {i+1}, {string.Join(",", arguments.Select(a => a.Expression).ToArray())}))";
+            }
+            return results;
         }
     }
 }

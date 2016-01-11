@@ -49,7 +49,11 @@ namespace MilpManager.Implementation.CompositeOperations
                 variables.Select(v => v.Item1.Operation(OperationType.Multiplication, milpManager.FromConstant(v.Item2)))
                     .ToArray()).Set(ConstraintType.Equal, arguments[0]);
 
-            return variables.Select(v => v.Item1);
+            return variables.Select((v, index) => { 
+                var result = v.Item1;
+                result.Expression = $"(unsignedMagnitudeDecomposition(bit: {index}, {arguments[0].Expression}))";
+                return result;
+            });
         }
     }
 }

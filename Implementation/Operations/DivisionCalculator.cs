@@ -46,6 +46,7 @@ namespace MilpManager.Implementation.Operations
                 .Operation(OperationType.Multiplication, arguments[1])
                 .Set(ConstraintType.GreaterOrEqual, arguments[0].Operation(OperationType.Addition, one));
 
+            result.Expression = $"({arguments[0].Expression} / {arguments[1].Expression})";
             return result;
         }
 
