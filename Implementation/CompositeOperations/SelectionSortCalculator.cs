@@ -24,7 +24,7 @@ namespace MilpManager.Implementation.CompositeOperations
                 arguments).ToArray();
             for (int i = 0; i < results.Length; ++i)
             {
-                results[i].Expression = $"(selectionSort(position: {i+1}, {string.Join(",", arguments.Select(a => a.Expression).ToArray())}))";
+                results[i].Expression = $"selectionSort(position: {i+1}, {string.Join(",", arguments.Select(a => a.FullExpression()).ToArray())})";
             }
             return results;
         }

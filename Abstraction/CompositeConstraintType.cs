@@ -2,9 +2,9 @@
 {
     public enum CompositeConstraintType
     {
-        FromSet,
-        NotFromSet,
         AllDifferent,
-        NDifferent
+        FromSet,
+        NDifferent,
+        NotFromSet
     }
 }

@@ -3,11 +3,11 @@
     public enum ConstraintType
     {
         Equal,
-        LessOrEqual,
         GreaterOrEqual,
-        MultipleOf,
-        LessThan,
         GreaterThan,
+        LessOrEqual,
+        LessThan,
+        MultipleOf,
         NotEqual
     }
 }

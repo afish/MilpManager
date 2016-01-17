@@ -15,10 +15,10 @@ namespace MilpManager.Abstraction
             <ConstraintType, IConstraintCalculator>
         {
             {ConstraintType.Equal, new CanonicalConstraintCalculator()},
-            {ConstraintType.LessOrEqual, new CanonicalConstraintCalculator()},
             {ConstraintType.GreaterOrEqual, new CanonicalConstraintCalculator()},
-            {ConstraintType.LessThan, new CanonicalConstraintCalculator()},
             {ConstraintType.GreaterThan, new CanonicalConstraintCalculator()},
+            {ConstraintType.LessOrEqual, new CanonicalConstraintCalculator()},
+            {ConstraintType.LessThan, new CanonicalConstraintCalculator()},
             {ConstraintType.NotEqual, new CanonicalConstraintCalculator()},
             {ConstraintType.MultipleOf, new MultipleOfCalculator()}
         };
@@ -26,48 +26,51 @@ namespace MilpManager.Abstraction
         protected readonly IDictionary<CompositeConstraintType, ICompositeConstraintCalculator> CompositeConstraints = new Dictionary
             <CompositeConstraintType, ICompositeConstraintCalculator>
         {
-            {CompositeConstraintType.FromSet, new FromSetCalculator()},
-            {CompositeConstraintType.NotFromSet, new NotFromSetCalculator()},
             {CompositeConstraintType.AllDifferent, new AllDifferentCalculator()},
-            {CompositeConstraintType.NDifferent, new NDifferentCalculator()}
+            {CompositeConstraintType.FromSet, new FromSetCalculator()},
+            {CompositeConstraintType.NDifferent, new NDifferentCalculator()},
+            {CompositeConstraintType.NotFromSet, new NotFromSetCalculator()}
         };
 
         protected readonly IDictionary<CompositeOperationType, ICompositeOperationCalculator> CompositeOperations = new Dictionary
             <CompositeOperationType, ICompositeOperationCalculator>
         {
-            {CompositeOperationType.UnsignedMagnitudeDecomposition, new UnsignedMagnitudeDecompositionCalculator()},
-            {CompositeOperationType.SelectionSort, new SelectionSortCalculator()},
-            {CompositeOperationType.NthElements, new NthElementsCalculator()},
+            {CompositeOperationType.CountingSort, new CountingSortCalculator()},
             {CompositeOperationType.Loop, new LoopCalculator()},
-            {CompositeOperationType.CountingSort, new CountingSortCalculator()}
+            {CompositeOperationType.NthElements, new NthElementsCalculator()},
+            {CompositeOperationType.SelectionSort, new SelectionSortCalculator()},
+            {CompositeOperationType.UnsignedMagnitudeDecomposition, new UnsignedMagnitudeDecompositionCalculator()}
         };
 
         protected readonly IDictionary<OperationType, IOperationCalculator> Operations = new Dictionary
             <OperationType, IOperationCalculator>
         {
-            {OperationType.Addition, new AdditionCalculator()},
-            {OperationType.Subtraction, new SubtractionCalculator()},
-            {OperationType.Multiplication, new MultiplicationCalculator()},
-            {OperationType.Division, new DivisionCalculator()},
-            {OperationType.Conjunction, new ConjunctionCalculator()},
-            {OperationType.Disjunction, new DisjunctionCalculator()},
-            {OperationType.IsGreaterThan, new IsGreaterThanCalculator()},
-            {OperationType.IsLessThan, new IsLessThanCalculator()},
-            {OperationType.BinaryNegation, new BinaryNegationCalculator()},
-            {OperationType.IsEqual, new IsEqualCalculator()},
-            {OperationType.IsNotEqual, new IsNotEqualCalculator()},
-            {OperationType.Negation, new NegationCalculator()},
             {OperationType.AbsoluteValue, new AbsoluteValueCalculator()},
-            {OperationType.Maximum, new MaximumMinimumCalculator()},
-            {OperationType.Minimum, new MaximumMinimumCalculator()},
+            {OperationType.Addition, new AdditionCalculator()},
+            {OperationType.BinaryNegation, new BinaryNegationCalculator()},
             {OperationType.Condition, new ConditionCalculator()},
-            {OperationType.IsGreaterOrEqual, new IsGreaterOrEqualCalculator()},
-            {OperationType.IsLessOrEqual, new IsLessOrEqualCalculator()},
-            {OperationType.Remainder, new RemainderCalculator()},
-            {OperationType.GCD, new GcdCalculator()},
+            {OperationType.Conjunction, new ConjunctionCalculator()},
+            {OperationType.DifferentValuesCount, new DifferentValuesCountCalculator()},
+            {OperationType.Disjunction, new DisjunctionCalculator()},
+            {OperationType.Division, new DivisionCalculator()},
+            {OperationType.Equivalency, new EquivalencyCalculator()},
+            {OperationType.ExclusiveDisjunction, new ExclusiveDisjunctionCalculator()},
             {OperationType.Exponentation, new ExponentationCalculator()},
             {OperationType.Factorial, new FactorialCalculator()},
-            {OperationType.DifferentValuesCount, new DifferentValuesCountCalculator()}
+            {OperationType.GCD, new GcdCalculator()},
+            {OperationType.Subtraction, new SubtractionCalculator()},
+            {OperationType.MaterialImplication, new MaterialImplicationCalculator()},
+            {OperationType.Multiplication, new MultiplicationCalculator()},
+            {OperationType.IsEqual, new IsEqualCalculator()},
+            {OperationType.IsGreaterOrEqual, new IsGreaterOrEqualCalculator()},
+            {OperationType.IsGreaterThan, new IsGreaterThanCalculator()},
+            {OperationType.IsLessOrEqual, new IsLessOrEqualCalculator()},
+            {OperationType.IsLessThan, new IsLessThanCalculator()},
+            {OperationType.IsNotEqual, new IsNotEqualCalculator()},
+            {OperationType.Maximum, new MaximumMinimumCalculator()},
+            {OperationType.Minimum, new MaximumMinimumCalculator()},
+            {OperationType.Negation, new NegationCalculator()},
+            {OperationType.Remainder, new RemainderCalculator()}
         };
 
         protected BaseMilpManager(int integerWidth)

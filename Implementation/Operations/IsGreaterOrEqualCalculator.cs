@@ -20,7 +20,7 @@ namespace MilpManager.Implementation.Operations
             }
             var result = arguments[0].Operation(OperationType.IsLessThan, arguments[1])
                 .Operation(OperationType.BinaryNegation);
-            result.Expression = $"({arguments[0].Expression} ?>= {arguments[1].Expression})";
+            result.Expression = $"{arguments[0].FullExpression()} ?>= {arguments[1].FullExpression()}";
             return result;
         }
     }

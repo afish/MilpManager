@@ -46,7 +46,7 @@ namespace MilpManager.Implementation.CompositeOperations
                         milpManager.Operation(OperationType.Condition,
                             position.Operation(OperationType.IsLessOrEqual, valuesWithCounts[value]), value, infinity)
                         ).ToArray());
-                result.Expression = $"(countingSort(position: {p}, {string.Join(",", arguments.Select(a => a.Expression).ToArray())}))";
+                result.Expression = $"countingSort(position: {p}, {string.Join(", ", arguments.Select(a => a.FullExpression()).ToArray())})";
                 return result;
             }).ToArray();
 

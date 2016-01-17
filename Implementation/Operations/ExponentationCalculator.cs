@@ -53,7 +53,7 @@ namespace MilpManager.Implementation.Operations
                 )
             );
 
-            result.Expression = $"({number.Expression} ^^ {arguments[1].Expression})";
+            result.Expression = $"{number.FullExpression()} ** {arguments[1].FullExpression()}";
             return result;
         }
 

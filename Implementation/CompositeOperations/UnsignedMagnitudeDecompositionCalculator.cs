@@ -51,7 +51,7 @@ namespace MilpManager.Implementation.CompositeOperations
 
             return variables.Select((v, index) => { 
                 var result = v.Item1;
-                result.Expression = $"(unsignedMagnitudeDecomposition(bit: {index}, {arguments[0].Expression}))";
+                result.Expression = $"unsignedMagnitudeDecomposition(bit: {index}, {arguments[0].FullExpression()})";
                 return result;
             });
         }

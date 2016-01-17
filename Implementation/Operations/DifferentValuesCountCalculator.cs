@@ -30,7 +30,7 @@ namespace MilpManager.Implementation.Operations
                 total = total.Operation(OperationType.Addition, different);
             }
 
-            total.Expression = $"(differentValuesCount({string.Join(",", arguments.Select(a => a.Expression).ToArray())}))";
+            total.Expression = $"differentValuesCount({string.Join(",", arguments.Select(a => a.FullExpression()).ToArray())})";
             return total;
         }
     }

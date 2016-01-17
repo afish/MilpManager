@@ -71,7 +71,7 @@ namespace MilpManager.Implementation.Operations
                         ? milpManager.MultiplyVariableByConstant(x, y, domain)
                         : milpManager.MultiplyVariableByConstant(y, x, domain);
                     result.ConstantValue = x.ConstantValue*y.ConstantValue;
-                    result.Expression = $"({x.Expression} * {y.Expression})";
+                    result.Expression = $"{x.FullExpression()} * {y.FullExpression()}";
                     return result;
                 });
             }

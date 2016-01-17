@@ -27,7 +27,7 @@ namespace MilpManager.Implementation.Operations
                 arguments[0].Operation(OperationType.BinaryNegation)
                     .Operation(OperationType.Multiplication, arguments[2])
                 ));
-            result.Expression = $"({arguments[0].Expression} ? {arguments[1].Expression} : {arguments[2].Expression})";
+            result.Expression = $"{arguments[0].FullExpression()} ? {arguments[1].FullExpression()} : {arguments[2].FullExpression()}";
             return result;
         }
     }

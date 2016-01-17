@@ -26,7 +26,7 @@ namespace MilpManager.Implementation.Operations
                 .Set(ConstraintType.LessOrEqual, milpManager.FromConstant(0))
                 .Set(ConstraintType.GreaterOrEqual, milpManager.FromConstant(-(argumentsCount - 1)));
 
-            variable.Expression = $"({string.Join("|", arguments.Select(a => a.Expression).ToArray())})";
+            variable.Expression = $"{string.Join(" || ", arguments.Select(a => a.FullExpression()).ToArray())}";
             return variable;
         }
     }

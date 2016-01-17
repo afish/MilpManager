@@ -2,10 +2,10 @@
 {
     public enum CompositeOperationType
     {
-        UnsignedMagnitudeDecomposition,
-        SelectionSort,
-        NthElements,
+        CountingSort,
         Loop,
-        CountingSort
+        NthElements,
+        SelectionSort,
+        UnsignedMagnitudeDecomposition,
     }
 }

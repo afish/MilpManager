@@ -34,7 +34,7 @@ namespace MilpManager.Implementation.Operations
                 var finalDomain = arguments.All(x => x.IsConstant()) ? domain.MakeConstant() : domain;
                 var physicalResult = milpManager.DivideVariableByConstant(arguments[0], arguments[1], finalDomain);
                 physicalResult.ConstantValue = arguments[0].ConstantValue/arguments[1].ConstantValue;
-                physicalResult.Expression = $"({arguments[0].Expression} / {arguments[1].Expression})";
+                physicalResult.Expression = $"{arguments[0].FullExpression()} / {arguments[1].FullExpression()}";
                 return physicalResult;
             }
 
@@ -46,7 +46,7 @@ namespace MilpManager.Implementation.Operations
                 .Operation(OperationType.Multiplication, arguments[1])
                 .Set(ConstraintType.GreaterOrEqual, arguments[0].Operation(OperationType.Addition, one));
 
-            result.Expression = $"({arguments[0].Expression} / {arguments[1].Expression})";
+            result.Expression = $"{arguments[0].FullExpression()} / {arguments[1].FullExpression()}";
             return result;
         }
 

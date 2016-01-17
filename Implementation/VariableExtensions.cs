@@ -74,5 +74,10 @@ namespace MilpManager.Implementation
             return variable.Domain == Domain.PositiveOrZeroConstantInteger || variable.Domain == Domain.PositiveOrZeroConstantReal ||
                variable.Domain == Domain.PositiveOrZeroInteger || variable.Domain == Domain.PositiveOrZeroReal;
         }
+
+        public static string FullExpression(this IVariable variable)
+        {
+            return $"{variable.Name}=({variable.Expression})";
+        }
     }
 }

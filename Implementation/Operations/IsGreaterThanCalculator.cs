@@ -29,7 +29,7 @@ namespace MilpManager.Implementation.Operations
                 .Set(ConstraintType.GreaterOrEqual, milpManager.FromConstant(0))
                 .Set(ConstraintType.LessOrEqual, milpManager.FromConstant(milpManager.IntegerInfinity - 1));
 
-            result.Expression = $"({arguments[0].Expression} ?> {arguments[1].Expression})";
+            result.Expression = $"{arguments[0].FullExpression()} ?> {arguments[1].FullExpression()}";
             return result;
         }
     }

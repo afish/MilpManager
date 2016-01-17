@@ -80,6 +80,8 @@
     <Compile Include="Implementation\Operations\ConjunctionCalculator.cs" />
     <Compile Include="Implementation\Operations\DisjunctionCalculator.cs" />
     <Compile Include="Implementation\Operations\DivisionCalculator.cs" />
+    <Compile Include="Implementation\Operations\EquivalencyCalculator.cs" />
+    <Compile Include="Implementation\Operations\ExclusiveDisjunctionCalculator.cs" />
     <Compile Include="Implementation\Operations\ExponentationCalculator.cs" />
     <Compile Include="Implementation\Operations\FactorialCalculator.cs" />
     <Compile Include="Implementation\Operations\GcdCalculator.cs" />
@@ -91,6 +93,7 @@
     <Compile Include="Implementation\Operations\IsLessOrEqualCalculator.cs" />
     <Compile Include="Implementation\Operations\IsLessThanCalculator.cs" />
     <Compile Include="Implementation\Operations\IsNotEqualCalculator.cs" />
+    <Compile Include="Implementation\Operations\MaterialImplicationCalculator.cs" />
     <Compile Include="Implementation\Operations\MaximumMinimumCalculator.cs" />
     <Compile Include="Implementation\Operations\SubtractionCalculator.cs" />
     <Compile Include="Implementation\Operations\MultiplicationCalculator.cs" />
