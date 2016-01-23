@@ -4,11 +4,11 @@ using MilpManager.Abstraction;
 
 namespace MilpManager.Implementation.Operations
 {
-    public class ExponentationCalculator : IOperationCalculator
+    public class ExponentiationCalculator : IOperationCalculator
     {
         public bool SupportsOperation(OperationType type, params IVariable[] arguments)
         {
-            return type == OperationType.Exponentation && arguments.Length == 2 &&
+            return type == OperationType.Exponentiation && arguments.Length == 2 &&
                    ((arguments.All(a => (a.IsPositiveOrZero() || a.IsBinary()) && a.IsInteger())) || arguments.All(a => a.IsConstant()));
         }
 
@@ -53,7 +53,14 @@ namespace MilpManager.Implementation.Operations
                 )
             );
 
-            result.Expression = $"{number.FullExpression()} ** {arguments[1].FullExpression()}";
+            result.ConstantValue = number.ConstantValue.HasValue && power.ConstantValue.HasValue
+                ? number.ConstantValue == 0 
+                    ? 0.0
+                    : power.ConstantValue == 0
+                        ? number.ConstantValue
+                        : Math.Pow(number.ConstantValue.Value, power.ConstantValue.Value)
+                : (double?) null;
+            result.Expression = $"{number.FullExpression()} ** {power.FullExpression()}";
             return result;
         }
 

@@ -35,7 +35,8 @@ namespace MilpManager.Implementation.Operations
                     result.Operation(OperationType.IsEqual, numberNegated))
                 .Set(ConstraintType.GreaterOrEqual, milpManager.FromConstant(1));
 
-            result.Expression = $"|{arguments[0].FullExpression()}|";
+            result.ConstantValue = number.ConstantValue.HasValue ? Math.Abs(number.ConstantValue.Value) : number.ConstantValue;
+            result.Expression = $"|{number.FullExpression()}|";
             return result;
         }
     }

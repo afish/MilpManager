@@ -41,6 +41,9 @@ namespace MilpManager.Implementation.Operations
             b.Set(ConstraintType.Equal, y.Operation(OperationType.Multiplication, gcd));
             gcd.Set(ConstraintType.Equal, m.Operation(OperationType.Multiplication, a).Operation(OperationType.Addition, n.Operation(OperationType.Multiplication, b)));
 
+            gcd.ConstantValue = a.ConstantValue.HasValue && b.ConstantValue.HasValue
+                ? Gcd((int) a.ConstantValue.Value, (int) b.ConstantValue.Value)
+                : (double?) null;
             gcd.Expression = $"gcd({a.FullExpression()}, {b.FullExpression()})";
             return gcd;
         }

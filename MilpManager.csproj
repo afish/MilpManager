@@ -82,7 +82,8 @@
     <Compile Include="Implementation\Operations\DivisionCalculator.cs" />
     <Compile Include="Implementation\Operations\EquivalencyCalculator.cs" />
     <Compile Include="Implementation\Operations\ExclusiveDisjunctionCalculator.cs" />
-    <Compile Include="Implementation\Operations\ExponentationCalculator.cs" />
+
+    <Compile Include="Implementation\Operations\ExponentiationCalculator.cs" />
     <Compile Include="Implementation\Operations\FactorialCalculator.cs" />
     <Compile Include="Implementation\Operations\GcdCalculator.cs" />
     <Compile Include="Implementation\Operations\IOperationCalculator.cs" />

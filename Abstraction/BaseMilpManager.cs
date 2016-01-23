@@ -55,7 +55,7 @@ namespace MilpManager.Abstraction
             {OperationType.Division, new DivisionCalculator()},
             {OperationType.Equivalency, new EquivalencyCalculator()},
             {OperationType.ExclusiveDisjunction, new ExclusiveDisjunctionCalculator()},
-            {OperationType.Exponentation, new ExponentationCalculator()},
+            {OperationType.Exponentiation, new ExponentiationCalculator()},
             {OperationType.Factorial, new FactorialCalculator()},
             {OperationType.GCD, new GcdCalculator()},
             {OperationType.Subtraction, new SubtractionCalculator()},
@@ -106,8 +106,9 @@ namespace MilpManager.Abstraction
 
         public virtual IVariable Create(string name, IVariable value)
         {
-            var variable = Create(name,
-                SelectDomainForConstant(value));
+            var variable = Create(name,SelectDomainForConstant(value));
+            variable.ConstantValue = value.ConstantValue;
+            variable.Expression = $"{value.FullExpression()}";
             Set(ConstraintType.Equal, variable, value);
             return variable;
         }
@@ -115,6 +116,8 @@ namespace MilpManager.Abstraction
         public virtual IVariable Create(IVariable value)
         {
             var variable = CreateAnonymous(SelectDomainForConstant(value));
+            variable.ConstantValue = value.ConstantValue;
+            variable.Expression = $"{value.FullExpression()}";
             Set(ConstraintType.Equal, variable, value);
             return variable;
         }

@@ -38,8 +38,10 @@ namespace MilpManager.Implementation.CompositeOperations
                         huge
                     ));
                 }
+
+
                 var singleVariable = result.Create();
-                singleVariable.Expression = $"nthElement(position: {index}, {string.Join(",", arguments.Select(a => a.FullExpression()).ToArray())})";
+                singleVariable.Expression = $"nthElement(index: {index}, {string.Join(",", arguments.Select(a => a.FullExpression()).ToArray())})";
                 variables.Add(singleVariable);
             }
 

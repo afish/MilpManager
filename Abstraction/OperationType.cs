@@ -12,7 +12,7 @@
         Division,
         Equivalency,
         ExclusiveDisjunction,
-        Exponentation,
+        Exponentiation,
         GCD,
         Factorial,
         IsEqual,

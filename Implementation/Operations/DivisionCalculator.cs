@@ -46,6 +46,11 @@ namespace MilpManager.Implementation.Operations
                 .Operation(OperationType.Multiplication, arguments[1])
                 .Set(ConstraintType.GreaterOrEqual, arguments[0].Operation(OperationType.Addition, one));
 
+            result.ConstantValue = arguments.All(a => a.ConstantValue.HasValue) 
+                ? arguments[1].ConstantValue.Value == 0
+                    ? (double?)null
+                    : (long)arguments[0].ConstantValue.Value / (long)arguments[1].ConstantValue.Value 
+                : null;
             result.Expression = $"{arguments[0].FullExpression()} / {arguments[1].FullExpression()}";
             return result;
         }

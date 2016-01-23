@@ -29,6 +29,9 @@ namespace MilpManager.Implementation.Operations
                 .Set(ConstraintType.GreaterOrEqual, milpManager.FromConstant(0))
                 .Set(ConstraintType.LessOrEqual, milpManager.FromConstant(milpManager.IntegerInfinity - 1));
 
+            result.ConstantValue = arguments.All(a => a.ConstantValue.HasValue)
+                ? arguments[0].ConstantValue > arguments[1].ConstantValue ? 1 : 0
+                : (double?)null;
             result.Expression = $"{arguments[0].FullExpression()} ?> {arguments[1].FullExpression()}";
             return result;
         }

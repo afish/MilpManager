@@ -77,7 +77,21 @@ namespace MilpManager.Implementation
 
         public static string FullExpression(this IVariable variable)
         {
-            return $"{variable.Name}=({variable.Expression})";
+            if (variable.ConstantValue.HasValue)
+            {
+                if (variable.IsConstant())
+                {
+                    return $"{variable.Name}[{variable.ConstantValue}]{{={variable.Expression}}}";
+                }
+                else
+                {
+                    return $"{variable.Name}[{variable.ConstantValue}?{variable.Domain}]{{={variable.Expression}}}";
+                }
+            }
+            else
+            {
+                return $"{variable.Name}[{variable.Domain}]{{={variable.Expression}}}";
+            }
         }
     }
 }

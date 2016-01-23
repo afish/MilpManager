@@ -35,7 +35,8 @@ namespace MilpManager.Implementation.Operations
                 numerator.Operation(OperationType.Subtraction,
                     denominator.Operation(OperationType.Multiplication, any)));
 
-            result.Expression = $"{arguments[0].FullExpression()} % {arguments[1].FullExpression()}";
+            result.ConstantValue = numerator.ConstantValue%denominator.ConstantValue;
+            result.Expression = $"{numerator.FullExpression()} % {denominator.FullExpression()}";
             return result;
         }
     }

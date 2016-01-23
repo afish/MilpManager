@@ -32,7 +32,7 @@ namespace MilpManager.Abstraction
             variable.Name = name;
             variable.Domain = domain;
             variable.MilpManager = this;
-            variable.Expression = $"({name})";
+            variable.Expression = "";
             Variables[name] = variable;
             return variable;
         }
@@ -50,7 +50,7 @@ namespace MilpManager.Abstraction
             variable.ConstantValue = value;
             variable.Domain = domain;
             variable.MilpManager = this;
-            variable.Expression = $"({value})";
+            variable.Expression = $"{value}";
             return variable;
         }
 
@@ -62,7 +62,7 @@ namespace MilpManager.Abstraction
             variable.ConstantValue = value;
             variable.Domain = domain;
             variable.MilpManager = this;
-            variable.Expression = $"({value})";
+            variable.Expression = $"{value}";
             return variable;
         }
         public override IVariable SumVariables(IVariable first, IVariable second, Domain domain)

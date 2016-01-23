@@ -19,6 +19,10 @@ namespace MilpManager.Implementation.Operations
                 return milpManager.FromConstant(arguments[0].ConstantValue.Value < arguments[1].ConstantValue.Value ? 1 : 0);
             }
             var result = milpManager.Operation(OperationType.IsGreaterThan, arguments[1], arguments[0]);
+
+            result.ConstantValue = arguments.All(a => a.ConstantValue.HasValue)
+                ? arguments[0].ConstantValue < arguments[1].ConstantValue ? 1 : 0
+                : (double?)null;
             result.Expression = $"{arguments[0].FullExpression()} ?< {arguments[1].FullExpression()}";
             return result;
         }

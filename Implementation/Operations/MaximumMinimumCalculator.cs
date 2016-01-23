@@ -51,6 +51,12 @@ namespace MilpManager.Implementation.Operations
                 .Set(ConstraintType.Equal,
                     first.Operation(OperationType.Subtraction, second).Operation(OperationType.AbsoluteValue));
 
+            max.ConstantValue = arguments.All(a => a.ConstantValue.HasValue)
+                ? Math.Max(arguments[0].ConstantValue.Value, arguments[1].ConstantValue.Value)
+                : (double?)null;
+            min.ConstantValue = arguments.All(a => a.ConstantValue.HasValue)
+                ? Math.Min(arguments[0].ConstantValue.Value, arguments[1].ConstantValue.Value)
+                : (double?)null;
             max.Expression = $"max({arguments[0].FullExpression()}, {arguments[1].FullExpression()}";
             min.Expression = $"min({arguments[0].FullExpression()}, {arguments[1].FullExpression()}";
             return type == OperationType.Maximum ? max : min;
