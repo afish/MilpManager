@@ -47,6 +47,7 @@ namespace MilpManager.Abstraction
             var variableName = NewVariableName();
             var variable = InternalFromConstant(variableName, value, domain);
             Variables[variableName] = variable;
+            variable.Name = variableName;
             variable.ConstantValue = value;
             variable.Domain = domain;
             variable.MilpManager = this;
@@ -59,6 +60,7 @@ namespace MilpManager.Abstraction
             var variableName = NewVariableName();
             var variable = InternalFromConstant(variableName, value, domain);
             Variables[variableName] = variable;
+            variable.Name = variableName;
             variable.ConstantValue = value;
             variable.Domain = domain;
             variable.MilpManager = this;
