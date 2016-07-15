@@ -53,9 +53,11 @@
     <Compile Include="Implementation\CompositeConstraints\ICompositeConstraintCalculator.cs" />
     <Compile Include="Implementation\CompositeConstraints\NDifferentCalculator.cs" />
     <Compile Include="Implementation\CompositeConstraints\NDifferentParameters.cs" />
+    <Compile Include="Implementation\CompositeOperations\ApproximateParameters.cs" />
     <Compile Include="Implementation\CompositeOperations\CountingSortParameters.cs" />
     <Compile Include="Implementation\CompositeOperations\CountingSortCalculator.cs" />
     <Compile Include="Implementation\CompositeOperations\GenericLexicographicalCalculator.cs" />
+    <Compile Include="Implementation\CompositeOperations\ApproximateCalculator.cs" />
     <Compile Include="Implementation\CompositeOperations\LexicographicalCompareCalculator.cs" />
     <Compile Include="Implementation\CompositeOperations\LexicographicalCompareParameters.cs" />
     <Compile Include="Implementation\Constraints\CanonicalConstraintCalculator.cs" />

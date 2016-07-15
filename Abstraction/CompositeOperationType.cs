@@ -2,6 +2,7 @@
 {
     public enum CompositeOperationType
     {
+        Approximate,
         CountingSort,
         Loop,
         IsLexicographicalEqual,

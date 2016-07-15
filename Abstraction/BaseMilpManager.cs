@@ -35,6 +35,7 @@ namespace MilpManager.Abstraction
         protected IDictionary<CompositeOperationType, ICompositeOperationCalculator> CompositeOperations => new Dictionary
             <CompositeOperationType, ICompositeOperationCalculator>
         {
+            {CompositeOperationType.Approximate, new ApproximateCalculator()},
             {CompositeOperationType.CountingSort, new CountingSortCalculator()},
             {CompositeOperationType.IsLexicographicalEqual, new IsLexicographicalEqualCalculator()},
             {CompositeOperationType.IsLexicographicalGreaterOrEqual, new IsLexicographicalGreaterOrEqualCalculator()},
