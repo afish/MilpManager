@@ -13,7 +13,7 @@ namespace MilpManager.Implementation.Operations
 
         public IVariable Calculate(IMilpManager milpManager, OperationType type, params IVariable[] arguments)
         {
-            if (!SupportsOperation(type, arguments)) throw new NotSupportedException($"Operation {type} with supplied variables [{string.Join(", ", (object[])arguments)}] not supported");
+            if (!SupportsOperation(type, arguments)) throw new NotSupportedException(SolverUtilities.FormatUnsupportedMessage(type, arguments));
             if (arguments.All(a => a.IsConstant()))
             {
                 return milpManager.FromConstant((int)(arguments[0].ConstantValue.Value == 0 ? 1 : arguments[1].ConstantValue.Value));

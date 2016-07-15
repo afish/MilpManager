@@ -14,7 +14,7 @@ namespace MilpManager.Implementation.Operations
 
         public IVariable Calculate(IMilpManager milpManager, OperationType type, params IVariable[] arguments)
         {
-            if (!SupportsOperation(type, arguments)) throw new NotSupportedException($"Operation {type} with supplied variables [{string.Join(", ", (object[])arguments)}] not supported");
+            if (!SupportsOperation(type, arguments)) throw new NotSupportedException(SolverUtilities.FormatUnsupportedMessage(type, arguments));
             if (arguments.All(a => a.IsConstant()))
             {
                 var constantResult = Math.Pow(arguments[0].ConstantValue.Value, arguments[1].ConstantValue.Value);
@@ -64,7 +64,7 @@ namespace MilpManager.Implementation.Operations
             return result;
         }
 
-        private IVariable CalculatePower(IVariable number, IVariable power, IMilpManager milpManager, IVariable isEdgeCase)
+        private static IVariable CalculatePower(IVariable number, IVariable power, IMilpManager milpManager, IVariable isEdgeCase)
         {
             var digits = (int)Math.Ceiling(Math.Log(milpManager.IntegerWidth, 2.0));
 

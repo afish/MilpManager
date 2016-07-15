@@ -11,7 +11,7 @@ namespace MilpManager.Abstraction
 {
     public abstract class BaseMilpManager : IMilpManager
     {
-        protected readonly IDictionary<ConstraintType, IConstraintCalculator> Constraints = new Dictionary
+        protected IDictionary<ConstraintType, IConstraintCalculator> Constraints => new Dictionary
             <ConstraintType, IConstraintCalculator>
         {
             {ConstraintType.Equal, new CanonicalConstraintCalculator()},
@@ -23,7 +23,7 @@ namespace MilpManager.Abstraction
             {ConstraintType.MultipleOf, new MultipleOfCalculator()}
         };
 
-        protected readonly IDictionary<CompositeConstraintType, ICompositeConstraintCalculator> CompositeConstraints = new Dictionary
+        protected IDictionary<CompositeConstraintType, ICompositeConstraintCalculator> CompositeConstraints => new Dictionary
             <CompositeConstraintType, ICompositeConstraintCalculator>
         {
             {CompositeConstraintType.AllDifferent, new AllDifferentCalculator()},
@@ -32,17 +32,23 @@ namespace MilpManager.Abstraction
             {CompositeConstraintType.NotFromSet, new NotFromSetCalculator()}
         };
 
-        protected readonly IDictionary<CompositeOperationType, ICompositeOperationCalculator> CompositeOperations = new Dictionary
+        protected IDictionary<CompositeOperationType, ICompositeOperationCalculator> CompositeOperations => new Dictionary
             <CompositeOperationType, ICompositeOperationCalculator>
         {
             {CompositeOperationType.CountingSort, new CountingSortCalculator()},
+            {CompositeOperationType.IsLexicographicalEqual, new IsLexicographicalEqualCalculator()},
+            {CompositeOperationType.IsLexicographicalGreaterOrEqual, new IsLexicographicalGreaterOrEqualCalculator()},
+            {CompositeOperationType.IsLexicographicalGreaterThan, new IsLexicographicalGreaterThanCalculator()},
+            {CompositeOperationType.IsLexicographicalLessOrEqual, new IsLexicographicalLessOrEqualCalculator()},
+            {CompositeOperationType.IsLexicographicalLessThan, new IsLexicographicalLessThanCalculator()},
+            {CompositeOperationType.IsLexicographicalNotEqual, new IsLexicographicalNotEqualCalculator()},
             {CompositeOperationType.Loop, new LoopCalculator()},
             {CompositeOperationType.NthElements, new NthElementsCalculator()},
             {CompositeOperationType.SelectionSort, new SelectionSortCalculator()},
             {CompositeOperationType.UnsignedMagnitudeDecomposition, new UnsignedMagnitudeDecompositionCalculator()}
         };
 
-        protected readonly IDictionary<OperationType, IOperationCalculator> Operations = new Dictionary
+        protected IDictionary<OperationType, IOperationCalculator> Operations => new Dictionary
             <OperationType, IOperationCalculator>
         {
             {OperationType.AbsoluteValue, new AbsoluteValueCalculator()},

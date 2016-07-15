@@ -4,9 +4,9 @@ namespace MilpManager.Implementation.Constraints
 {
     public class MultipleOfCalculator : IConstraintCalculator
     {
-        public IVariable Set(IMilpManager baseMilpManager, ConstraintType type, IVariable leftVariable, IVariable rightVariable)
+        public IVariable Set(IMilpManager milpManager, ConstraintType type, IVariable leftVariable, IVariable rightVariable)
         {
-            IVariable any = baseMilpManager.CreateAnonymous(Domain.AnyInteger);
+            IVariable any = milpManager.CreateAnonymous(Domain.AnyInteger);
             leftVariable.Set(ConstraintType.Equal,any.Operation(OperationType.Multiplication, rightVariable));
 
             return leftVariable;

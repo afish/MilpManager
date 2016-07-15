@@ -43,7 +43,7 @@ namespace MilpManager.Implementation.Operations
 
         public IVariable Calculate(IMilpManager milpManager, OperationType type, params IVariable[] arguments)
         {
-            if (!SupportsOperation(type, arguments)) throw new NotSupportedException($"Operation {type} with supplied variables [{string.Join(", ", (object[])arguments)}] not supported");
+            if (!SupportsOperation(type, arguments)) throw new NotSupportedException(SolverUtilities.FormatUnsupportedMessage(type, arguments));
             if (arguments.Length == 1)
             {
                 return arguments[0];
@@ -153,7 +153,7 @@ namespace MilpManager.Implementation.Operations
             return result;
         }
 
-        private IVariable MakePositiveIfNeeded(IVariable variable)
+        private static IVariable MakePositiveIfNeeded(IVariable variable)
         {
             if (variable.Domain == Domain.AnyInteger || variable.Domain == Domain.AnyConstantInteger)
             {
@@ -183,7 +183,7 @@ namespace MilpManager.Implementation.Operations
                 );
         }
 
-        private Domain CalculateDomain(IVariable[] arguments)
+        private static Domain CalculateDomain(IVariable[] arguments)
         {
             Domain domain;
             if (MultiplyBinaryVariables(arguments))

@@ -32,13 +32,13 @@ namespace MilpManager.Implementation.CompositeOperations
                 yield break;
             }
 
-            foreach (var i in CalculateForVariable(milpManager, parameters, arguments))
+            foreach (var i in CalculateForVariable(milpManager, arguments))
             {
                 yield return i;
             }
         }
 
-        private IEnumerable<IVariable> CalculateForVariable(IMilpManager milpManager, ICompositeOperationParameters parameters, IVariable[] arguments)
+        private static IEnumerable<IVariable> CalculateForVariable(IMilpManager milpManager, IVariable[] arguments)
         {
             List<Tuple<IVariable, int>> variables =
                 Enumerable.Range(0, milpManager.IntegerWidth)

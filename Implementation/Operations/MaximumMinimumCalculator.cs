@@ -13,7 +13,7 @@ namespace MilpManager.Implementation.Operations
 
         public IVariable Calculate(IMilpManager milpManager, OperationType type, params IVariable[] arguments)
         {
-            if (!SupportsOperation(type, arguments)) throw new NotSupportedException($"Operation {type} with supplied variables [{string.Join(", ", (object[])arguments)}] not supported");
+            if (!SupportsOperation(type, arguments)) throw new NotSupportedException(SolverUtilities.FormatUnsupportedMessage(type, arguments));
             if (arguments.Length > 2)
             {
                 return arguments[0].Operation(type, milpManager.Operation(type, arguments.Skip(1).ToArray()));
@@ -21,7 +21,7 @@ namespace MilpManager.Implementation.Operations
             return CalculateForTwoVariables(milpManager, type, arguments);
         }
 
-        private IVariable CalculateForTwoVariables(IMilpManager milpManager, OperationType type, IVariable[] arguments)
+        private static IVariable CalculateForTwoVariables(IMilpManager milpManager, OperationType type, IVariable[] arguments)
         {
             if (arguments.All(a => a.IsConstant()))
             {
@@ -62,7 +62,7 @@ namespace MilpManager.Implementation.Operations
             return type == OperationType.Maximum ? max : min;
         }
 
-        private Domain CalculateDomain(params IVariable[] arguments)
+        private static Domain CalculateDomain(params IVariable[] arguments)
         {
             if (arguments.Any(a => a.IsReal()))
             {

@@ -15,7 +15,7 @@ namespace MilpManager.Implementation.Operations
 
         public IVariable Calculate(IMilpManager milpManager, OperationType type, params IVariable[] arguments)
         {
-            if (!SupportsOperation(type, arguments)) throw new NotSupportedException($"Operation {type} with supplied variables [{string.Join(", ", (object[])arguments)}] not supported");
+            if (!SupportsOperation(type, arguments)) throw new NotSupportedException(SolverUtilities.FormatUnsupportedMessage(type, arguments));
             if (arguments.All(a => a.IsConstant()))
             {
                 var constantArgument = (int) arguments[0].ConstantValue.Value;
@@ -37,7 +37,7 @@ namespace MilpManager.Implementation.Operations
             return finalResult;
         }
 
-        private int SoundBoundary(int maximumInteger)
+        private static int SoundBoundary(int maximumInteger)
         {
             int size = 2;
             int factorial = 1;

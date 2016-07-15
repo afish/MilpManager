@@ -15,7 +15,7 @@ namespace MilpManager.Implementation.Operations
 
         public IVariable Calculate(IMilpManager milpManager, OperationType type, params IVariable[] arguments)
         {
-            if (!SupportsOperation(type, arguments)) throw new NotSupportedException($"Operation {type} with supplied variables [{string.Join(", ", (object[])arguments)}] not supported");
+            if (!SupportsOperation(type, arguments)) throw new NotSupportedException(SolverUtilities.FormatUnsupportedMessage(type, arguments));
             if (arguments.All(a => a.IsConstant()))
             {
                 var constantResult = arguments[0].ConstantValue.Value/arguments[1].ConstantValue.Value;
@@ -55,7 +55,7 @@ namespace MilpManager.Implementation.Operations
             return result;
         }
 
-        private Domain CalculateDomain(IVariable[] arguments)
+        private static Domain CalculateDomain(IVariable[] arguments)
         {
             if (arguments.All(a => a.IsBinary()))
             {
