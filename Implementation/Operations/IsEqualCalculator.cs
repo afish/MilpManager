@@ -24,7 +24,7 @@ namespace MilpManager.Implementation.Operations
             result.ConstantValue = arguments.All(a => a.ConstantValue.HasValue)
                 ? arguments[0].ConstantValue == arguments[1].ConstantValue ? 1 : 0
                 : (double?) null;
-            result.Expression = $"{arguments[0].FullExpression()} ?= {arguments[1].FullExpression()}";
+            result.Expression = $"{arguments[0].FullExpression()} ?== {arguments[1].FullExpression()}";
             return result;
         }
     }
