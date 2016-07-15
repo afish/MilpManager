@@ -79,9 +79,10 @@ namespace MilpManager.Abstraction
             {OperationType.Remainder, new RemainderCalculator()}
         };
 
-        protected BaseMilpManager(int integerWidth)
+        protected BaseMilpManager(int integerWidth, double epsilon)
         {
             IntegerWidth = integerWidth;
+            Epsilon = epsilon;
         }
         private static Domain SelectDomainForConstant(IVariable value)
         {
@@ -109,6 +110,8 @@ namespace MilpManager.Abstraction
         {
             get { return (int) Math.Pow(2, IntegerWidth) - 1; }
         }
+
+        public double Epsilon { get; }
 
         public virtual IVariable Create(string name, IVariable value)
         {

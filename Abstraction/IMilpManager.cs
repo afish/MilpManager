@@ -7,6 +7,7 @@ namespace MilpManager.Abstraction
         int IntegerWidth { get; }
         int IntegerInfinity { get; }
         int MaximumIntegerValue { get; }
+        double Epsilon { get; }
         IVariable Create(string name, IVariable value);
         IVariable Create(IVariable value);
         IVariable Operation(OperationType type, params IVariable[] variables);

@@ -8,7 +8,7 @@ namespace MilpManager.Implementation.Operations
     {
         public bool SupportsOperation(OperationType type, params IVariable[] arguments)
         {
-            return type == OperationType.IsGreaterThan && arguments.Length == 2 && (arguments.All(x => x.IsInteger()) || arguments.All(x => x.IsConstant()));
+            return type == OperationType.IsGreaterThan && arguments.Length == 2;
         }
 
         public IVariable Calculate(IMilpManager milpManager, OperationType type, params IVariable[] arguments)
@@ -27,7 +27,7 @@ namespace MilpManager.Implementation.Operations
                 .Operation(OperationType.Addition,
                     result.Operation(OperationType.Multiplication, milpManager.FromConstant(milpManager.IntegerInfinity)))
                 .Set(ConstraintType.GreaterOrEqual, milpManager.FromConstant(0))
-                .Set(ConstraintType.LessOrEqual, milpManager.FromConstant(milpManager.IntegerInfinity - 1));
+                .Set(ConstraintType.LessOrEqual, milpManager.FromConstant(milpManager.IntegerInfinity - (arguments.Any(a => a.IsReal()) ? milpManager.Epsilon : 1)));
 
             result.ConstantValue = arguments.All(a => a.ConstantValue.HasValue)
                 ? arguments[0].ConstantValue > arguments[1].ConstantValue ? 1 : 0

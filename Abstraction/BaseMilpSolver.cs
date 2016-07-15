@@ -10,7 +10,7 @@ namespace MilpManager.Abstraction
         protected int VariableIndex;
         protected IDictionary<string, IVariable> Goals;
 
-        protected BaseMilpSolver(int integerWidth) : base(integerWidth)
+        protected BaseMilpSolver(int integerWidth, double epsilon) : base(integerWidth, epsilon)
         {
             Variables = new Dictionary<string, IVariable>();
             Goals = new Dictionary<string, IVariable>();
