@@ -27,9 +27,10 @@ namespace MilpManager.Abstraction
             <CompositeConstraintType, ICompositeConstraintCalculator>
         {
             {CompositeConstraintType.AllDifferent, new AllDifferentCalculator()},
-            {CompositeConstraintType.FromSet, new FromSetCalculator()},
             {CompositeConstraintType.Cardinality, new CardinalityCalculator()},
-            {CompositeConstraintType.NotFromSet, new NotFromSetCalculator()}
+            {CompositeConstraintType.FromSet, new FromSetCalculator()},
+            {CompositeConstraintType.NotFromSet, new NotFromSetCalculator()},
+            {CompositeConstraintType.SpecialOrderedSetType1, new SOS1Calculator()}
         };
 
         protected IDictionary<CompositeOperationType, ICompositeOperationCalculator> CompositeOperations => new Dictionary
