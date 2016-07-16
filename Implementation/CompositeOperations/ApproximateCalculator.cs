@@ -34,19 +34,7 @@ namespace MilpManager.Implementation.CompositeOperations
             var y = milpManager.Operation(OperationType.Addition, points.Select((point, index) => variables[index].Operation(OperationType.Multiplication, point.Item2)).ToArray());
 
             milpManager.Operation(OperationType.Addition, variables).Set(ConstraintType.Equal, one);
-
-            var nonZeroes = variables.Select(v => v.Operation(OperationType.IsGreaterThan, zero)).ToArray();
-            var nonZeroPairs = nonZeroes.Zip(nonZeroes.Skip(1), Tuple.Create).Select(pair => pair.Item1.Operation(OperationType.Disjunction, pair.Item2)).ToArray();
-            var nonZeroesCount = milpManager.Operation(OperationType.Addition, nonZeroes);
-            milpManager.Set(
-                ConstraintType.Equal,
-                milpManager.Operation(
-                    OperationType.Disjunction,
-                    nonZeroesCount.Operation(OperationType.IsEqual, one),
-                    nonZeroesCount.Operation(OperationType.IsEqual, milpManager.FromConstant(2)).Operation(OperationType.Conjunction, milpManager.Operation(OperationType.Addition, nonZeroPairs).Operation(OperationType.IsEqual, one))
-                ),
-                one
-            );
+            milpManager.Set(CompositeConstraintType.SpecialOrderedSetType2, variables.First(), variables.Skip(1).ToArray());
 
             y.ConstantValue = x.IsConstant() ? typedParameters.Function(x.ConstantValue.Value) : (double?) null;
             y.Expression = $"approximation({typedParameters.FunctionDescription})";

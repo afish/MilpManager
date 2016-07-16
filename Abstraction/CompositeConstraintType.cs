@@ -6,6 +6,7 @@
         Cardinality,
         FromSet,
         NotFromSet,
-        SpecialOrderedSetType1
+        SpecialOrderedSetType1,
+        SpecialOrderedSetType2
     }
 }
