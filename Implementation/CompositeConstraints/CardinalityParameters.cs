@@ -2,9 +2,9 @@ using MilpManager.Abstraction;
 
 namespace MilpManager.Implementation.CompositeConstraints
 {
-    public class NDifferentParameters : ICompositeConstraintParameters
+    public class CardinalityParameters : ICompositeConstraintParameters
     {
-        public NDifferentParameters(int valuesCount)
+        public CardinalityParameters(int valuesCount)
         {
             ValuesCount = valuesCount;
         }

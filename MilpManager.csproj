@@ -51,8 +51,8 @@
     <Compile Include="Abstraction\OperationType.cs" />
     <Compile Include="Abstraction\SolutionStatus.cs" />
     <Compile Include="Implementation\CompositeConstraints\ICompositeConstraintCalculator.cs" />
-    <Compile Include="Implementation\CompositeConstraints\NDifferentCalculator.cs" />
-    <Compile Include="Implementation\CompositeConstraints\NDifferentParameters.cs" />
+    <Compile Include="Implementation\CompositeConstraints\CardinalityCalculator.cs" />
+    <Compile Include="Implementation\CompositeConstraints\CardinalityParameters.cs" />
     <Compile Include="Implementation\CompositeOperations\ApproximateParameters.cs" />
     <Compile Include="Implementation\CompositeOperations\CountingSortParameters.cs" />
     <Compile Include="Implementation\CompositeOperations\CountingSortCalculator.cs" />

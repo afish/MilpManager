@@ -3,8 +3,9 @@
     public enum CompositeConstraintType
     {
         AllDifferent,
+        Cardinality,
         FromSet,
-        NDifferent,
-        NotFromSet
+        NotFromSet,
+        SpecialOrderedSetType1
     }
 }

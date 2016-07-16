@@ -28,7 +28,7 @@ namespace MilpManager.Abstraction
         {
             {CompositeConstraintType.AllDifferent, new AllDifferentCalculator()},
             {CompositeConstraintType.FromSet, new FromSetCalculator()},
-            {CompositeConstraintType.NDifferent, new NDifferentCalculator()},
+            {CompositeConstraintType.Cardinality, new CardinalityCalculator()},
             {CompositeConstraintType.NotFromSet, new NotFromSetCalculator()}
         };
 
