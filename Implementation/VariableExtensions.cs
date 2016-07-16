@@ -43,6 +43,12 @@ namespace MilpManager.Implementation
             return variable.MilpManager.Set(type, parameters, variable, right);
         }
 
+        public static IVariable MakeGoal(this IVariable variable, GoalType type, params IVariable[] variables)
+        {
+            if (variable == null) throw new ArgumentNullException(nameof(variable));
+            return variable.MilpManager.MakeGoal(type, new[] { variable }.Concat(variables).ToArray());
+        }
+
         public static IVariable ChangeDomain(this IVariable variable, Domain newDomain)
         {
             if (variable == null) throw new ArgumentNullException(nameof(variable));

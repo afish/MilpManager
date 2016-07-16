@@ -12,18 +12,11 @@ namespace MilpManager.Abstraction
         IVariable Create(IVariable value);
         IVariable Operation(OperationType type, params IVariable[] variables);
         IVariable Set(ConstraintType type, IVariable left, IVariable right);
-
-        IEnumerable<IVariable> CompositeOperation(CompositeOperationType type,
-            params IVariable[] variables);
-
-        IEnumerable<IVariable> CompositeOperation(CompositeOperationType type,
-            ICompositeOperationParameters parameters, params IVariable[] variables);
-
-        IVariable Set(CompositeConstraintType type, IVariable left,
-            params IVariable[] variables);
-
-        IVariable Set(CompositeConstraintType type, ICompositeConstraintParameters parameters, IVariable left,
-            params IVariable[] variables);
+        IEnumerable<IVariable> CompositeOperation(CompositeOperationType type, params IVariable[] variables);
+        IEnumerable<IVariable> CompositeOperation(CompositeOperationType type, ICompositeOperationParameters parameters, params IVariable[] variables);
+        IVariable Set(CompositeConstraintType type, IVariable left, params IVariable[] variables);
+        IVariable Set(CompositeConstraintType type, ICompositeConstraintParameters parameters, IVariable left, params IVariable[] variables);
+        IVariable MakeGoal(GoalType type, params IVariable[] variables);
         IVariable SumVariables(IVariable first, IVariable second, Domain domain);
         IVariable NegateVariable(IVariable variable, Domain domain);
         IVariable MultiplyVariableByConstant(IVariable variable, IVariable constant, Domain domain);

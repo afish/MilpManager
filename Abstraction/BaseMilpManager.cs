@@ -5,6 +5,7 @@ using MilpManager.Implementation;
 using MilpManager.Implementation.CompositeConstraints;
 using MilpManager.Implementation.CompositeOperations;
 using MilpManager.Implementation.Constraints;
+using MilpManager.Implementation.Goals;
 using MilpManager.Implementation.Operations;
 
 namespace MilpManager.Abstraction
@@ -80,6 +81,13 @@ namespace MilpManager.Abstraction
             {OperationType.Minimum, new MaximumMinimumCalculator()},
             {OperationType.Negation, new NegationCalculator()},
             {OperationType.Remainder, new RemainderCalculator()}
+        };
+
+        protected IDictionary<GoalType, IGoalCalculator>  Goals => new Dictionary<GoalType, IGoalCalculator>
+        {
+            {GoalType.Minimize, new MinimizeCalculator() },
+            {GoalType.MaximizeMinium, new MaximizeMinimumCalculator() },
+            {GoalType.MinimizeMaximum, new MinimizeMaximumCalculator() }
         };
 
         protected BaseMilpManager(int integerWidth, double epsilon)
@@ -178,6 +186,18 @@ namespace MilpManager.Abstraction
             params IVariable[] variables)
         {
             return CompositeConstraints[type].Set(this, type, parameters, left, variables);
+        }
+
+        public IVariable MakeGoal(GoalType type, params IVariable[] variables)
+        {
+            if (Goals[type].SupportsOperation(type, variables))
+            {
+                return Goals[type].Calculate(this, type, variables);
+            }
+
+            throw new NotSupportedException("Goal " + type + " with supplied variables [" +
+                                            string.Join(", ", variables.Select(v => v.Domain.ToString()).ToArray()) +
+                                            "] not supported");
         }
 
         public virtual void SetGreaterOrEqual(IVariable variable, IVariable bound)

@@ -40,7 +40,9 @@
     <Compile Include="Abstraction\BaseMilpManager.cs" />
     <Compile Include="Abstraction\BaseMilpSolver.cs" />
     <Compile Include="Abstraction\CompositeConstraintType.cs" />
+    <Compile Include="Abstraction\GoalType.cs" />
     <Compile Include="Abstraction\ICompositeConstraintParameters.cs" />
+    <Compile Include="Implementation\Goals\IGoalCalculator.cs" />
     <Compile Include="Abstraction\IMilpSolver.cs" />
     <Compile Include="Abstraction\ICompositeOperationParameters.cs" />
     <Compile Include="Abstraction\CompositeOperationType.cs" />
@@ -76,6 +78,9 @@
     <Compile Include="Implementation\CompositeOperations\SelectionSortCalculator.cs" />
     <Compile Include="Implementation\CompositeOperations\UnsignedMagnitudeDecompositionCalculator.cs" />
     <Compile Include="Implementation\DomainExtensions.cs" />
+    <Compile Include="Implementation\Goals\MaximizeMinimumCalculator.cs" />
+    <Compile Include="Implementation\Goals\MinimizeCalculator.cs" />
+    <Compile Include="Implementation\Goals\MinimizeMaximumCalculator.cs" />
     <Compile Include="Implementation\Operations\AbsoluteValueCalculator.cs" />
     <Compile Include="Implementation\Operations\BinaryNegationCalculator.cs" />
     <Compile Include="Implementation\Operations\ConditionCalculator.cs" />
