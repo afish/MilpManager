@@ -79,6 +79,7 @@
     <Compile Include="Implementation\CompositeOperations\UnsignedMagnitudeDecompositionCalculator.cs" />
     <Compile Include="Implementation\DomainExtensions.cs" />
     <Compile Include="Implementation\Goals\MaximizeMinimumCalculator.cs" />
+    <Compile Include="Implementation\Goals\MaximizeCalculator.cs" />
     <Compile Include="Implementation\Goals\MinimizeCalculator.cs" />
     <Compile Include="Implementation\Goals\MinimizeMaximumCalculator.cs" />
     <Compile Include="Implementation\Operations\AbsoluteValueCalculator.cs" />

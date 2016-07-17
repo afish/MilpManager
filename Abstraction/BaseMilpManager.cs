@@ -86,6 +86,7 @@ namespace MilpManager.Abstraction
         protected IDictionary<GoalType, IGoalCalculator>  Goals => new Dictionary<GoalType, IGoalCalculator>
         {
             {GoalType.Minimize, new MinimizeCalculator() },
+            {GoalType.Maximize, new MaximizeCalculator() },
             {GoalType.MaximizeMinium, new MaximizeMinimumCalculator() },
             {GoalType.MinimizeMaximum, new MinimizeMaximumCalculator() }
         };
