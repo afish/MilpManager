@@ -9,10 +9,12 @@ namespace MilpManager.Implementation.CompositeOperations
         public IEnumerable<double> Arguments { get; set; }
         public Func<double, double> Function { get; set; }
         public string FunctionDescription { get; set; }
+        public bool ArgumentMustBeOnAGrid { get; set; }
 
         public ApproximateParameters()
         {
             FunctionDescription = "<anonymous_function>";
+            ArgumentMustBeOnAGrid = false;
         }
     }
 }
