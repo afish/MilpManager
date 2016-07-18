@@ -12,7 +12,7 @@ namespace MilpManager.Implementation.CompositeConstraints
             var one = milpManager.FromConstant(1);
             var nonZeroes = new [] {leftVariable}.Concat(rightVariable).Select(v => v.Operation(OperationType.IsNotEqual, zero)).ToArray();
             var nonZeroesCount = milpManager.Operation(OperationType.Addition, nonZeroes);
-            nonZeroesCount.Set(ConstraintType.Equal, one);
+            nonZeroesCount.Set(ConstraintType.LessOrEqual, one);
 
             return leftVariable;
         }
