@@ -39,6 +39,7 @@ namespace MilpManager.Abstraction
             <CompositeOperationType, ICompositeOperationCalculator>
         {
             {CompositeOperationType.Approximate, new ApproximateCalculator()},
+            {CompositeOperationType.Approximate2D, new Approximate2DCalculator()},
             {CompositeOperationType.CountingSort, new CountingSortCalculator()},
             {CompositeOperationType.IsLexicographicalEqual, new IsLexicographicalEqualCalculator()},
             {CompositeOperationType.IsLexicographicalGreaterOrEqual, new IsLexicographicalGreaterOrEqualCalculator()},
