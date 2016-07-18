@@ -14,6 +14,10 @@ namespace MilpManager.Implementation.CompositeConstraints
 
             var nonZeroes = new [] {leftVariable}.Concat(rightVariable).Select(v => v.Operation(OperationType.IsNotEqual, zero)).ToArray();
             var nonZeroPairs = nonZeroes.Zip(nonZeroes.Skip(1), Tuple.Create).Select(pair => pair.Item1.Operation(OperationType.Conjunction, pair.Item2)).ToArray();
+            if (!nonZeroPairs.Any())
+            {
+                nonZeroPairs = new[] {milpManager.FromConstant(0)};
+            }
             var nonZeroesCount = milpManager.Operation(OperationType.Addition, nonZeroes);
             milpManager.Set(
                 ConstraintType.Equal,
