@@ -24,8 +24,7 @@ namespace MilpManager.Implementation.CompositeOperations
             {
                 return new [] { milpManager.FromConstant(typedParameters.Function(x.ConstantValue.Value))};
             }
-
-            var zero = milpManager.FromConstant(0);
+            
             var one = milpManager.FromConstant(1);
             var points = typedParameters.Arguments.Select(a => Tuple.Create(milpManager.FromConstant(a), milpManager.FromConstant(typedParameters.Function(a)))).ToArray();
             var variables = points.Select(p => milpManager.CreateAnonymous(typedParameters.ArgumentMustBeOnAGrid ? Domain.BinaryInteger : Domain.PositiveOrZeroReal).Set(ConstraintType.LessOrEqual, one)).ToArray();
