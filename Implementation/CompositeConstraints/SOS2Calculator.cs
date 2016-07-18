@@ -19,6 +19,7 @@ namespace MilpManager.Implementation.CompositeConstraints
                 ConstraintType.Equal,
                 milpManager.Operation(
                     OperationType.Disjunction,
+                    nonZeroesCount.Operation(OperationType.IsEqual, zero),
                     nonZeroesCount.Operation(OperationType.IsEqual, one),
                     milpManager.Operation(OperationType.Conjunction,
                         nonZeroesCount.Operation(OperationType.IsEqual, milpManager.FromConstant(2)), 
