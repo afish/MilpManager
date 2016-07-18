@@ -49,6 +49,15 @@ namespace MilpManager.Implementation
             return variable.MilpManager.MakeGoal(type, new[] { variable }.Concat(variables).ToArray());
         }
 
+        public static double GetValue(this IVariable variable)
+        {
+            if (!(variable.MilpManager is IMilpSolver))
+            {
+                throw new InvalidOperationException("MilpManager doesn't allow to obtain values");
+            }
+            return ((IMilpSolver) variable.MilpManager).GetValue(variable);
+        }
+
         public static IVariable ChangeDomain(this IVariable variable, Domain newDomain)
         {
             if (variable == null) throw new ArgumentNullException(nameof(variable));
