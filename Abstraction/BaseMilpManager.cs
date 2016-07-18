@@ -89,7 +89,9 @@ namespace MilpManager.Abstraction
             {GoalType.Minimize, new MinimizeCalculator() },
             {GoalType.Maximize, new MaximizeCalculator() },
             {GoalType.MaximizeMinium, new MaximizeMinimumCalculator() },
-            {GoalType.MinimizeMaximum, new MinimizeMaximumCalculator() }
+            {GoalType.MinimizeMaximum, new MinimizeMaximumCalculator() },
+            {GoalType.MaximizeMaximum, new MaximizeMaximumCalculator() },
+            {GoalType.MinimizeMinimum, new MinimizeMinimumCalculator() }
         };
 
         protected BaseMilpManager(int integerWidth, double epsilon)

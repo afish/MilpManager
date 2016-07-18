@@ -4,11 +4,11 @@ using MilpManager.Abstraction;
 
 namespace MilpManager.Implementation.Goals
 {
-    public class MaximizeMinimumCalculator : IGoalCalculator
+    public class MaximizeMaximumCalculator : IGoalCalculator
     {
         public bool SupportsOperation(GoalType type, params IVariable[] arguments)
         {
-            return type == GoalType.MaximizeMinium && arguments.Any();
+            return type == GoalType.MaximizeMaximum && arguments.Any();
         }
 
         public IVariable Calculate(IMilpManager milpManager, GoalType type, params IVariable[] arguments)
@@ -16,14 +16,12 @@ namespace MilpManager.Implementation.Goals
             if (!SupportsOperation(type, arguments)) throw new NotSupportedException(SolverUtilities.FormatUnsupportedMessage(type, arguments));
             if (arguments.All(a => a.IsConstant()))
             {
-                return milpManager.Operation(OperationType.Minimum, arguments);
+                return milpManager.Operation(OperationType.Maximum, arguments);
             }
 
             var result = milpManager.CreateAnonymous(arguments.Any(a => a.IsReal()) ? Domain.AnyReal : Domain.AnyInteger);
-            foreach (var argument in arguments)
-            {
-                result.Set(ConstraintType.LessOrEqual, argument);
-            }
+            arguments.Aggregate(milpManager.FromConstant(0),(existing, next) => existing.Operation(OperationType.Disjunction, result.Operation(OperationType.IsEqual, next)))
+                .Set(ConstraintType.Equal, milpManager.FromConstant(1));
 
             return result;
         }

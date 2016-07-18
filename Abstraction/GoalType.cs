@@ -5,6 +5,8 @@
         Minimize,
         Maximize,
         MinimizeMaximum,
-        MaximizeMinium
+        MaximizeMinium,
+        MaximizeMaximum,
+        MinimizeMinimum
     }
 }

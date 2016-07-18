@@ -80,6 +80,8 @@
     <Compile Include="Implementation\CompositeOperations\SelectionSortCalculator.cs" />
     <Compile Include="Implementation\CompositeOperations\UnsignedMagnitudeDecompositionCalculator.cs" />
     <Compile Include="Implementation\DomainExtensions.cs" />
+    <Compile Include="Implementation\Goals\MinimizeMinimumCalculator.cs" />
+    <Compile Include="Implementation\Goals\MaximizeMaximumCalculator.cs" />
     <Compile Include="Implementation\Goals\MaximizeMinimumCalculator.cs" />
     <Compile Include="Implementation\Goals\MaximizeCalculator.cs" />
     <Compile Include="Implementation\Goals\MinimizeCalculator.cs" />
