@@ -7,48 +7,100 @@ namespace MilpManager.Implementation
 {
     public static class VariableExtensions
     {
+        /// <summary>
+        /// Materializes variable in a solver with given name
+        /// </summary>
+        /// <param name="variable">Variable to materialize</param>
+        /// <param name="name">Name of materialized variable</param>
+        /// <returns>Variable representing materialized variable</returns>
         public static IVariable Create(this IVariable variable, string name)
         {
             if (variable == null) throw new ArgumentNullException(nameof(variable));
             return variable.MilpManager.Create(name, variable);
         }
 
+        /// <summary>
+        /// Materializes variable in a solver
+        /// </summary>
+        /// <param name="variable">Variable to materialize</param>
+        /// <returns>Variable representing materialized variable</returns>
         public static IVariable Create(this IVariable variable)
         {
             if (variable == null) throw new ArgumentNullException(nameof(variable));
             return variable.MilpManager.Create(variable);
         }
 
+        /// <summary>
+        /// Performs operation
+        /// </summary>
+        /// <param name="variable">Variable to perform operation on</param>
+        /// <param name="type">Operation type</param>
+        /// <param name="variables">Operation arguments</param>
+        /// <returns>Operation result</returns>
         public static IVariable Operation(this IVariable variable, OperationType type, params IVariable[] variables)
         {
             if (variable == null) throw new ArgumentNullException(nameof(variable));
             return variable.MilpManager.Operation(type, new[]{variable}.Concat(variables).ToArray());
         }
 
+        /// <summary>
+        /// Performs composite operation
+        /// </summary>
+        /// <param name="variable">Variable to perform operation on</param>
+        /// <param name="type">Operation type</param>
+        /// <param name="variables">Operation arguments</param>
+        /// <returns>Operation result</returns>
         public static IEnumerable<IVariable> CompositeOperation(this IVariable variable, CompositeOperationType type, params IVariable[] variables)
         {
             if (variable == null) throw new ArgumentNullException(nameof(variable));
             return variable.MilpManager.CompositeOperation(type, new[]{variable}.Concat(variables).ToArray());
         }
 
+        /// <summary>
+        /// Adds constraint to a solver
+        /// </summary>
+        /// <param name="variable">Variable to constrain</param>
+        /// <param name="type">Constraint type</param>
+        /// <param name="right">Right hand side of a constraint</param>
+        /// <returns>Variable passed as an argument</returns>
         public static IVariable Set(this IVariable variable, ConstraintType type, IVariable right)
         {
             if (variable == null) throw new ArgumentNullException(nameof(variable));
             return variable.MilpManager.Set(type, variable, right);
         }
 
+        /// <summary>
+        /// Adds composite constraint to a solver
+        /// </summary>
+        /// <param name="variable">Variable to constraint</param>
+        /// <param name="type">Constraint type</param>
+        /// <param name="parameters">Additional constraint parameters</param>
+        /// <param name="right">Right hand side of a constraint</param>
+        /// <returns>Variable passed as an argument</returns>
         public static IVariable Set(this IVariable variable, CompositeConstraintType type, ICompositeConstraintParameters parameters, params IVariable[] right)
         {
             if (variable == null) throw new ArgumentNullException(nameof(variable));
             return variable.MilpManager.Set(type, parameters, variable, right);
         }
 
+        /// <summary>
+        /// Makes goal
+        /// </summary>
+        /// <param name="variable">Variable to make goal</param>
+        /// <param name="type">Goal type</param>
+        /// <param name="variables">Additional variables required to make a goal</param>
+        /// <returns>Variable representing goal</returns>
         public static IVariable MakeGoal(this IVariable variable, GoalType type, params IVariable[] variables)
         {
             if (variable == null) throw new ArgumentNullException(nameof(variable));
             return variable.MilpManager.MakeGoal(type, new[] { variable }.Concat(variables).ToArray());
         }
 
+        /// <summary>
+        /// Returns value of a variable in solved model
+        /// </summary>
+        /// <param name="variable">Variable to obtain value</param>
+        /// <returns>Value of a variable</returns>
         public static double GetValue(this IVariable variable)
         {
             if (!(variable.MilpManager is IMilpSolver))
@@ -58,6 +110,12 @@ namespace MilpManager.Implementation
             return ((IMilpSolver) variable.MilpManager).GetValue(variable);
         }
 
+        /// <summary>
+        /// Creates new variable equal to passed variable and with adjusted domain
+        /// </summary>
+        /// <param name="variable">Original variable</param>
+        /// <param name="newDomain">Domain of a new variable</param>
+        /// <returns>Variable with modified domain</returns>
         public static IVariable ChangeDomain(this IVariable variable, Domain newDomain)
         {
             if (variable == null) throw new ArgumentNullException(nameof(variable));
@@ -67,6 +125,11 @@ namespace MilpManager.Implementation
             return newVariable;
         }
 
+        /// <summary>
+        /// Indicates whether variable's domain represents real number
+        /// </summary>
+        /// <param name="variable">Variable to examine</param>
+        /// <returns>True when variable's domain represents real number</returns>
         public static bool IsReal(this IVariable variable)
         {
             if (variable == null) throw new ArgumentNullException(nameof(variable));
@@ -74,12 +137,22 @@ namespace MilpManager.Implementation
                variable.Domain == Domain.PositiveOrZeroConstantReal || variable.Domain == Domain.PositiveOrZeroReal;
         }
 
+        /// <summary>
+        /// Indicates whether variable's domain represents integer value
+        /// </summary>
+        /// <param name="variable">Variable to examine</param>
+        /// <returns>True when variable's domain represents integer value</returns>
         public static bool IsInteger(this IVariable variable)
         {
             if (variable == null) throw new ArgumentNullException(nameof(variable));
             return !variable.IsReal();
         }
 
+        /// <summary>
+        /// Indicates whether variable's domain represents constant value
+        /// </summary>
+        /// <param name="variable">Variable to examine</param>
+        /// <returns>True when variable's domain represents constant value</returns>
         public static bool IsConstant(this IVariable variable)
         {
             if (variable == null) throw new ArgumentNullException(nameof(variable));
@@ -88,17 +161,32 @@ namespace MilpManager.Implementation
                variable.Domain == Domain.PositiveOrZeroConstantReal;
         }
 
+        /// <summary>
+        /// Indicates whether variable's domain represents non-constant value
+        /// </summary>
+        /// <param name="variable">Variable to examine</param>
+        /// <returns>True when variable's domain represents non-constant value</returns>
         public static bool IsNotConstant(this IVariable variable)
         {
             return !variable.IsConstant();
         }
 
+        /// <summary>
+        /// Indicates whether variable's domain represents binary value
+        /// </summary>
+        /// <param name="variable">Variable to examine</param>
+        /// <returns>True when variable's domain represent's binary value</returns>
         public static bool IsBinary(this IVariable variable)
         {
             if (variable == null) throw new ArgumentNullException(nameof(variable));
             return variable.Domain == Domain.BinaryConstantInteger || variable.Domain == Domain.BinaryInteger;
         }
 
+        /// <summary>
+        /// Indicates whether variable's domain represents positive or zero value (and not binary one)
+        /// </summary>
+        /// <param name="variable">Variable to examine</param>
+        /// <returns>True when variable's domain represents positive or zero value (and not binary one)</returns>
         public static bool IsPositiveOrZero(this IVariable variable)
         {
             if (variable == null) throw new ArgumentNullException(nameof(variable));
@@ -106,6 +194,11 @@ namespace MilpManager.Implementation
                variable.Domain == Domain.PositiveOrZeroInteger || variable.Domain == Domain.PositiveOrZeroReal;
         }
 
+        /// <summary>
+        /// Textual representation of a variable
+        /// </summary>
+        /// <param name="variable">Variable to obtain representation</param>
+        /// <returns>Textual representation of a variable</returns>
         public static string FullExpression(this IVariable variable)
         {
             if (variable == null) throw new ArgumentNullException(nameof(variable));
@@ -126,16 +219,32 @@ namespace MilpManager.Implementation
             }
         }
 
+        /// <summary>
+        /// Wraps variable into wrapper with overloaded operators
+        /// </summary>
+        /// <param name="variable">Variable to wrap</param>
+        /// <returns>Wrapped variable</returns>
         public static VariableWrapper Wrap(this IVariable variable)
         {
             return new VariableWrapper(variable);
         }
 
+        /// <summary>
+        /// Adds constraint to make variable equal to one
+        /// </summary>
+        /// <param name="variable">Variable to constrain</param>
+        /// <returns>Result of constraint addition</returns>
         public static IVariable MakeTrue(this IVariable variable)
         {
             return variable.Set(ConstraintType.Equal, variable.MilpManager.FromConstant(1));
         }
 
+
+        /// <summary>
+        /// Adds constraint to make variable equal to zero
+        /// </summary>
+        /// <param name="variable">Variable to constrain</param>
+        /// <returns>Result of constraint addition</returns>
         public static IVariable MakeFalse(this IVariable variable)
         {
             return variable.Set(ConstraintType.Equal, variable.MilpManager.FromConstant(0));

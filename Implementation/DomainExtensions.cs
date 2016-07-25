@@ -5,6 +5,11 @@ namespace MilpManager.Implementation
 {
     public static class DomainExtensions
     {
+        /// <summary>
+        /// Returns constant counterpart of a domain
+        /// </summary>
+        /// <param name="domain"></param>
+        /// <returns>Constant counterpart of a domain</returns>
         public static Domain MakeConstant(this Domain domain)
         {
             switch (domain)
@@ -29,6 +34,12 @@ namespace MilpManager.Implementation
                     throw new ArgumentOutOfRangeException(nameof(domain), domain, null);
             }
         }
+
+        /// <summary>
+        /// Returns non-constant counterpart of a domain
+        /// </summary>
+        /// <param name="domain"></param>
+        /// <returns>Non-constant counterpart of a domain</returns>
         public static Domain MakeNonConstant(this Domain domain)
         {
             switch (domain)
