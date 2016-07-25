@@ -125,5 +125,20 @@ namespace MilpManager.Implementation
                 return $"{variable.Name}[{variable.Domain}]{{={variable.Expression}}}";
             }
         }
+
+        public static VariableWrapper Wrap(this IVariable variable)
+        {
+            return new VariableWrapper(variable);
+        }
+
+        public static IVariable MakeTrue(this IVariable variable)
+        {
+            return variable.Set(ConstraintType.Equal, variable.MilpManager.FromConstant(1));
+        }
+
+        public static IVariable MakeFalse(this IVariable variable)
+        {
+            return variable.Set(ConstraintType.Equal, variable.MilpManager.FromConstant(0));
+        }
     }
 }
