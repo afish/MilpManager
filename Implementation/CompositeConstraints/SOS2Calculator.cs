@@ -1,5 +1,4 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using MilpManager.Abstraction;
 
 namespace MilpManager.Implementation.CompositeConstraints
@@ -12,26 +11,19 @@ namespace MilpManager.Implementation.CompositeConstraints
             var zero = milpManager.FromConstant(0);
             var one = milpManager.FromConstant(1);
 
-            var nonZeroes = new [] {leftVariable}.Concat(rightVariable).Select(v => v.Operation(OperationType.IsNotEqual, zero)).ToArray();
-            var nonZeroPairs = nonZeroes.Zip(nonZeroes.Skip(1), Tuple.Create).Select(pair => pair.Item1.Operation(OperationType.Conjunction, pair.Item2)).ToArray();
-            if (!nonZeroPairs.Any())
+
+            var allVariables = new[] { leftVariable }.Concat(rightVariable).ToArray();
+            var boundaryVariables = allVariables.Select(v => milpManager.CreateAnonymous(Domain.BinaryInteger)).ToArray();
+            milpManager.Operation(OperationType.Addition, boundaryVariables).Set(ConstraintType.LessOrEqual, one);
+            for (int i = 0; i < allVariables.Length; ++i)
             {
-                nonZeroPairs = new[] {milpManager.FromConstant(0)};
+                IVariable sum = boundaryVariables[i];
+                if (i > 0)
+                {
+                    sum = sum.Operation(OperationType.Addition, boundaryVariables[i - 1]);
+                }
+                allVariables[i].Set(ConstraintType.LessOrEqual, sum);
             }
-            var nonZeroesCount = milpManager.Operation(OperationType.Addition, nonZeroes);
-            milpManager.Set(
-                ConstraintType.Equal,
-                milpManager.Operation(
-                    OperationType.Disjunction,
-                    nonZeroesCount.Operation(OperationType.IsEqual, zero),
-                    nonZeroesCount.Operation(OperationType.IsEqual, one),
-                    milpManager.Operation(OperationType.Conjunction,
-                        nonZeroesCount.Operation(OperationType.IsEqual, milpManager.FromConstant(2)), 
-                        milpManager.Operation(OperationType.Addition, nonZeroPairs).Operation(OperationType.IsEqual, one)
-                    )
-                ),
-                one
-            );
 
             return leftVariable;
         }
