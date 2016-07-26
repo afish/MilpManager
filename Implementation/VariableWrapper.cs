@@ -1,4 +1,5 @@
-﻿using MilpManager.Abstraction;
+﻿using System;
+using MilpManager.Abstraction;
 
 namespace MilpManager.Implementation
 {
@@ -130,6 +131,80 @@ namespace MilpManager.Implementation
         public static VariableWrapper operator &(VariableWrapper a, IVariable b)
         {
             return a.Wrapped.Operation(OperationType.Conjunction, b).Wrap();
+        }
+        
+        /// <summary>
+        /// Performs LT comparison
+        /// </summary>
+        /// <param name="a">First argument</param>
+        /// <param name="b">Second argument</param>
+        /// <returns>Result of LT comparison</returns>
+        public static VariableWrapper operator <(VariableWrapper a, IVariable b)
+        {
+            return a.Wrapped.Operation(OperationType.IsLessThan, b).Wrap();
+        }
+
+        /// <summary>
+        /// Performs GT comparison
+        /// </summary>
+        /// <param name="a">First argument</param>
+        /// <param name="b">Second argument</param>
+        /// <returns>Result of GT comparison</returns>
+        public static VariableWrapper operator >(VariableWrapper a, IVariable b)
+        {
+            return a.Wrapped.Operation(OperationType.IsGreaterThan, b).Wrap();
+        }
+
+        /// <summary>
+        /// Performs LE comparison
+        /// </summary>
+        /// <param name="a">First argument</param>
+        /// <param name="b">Second argument</param>
+        /// <returns>Result of LE comparison</returns>
+        public static VariableWrapper operator <=(VariableWrapper a, IVariable b)
+        {
+            return a.Wrapped.Operation(OperationType.IsLessOrEqual, b).Wrap();
+        }
+
+        /// <summary>
+        /// Performs GE comparison
+        /// </summary>
+        /// <param name="a">First argument</param>
+        /// <param name="b">Second argument</param>
+        /// <returns>Result of GE comparison</returns>
+        public static VariableWrapper operator >=(VariableWrapper a, IVariable b)
+        {
+            return a.Wrapped.Operation(OperationType.IsGreaterOrEqual, b).Wrap();
+        }
+
+        /// <summary>
+        /// Performs EQ comparison
+        /// </summary>
+        /// <param name="a">First argument</param>
+        /// <param name="b">Second argument</param>
+        /// <returns>Result of EQ comparison</returns>
+        public static VariableWrapper operator ==(VariableWrapper a, IVariable b)
+        {
+            if ((object) a == null)
+            {
+                throw new ArgumentException(nameof(a));
+            }
+            return a.Wrapped.Operation(OperationType.IsEqual, b).Wrap();
+        }
+
+        /// <summary>
+        /// Performs NEQ comparison
+        /// </summary>
+        /// <param name="a">First argument</param>
+        /// <param name="b">Second argument</param>
+        /// <returns>Result of NEQ comparison</returns>
+        public static VariableWrapper operator !=(VariableWrapper a, IVariable b)
+        {
+            if ((object)a == null)
+            {
+                throw new ArgumentException(nameof(a));
+            }
+            return a.Wrapped.Operation(OperationType.IsNotEqual, b).Wrap();
         }
     }
 }
