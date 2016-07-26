@@ -16,7 +16,7 @@ namespace MilpManager.Implementation.CompositeOperations
         public IEnumerable<IVariable> Calculate(IMilpManager milpManager, CompositeOperationType type, ICompositeOperationParameters parameters,
             params IVariable[] arguments)
         {
-            if (!SupportsOperation(type, parameters, arguments)) throw new NotSupportedException($"Operation {type} with supplied variables [{string.Join(", ", (object[])arguments)}] with parameters {parameters} not supported");
+            if (!SupportsOperation(type, parameters, arguments)) throw new NotSupportedException(SolverUtilities.FormatUnsupportedMessage(type, parameters, arguments));
             var typedParameters = parameters as Approximate2DParameters;
             var x = arguments.First();
             var y = arguments.Skip(1).First();

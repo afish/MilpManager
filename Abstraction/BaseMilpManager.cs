@@ -99,38 +99,18 @@ namespace MilpManager.Abstraction
             IntegerWidth = integerWidth;
             Epsilon = epsilon;
         }
-        private static Domain SelectDomainForConstant(IVariable value)
-        {
-            return value.Domain == Domain.AnyConstantInteger
-                ? Domain.AnyInteger
-                : value.Domain == Domain.AnyConstantReal
-                    ? Domain.AnyReal
-                    : value.Domain == Domain.BinaryConstantInteger
-                        ? Domain.BinaryInteger
-                        : value.Domain == Domain.PositiveOrZeroConstantInteger
-                            ? Domain.PositiveOrZeroInteger
-                            : value.Domain == Domain.PositiveOrZeroConstantReal
-                                ? Domain.PositiveOrZeroReal
-                                : value.Domain;
-        }
 
         public virtual int IntegerWidth { get; private set; }
 
-        public virtual int IntegerInfinity
-        {
-            get { return (int) Math.Pow(2, IntegerWidth + 4) + 1; }
-        }
+        public virtual int IntegerInfinity => (int) Math.Pow(2, IntegerWidth + 4) + 1;
 
-        public virtual int MaximumIntegerValue
-        {
-            get { return (int) Math.Pow(2, IntegerWidth) - 1; }
-        }
+        public virtual int MaximumIntegerValue => (int) Math.Pow(2, IntegerWidth) - 1;
 
         public double Epsilon { get; }
 
         public virtual IVariable Create(string name, IVariable value)
         {
-            var variable = Create(name,SelectDomainForConstant(value));
+            var variable = Create(name, value.Domain.MakeNonConstant());
             variable.ConstantValue = value.ConstantValue;
             variable.Expression = $"{value.FullExpression()}";
             Set(ConstraintType.Equal, variable, value);
@@ -139,7 +119,7 @@ namespace MilpManager.Abstraction
 
         public virtual IVariable Create(IVariable value)
         {
-            var variable = CreateAnonymous(SelectDomainForConstant(value));
+            var variable = CreateAnonymous(value.Domain.MakeNonConstant());
             variable.ConstantValue = value.ConstantValue;
             variable.Expression = $"{value.FullExpression()}";
             Set(ConstraintType.Equal, variable, value);
@@ -153,9 +133,7 @@ namespace MilpManager.Abstraction
                 return Operations[type].Calculate(this, type, variables);
             }
 
-            throw new NotSupportedException("Operation " + type + " with supplied variables [" +
-                                            string.Join(", ", variables.Select(v => v.Domain.ToString()).ToArray()) +
-                                            "] not supported");
+            throw new NotSupportedException(SolverUtilities.FormatUnsupportedMessage(type, variables));
         }
 
         public virtual IVariable Set(ConstraintType type, IVariable left, IVariable right)
@@ -177,8 +155,7 @@ namespace MilpManager.Abstraction
                 return CompositeOperations[type].Calculate(this, type, parameters, variables);
             }
 
-            throw new NotSupportedException(
-                $"Operation {type} with supplied variables [{string.Join(", ", variables.Select(v => v.Domain.ToString()).ToArray())}] with parameters {parameters} not supported");
+            throw new NotSupportedException(SolverUtilities.FormatUnsupportedMessage(type, parameters, variables));
         }
 
         public virtual IVariable Set(CompositeConstraintType type, IVariable left, params IVariable[] variables)
@@ -199,9 +176,7 @@ namespace MilpManager.Abstraction
                 return Goals[type].Calculate(this, type, variables);
             }
 
-            throw new NotSupportedException("Goal " + type + " with supplied variables [" +
-                                            string.Join(", ", variables.Select(v => v.Domain.ToString()).ToArray()) +
-                                            "] not supported");
+            throw new NotSupportedException(SolverUtilities.FormatUnsupportedMessage(type, variables));
         }
 
         public virtual void SetGreaterOrEqual(IVariable variable, IVariable bound)
