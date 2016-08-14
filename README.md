@@ -1,13 +1,13 @@
 # MilpManager
-Library for Mixed Integer Linear Programming. It contains abstraction for pluggable solvers and implementation of common mathematical functions.
+Library for Mixed Integer Linear Programming. It contains abstraction for pluggable solvers, and implementation of common mathematical functions.
 
-# What is it
+# What is MilpManager
 This library simplifies the process of creating ILP programs. It gives a fluent interface to define variables, constraints, and cost function.
 
-# How to use it
+# How to use MilpManager
 This package contains only implementation of common mathematical functions (e.g., max, min, multiplication, sorting etc.). In order to create an actual problem and solve it, you need to use concrete implementation (like CplexMilpSolver https://github.com/afish/CplexMilpSolver).
 
-## Some examples
+## Examples
 First you need to create solver. Let's use CPLEX implementation:
 ```
 var solver = new CplexMilpSolver(10);
