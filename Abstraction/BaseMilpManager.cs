@@ -83,7 +83,7 @@ namespace MilpManager.Abstraction
             {OperationType.Remainder, new RemainderCalculator()}
         };
 
-        protected IDictionary<GoalType, IGoalCalculator>  Goals => new Dictionary<GoalType, IGoalCalculator>
+        protected IDictionary<GoalType, IGoalCalculator>  GoalCalculators => new Dictionary<GoalType, IGoalCalculator>
         {
             {GoalType.Minimize, new MinimizeCalculator() },
             {GoalType.Maximize, new MaximizeCalculator() },
@@ -170,9 +170,9 @@ namespace MilpManager.Abstraction
 
         public IVariable MakeGoal(GoalType type, params IVariable[] variables)
         {
-            if (Goals[type].SupportsOperation(type, variables))
+            if (GoalCalculators[type].SupportsOperation(type, variables))
             {
-                return Goals[type].Calculate(this, type, variables);
+                return GoalCalculators[type].Calculate(this, type, variables);
             }
 
             throw new NotSupportedException(SolverUtilities.FormatUnsupportedMessage(type, variables));
