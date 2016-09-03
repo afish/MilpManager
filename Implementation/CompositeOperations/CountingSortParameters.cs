@@ -5,6 +5,6 @@ namespace MilpManager.Implementation.CompositeOperations
 {
     public class CountingSortParameters : ICompositeOperationParameters
     {
-         public IEnumerable<int> Values { get; set; }
+         public IVariable[] Values { get; set; }
     }
 }

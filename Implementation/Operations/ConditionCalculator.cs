@@ -31,6 +31,9 @@ namespace MilpManager.Implementation.Operations
                 falseBranch
                 ).ChangeDomain(CalculateDomain(trueBranch, falseBranch)));
             result.Expression = $"{arguments[0].FullExpression()} ? {arguments[1].FullExpression()} : {arguments[2].FullExpression()}";
+            result.ConstantValue = !arguments[0].ConstantValue.HasValue
+                ? null
+                : (int) arguments[0].ConstantValue.Value == 1 ? trueBranch.ConstantValue : falseBranch.ConstantValue;
             return result;
         }
 

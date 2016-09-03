@@ -195,6 +195,17 @@ namespace MilpManager.Implementation
         }
 
         /// <summary>
+        /// Indicates whether variable's domain represents non-negative value (binary || positive or zero)
+        /// </summary>
+        /// <param name="variable">Variable to examine</param>
+        /// <returns>True when variable's domain represents non-negative value (binary || positive or zero)</returns>
+        public static bool IsNonNegative(this IVariable variable)
+        {
+            if (variable == null) throw new ArgumentNullException(nameof(variable));
+            return variable.IsPositiveOrZero() || variable.IsBinary();
+        }
+
+        /// <summary>
         /// Textual representation of a variable
         /// </summary>
         /// <param name="variable">Variable to obtain representation</param>

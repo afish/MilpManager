@@ -9,7 +9,7 @@ namespace MilpManager.Implementation.CompositeOperations
     {
         public bool SupportsOperation(CompositeOperationType type, ICompositeOperationParameters parameters, params IVariable[] arguments)
         {
-            return type == CompositeOperationType.CountingSort && arguments.All(a => a.IsInteger());
+            return type == CompositeOperationType.CountingSort && arguments.Any() && parameters is CountingSortParameters;
         }
 
         public IEnumerable<IVariable> Calculate(IMilpManager milpManager, CompositeOperationType type, ICompositeOperationParameters parameters, params IVariable[] arguments)
@@ -20,7 +20,7 @@ namespace MilpManager.Implementation.CompositeOperations
                 return arguments.OrderBy(a => a.ConstantValue.Value);
             }
             var castedParameters = parameters as CountingSortParameters;
-            var values = castedParameters.Values.OrderBy(x => x).Select(milpManager.FromConstant).ToArray();
+            var values = castedParameters.Values;
             var valuesWithCounts = new Dictionary<IVariable, IVariable>();
             var zero = milpManager.FromConstant(0);
             foreach (var value in values)

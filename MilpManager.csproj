@@ -82,6 +82,10 @@
     <Compile Include="Abstraction\ICompositeConstraintParameters.cs" />
     <Compile Include="Implementation\CompositeOperations\Approximate2DCalculator.cs" />
     <Compile Include="Implementation\CompositeOperations\Approximate2DParameters.cs" />
+    <Compile Include="Implementation\CompositeOperations\ArraySetCalculator.cs" />
+    <Compile Include="Implementation\CompositeOperations\ArrayGetCalculator.cs" />
+    <Compile Include="Implementation\CompositeOperations\ArraySetParameters.cs" />
+    <Compile Include="Implementation\CompositeOperations\ArrayGetParameters.cs" />
     <Compile Include="Implementation\Goals\IGoalCalculator.cs" />
     <Compile Include="Abstraction\IMilpSolver.cs" />
     <Compile Include="Abstraction\ICompositeOperationParameters.cs" />

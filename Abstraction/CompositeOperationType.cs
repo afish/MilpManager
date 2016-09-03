@@ -4,6 +4,8 @@
     {
         Approximate,
         Approximate2D,
+        ArrayGet,
+        ArraySet,
         CountingSort,
         Loop,
         IsLexicographicalEqual,

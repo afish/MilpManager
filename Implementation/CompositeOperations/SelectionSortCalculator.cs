@@ -9,7 +9,7 @@ namespace MilpManager.Implementation.CompositeOperations
     {
         public bool SupportsOperation(CompositeOperationType type, ICompositeOperationParameters parameters, params IVariable[] arguments)
         {
-            return type == CompositeOperationType.SelectionSort && arguments.All(a => a.IsInteger());
+            return type == CompositeOperationType.SelectionSort && arguments.Any();
         }
 
         public IEnumerable<IVariable> Calculate(IMilpManager milpManager, CompositeOperationType type, ICompositeOperationParameters parameters, params IVariable[] arguments)
@@ -20,7 +20,7 @@ namespace MilpManager.Implementation.CompositeOperations
                 return arguments.OrderBy(a => a.ConstantValue.Value);
             }
             var results = milpManager.CompositeOperation(CompositeOperationType.NthElements,
-                new NthElementsParameters {Indexes = Enumerable.Range(0, arguments.Length).ToArray()},
+                new NthElementsParameters {Indexes = Enumerable.Range(0, arguments.Length).Select(milpManager.FromConstant).ToArray()},
                 arguments).ToArray();
             for (int i = 0; i < results.Length; ++i)
             {

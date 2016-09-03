@@ -4,6 +4,6 @@ namespace MilpManager.Implementation.CompositeOperations
 {
     public class NthElementsParameters : ICompositeOperationParameters
     {
-        public int[] Indexes { get; set; }
+        public IVariable[] Indexes { get; set; }
     }
 }
