@@ -156,7 +156,6 @@
     <Compile Include="Implementation\Operations\RemainderCalculator.cs" />
     <Compile Include="Implementation\SolverUtilities.cs" />
     <Compile Include="Implementation\VariableExtensions.cs" />
-    <Compile Include="Implementation\VariableWrapper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

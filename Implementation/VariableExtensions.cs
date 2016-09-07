@@ -231,16 +231,6 @@ namespace MilpManager.Implementation
         }
 
         /// <summary>
-        /// Wraps variable into wrapper with overloaded operators
-        /// </summary>
-        /// <param name="variable">Variable to wrap</param>
-        /// <returns>Wrapped variable</returns>
-        public static VariableWrapper Wrap(this IVariable variable)
-        {
-            return new VariableWrapper(variable);
-        }
-
-        /// <summary>
         /// Adds constraint to make variable equal to one
         /// </summary>
         /// <param name="variable">Variable to constrain</param>
