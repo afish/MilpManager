@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using MilpManager.Abstraction;
 
@@ -17,7 +18,14 @@ namespace MilpManager.Implementation.CompositeOperations
         public IEnumerable<IVariable> Calculate(IMilpManager milpManager, CompositeOperationType type, ICompositeOperationParameters parameters,
             params IVariable[] arguments)
         {
-            var index = ((ArrayGetParameters) parameters).Index;
+            if (!SupportsOperation(type, parameters, arguments)) throw new NotSupportedException(SolverUtilities.FormatUnsupportedMessage(type, parameters, arguments));
+            var typedParameters = (ArrayGetParameters) parameters;
+            if (typedParameters.Index.IsConstant())
+            {
+                return new[] { arguments[(int) typedParameters.Index.ConstantValue.Value] };
+            }
+
+            var index = (typedParameters).Index;
             var result = milpManager.FromConstant(0);
             for (int i = 0; i < arguments.Length; ++i)
             {
