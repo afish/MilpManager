@@ -86,6 +86,8 @@
     <Compile Include="Implementation\CompositeOperations\ArrayGetCalculator.cs" />
     <Compile Include="Implementation\CompositeOperations\ArraySetParameters.cs" />
     <Compile Include="Implementation\CompositeOperations\ArrayGetParameters.cs" />
+    <Compile Include="Implementation\CompositeOperations\DecompositionCalculator.cs" />
+    <Compile Include="Implementation\CompositeOperations\DecompositionParameters.cs" />
     <Compile Include="Implementation\Goals\IGoalCalculator.cs" />
     <Compile Include="Abstraction\IMilpSolver.cs" />
     <Compile Include="Abstraction\ICompositeOperationParameters.cs" />

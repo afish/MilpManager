@@ -42,6 +42,7 @@ namespace MilpManager.Abstraction
             {CompositeOperationType.ArrayGet, new ArrayGetCalculator()},
             {CompositeOperationType.ArraySet, new ArraySetCalculator()},
             {CompositeOperationType.CountingSort, new CountingSortCalculator()},
+            {CompositeOperationType.Decomposition, new DecompositionCalculator()},
             {CompositeOperationType.IsLexicographicalEqual, new IsLexicographicalEqualCalculator()},
             {CompositeOperationType.IsLexicographicalGreaterOrEqual, new IsLexicographicalGreaterOrEqualCalculator()},
             {CompositeOperationType.IsLexicographicalGreaterThan, new IsLexicographicalGreaterThanCalculator()},

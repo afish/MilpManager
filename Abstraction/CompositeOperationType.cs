@@ -7,6 +7,7 @@
         ArrayGet,
         ArraySet,
         CountingSort,
+        Decomposition,
         Loop,
         IsLexicographicalEqual,
         IsLexicographicalGreaterOrEqual,
