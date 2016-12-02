@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using MilpManager.Abstraction;
 
 namespace MilpManager.Implementation.Operations
@@ -29,43 +28,12 @@ namespace MilpManager.Implementation.Operations
             var result = milpManager.Create(milpManager.Operation(OperationType.Addition,
                 trueBranch,
                 falseBranch
-                ).ChangeDomain(CalculateDomain(trueBranch, falseBranch)));
+                ).ChangeDomain(trueBranch.LowestEncompassingDomain(falseBranch)));
             result.Expression = $"{arguments[0].FullExpression()} ? {arguments[1].FullExpression()} : {arguments[2].FullExpression()}";
             result.ConstantValue = !arguments[0].ConstantValue.HasValue
                 ? null
                 : (int) arguments[0].ConstantValue.Value == 1 ? trueBranch.ConstantValue : falseBranch.ConstantValue;
             return result;
-        }
-
-        private static Domain CalculateDomain(IVariable first, IVariable second)
-        {
-            if (first.IsBinary())
-            {
-                return second.Domain.MakeNonConstant();
-            }
-            if (second.IsBinary())
-            {
-                return first.Domain.MakeNonConstant();
-            }
-
-            if (first.IsInteger() && second.IsInteger())
-            {
-                if (first.IsPositiveOrZero() && second.IsPositiveOrZero())
-                {
-                    return Domain.PositiveOrZeroInteger;
-                }
-                else
-                {
-                    return Domain.AnyInteger;
-                }
-            }
-
-            if (first.IsPositiveOrZero() && second.IsPositiveOrZero())
-            {
-                return Domain.PositiveOrZeroReal;
-            }
-
-            return Domain.AnyReal;
         }
     }
 }

@@ -133,8 +133,7 @@ namespace MilpManager.Implementation
         public static bool IsReal(this IVariable variable)
         {
             if (variable == null) throw new ArgumentNullException(nameof(variable));
-            return variable.Domain == Domain.AnyConstantReal || variable.Domain == Domain.AnyReal ||
-               variable.Domain == Domain.PositiveOrZeroConstantReal || variable.Domain == Domain.PositiveOrZeroReal;
+            return variable.Domain.IsReal();
         }
 
         /// <summary>
@@ -145,7 +144,7 @@ namespace MilpManager.Implementation
         public static bool IsInteger(this IVariable variable)
         {
             if (variable == null) throw new ArgumentNullException(nameof(variable));
-            return !variable.IsReal();
+            return variable.Domain.IsInteger();
         }
 
         /// <summary>
@@ -156,9 +155,7 @@ namespace MilpManager.Implementation
         public static bool IsConstant(this IVariable variable)
         {
             if (variable == null) throw new ArgumentNullException(nameof(variable));
-            return variable.Domain == Domain.AnyConstantInteger || variable.Domain == Domain.AnyConstantReal ||
-               variable.Domain == Domain.BinaryConstantInteger || variable.Domain == Domain.PositiveOrZeroConstantInteger ||
-               variable.Domain == Domain.PositiveOrZeroConstantReal;
+            return variable.Domain.IsConstant();
         }
 
         /// <summary>
@@ -168,7 +165,8 @@ namespace MilpManager.Implementation
         /// <returns>True when variable's domain represents non-constant value</returns>
         public static bool IsNotConstant(this IVariable variable)
         {
-            return !variable.IsConstant();
+            if (variable == null) throw new ArgumentNullException(nameof(variable));
+            return variable.Domain.IsNotConstant();
         }
 
         /// <summary>
@@ -179,7 +177,7 @@ namespace MilpManager.Implementation
         public static bool IsBinary(this IVariable variable)
         {
             if (variable == null) throw new ArgumentNullException(nameof(variable));
-            return variable.Domain == Domain.BinaryConstantInteger || variable.Domain == Domain.BinaryInteger;
+            return variable.Domain.IsBinary();
         }
 
         /// <summary>
@@ -190,8 +188,7 @@ namespace MilpManager.Implementation
         public static bool IsPositiveOrZero(this IVariable variable)
         {
             if (variable == null) throw new ArgumentNullException(nameof(variable));
-            return variable.Domain == Domain.PositiveOrZeroConstantInteger || variable.Domain == Domain.PositiveOrZeroConstantReal ||
-               variable.Domain == Domain.PositiveOrZeroInteger || variable.Domain == Domain.PositiveOrZeroReal;
+            return variable.Domain.IsPositiveOrZero();
         }
 
         /// <summary>
@@ -202,7 +199,7 @@ namespace MilpManager.Implementation
         public static bool IsNonNegative(this IVariable variable)
         {
             if (variable == null) throw new ArgumentNullException(nameof(variable));
-            return variable.IsPositiveOrZero() || variable.IsBinary();
+            return variable.Domain.IsNonNegative();
         }
 
         /// <summary>
@@ -237,6 +234,7 @@ namespace MilpManager.Implementation
         /// <returns>Result of constraint addition</returns>
         public static IVariable MakeTrue(this IVariable variable)
         {
+            if (variable == null) throw new ArgumentNullException(nameof(variable));
             return variable.Set(ConstraintType.Equal, variable.MilpManager.FromConstant(1));
         }
 
@@ -248,7 +246,22 @@ namespace MilpManager.Implementation
         /// <returns>Result of constraint addition</returns>
         public static IVariable MakeFalse(this IVariable variable)
         {
+            if (variable == null) throw new ArgumentNullException(nameof(variable));
             return variable.Set(ConstraintType.Equal, variable.MilpManager.FromConstant(0));
+        }
+
+        /// <summary>
+        /// Calculate lowest domain capable of holding values of both variables
+        /// </summary>
+        /// <param name="first">First variable to consider</param>
+        /// <param name="second">Second variable to consider</param>
+        /// <returns>Lowest domain capable of holding both variables</returns>
+        public static Domain LowestEncompassingDomain(this IVariable first, IVariable second)
+        {
+            if (first == null) throw new ArgumentNullException(nameof(first));
+            if (second == null) throw new ArgumentNullException(nameof(second));
+
+            return first.Domain.LowestEncompassingDomain(second.Domain);
         }
     }
 }
