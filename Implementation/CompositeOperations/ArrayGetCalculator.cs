@@ -25,11 +25,15 @@ namespace MilpManager.Implementation.CompositeOperations
                 return new[] { arguments[(int) typedParameters.Index.ConstantValue.Value] };
             }
 
-            var index = (typedParameters).Index;
-            var result = milpManager.FromConstant(0);
+            var index = typedParameters.Index;
+            var result = milpManager.CreateAnonymous(arguments.Skip(1)
+                    .Aggregate(arguments[0].Domain, (domain, next) => domain.LowestEncompassingDomain(next.Domain)));
+
             for (int i = 0; i < arguments.Length; ++i)
             {
-                result = milpManager.Operation(OperationType.Condition, milpManager.FromConstant(i).Operation(OperationType.IsEqual, index), arguments[i], result);
+                milpManager.FromConstant(i).Operation(OperationType.IsEqual, index)
+                    .Operation(OperationType.MaterialImplication, result.Operation(OperationType.IsEqual, arguments[i]))
+                    .MakeTrue();
             }
 
             result.ConstantValue = index.ConstantValue.HasValue ? arguments[(int)index.ConstantValue.Value].ConstantValue : null;
