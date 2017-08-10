@@ -55,35 +55,35 @@ namespace MilpManager.Abstraction
             {CompositeOperationType.UnsignedMagnitudeDecomposition, new UnsignedMagnitudeDecompositionCalculator()}
         };
 
-        protected IDictionary<OperationType, IOperationCalculator> Operations => new Dictionary
-            <OperationType, IOperationCalculator>
+        protected IDictionary<Type, IOperationCalculator> Operations => new Dictionary
+            <Type, IOperationCalculator>
         {
-            {OperationType.AbsoluteValue, new AbsoluteValueCalculator()},
-            {OperationType.Addition, new AdditionCalculator()},
-            {OperationType.BinaryNegation, new BinaryNegationCalculator()},
-            {OperationType.Condition, new ConditionCalculator()},
-            {OperationType.Conjunction, new ConjunctionCalculator()},
-            {OperationType.DifferentValuesCount, new DifferentValuesCountCalculator()},
-            {OperationType.Disjunction, new DisjunctionCalculator()},
-            {OperationType.Division, new DivisionCalculator()},
-            {OperationType.Equivalency, new EquivalencyCalculator()},
-            {OperationType.ExclusiveDisjunction, new ExclusiveDisjunctionCalculator()},
-            {OperationType.Exponentiation, new ExponentiationCalculator()},
-            {OperationType.Factorial, new FactorialCalculator()},
-            {OperationType.GCD, new GcdCalculator()},
-            {OperationType.Subtraction, new SubtractionCalculator()},
-            {OperationType.MaterialImplication, new MaterialImplicationCalculator()},
-            {OperationType.Multiplication, new MultiplicationCalculator()},
-            {OperationType.IsEqual, new IsEqualCalculator()},
-            {OperationType.IsGreaterOrEqual, new IsGreaterOrEqualCalculator()},
-            {OperationType.IsGreaterThan, new IsGreaterThanCalculator()},
-            {OperationType.IsLessOrEqual, new IsLessOrEqualCalculator()},
-            {OperationType.IsLessThan, new IsLessThanCalculator()},
-            {OperationType.IsNotEqual, new IsNotEqualCalculator()},
-            {OperationType.Maximum, new MaximumMinimumCalculator()},
-            {OperationType.Minimum, new MaximumMinimumCalculator()},
-            {OperationType.Negation, new NegationCalculator()},
-            {OperationType.Remainder, new RemainderCalculator()}
+            {typeof(AbsoluteValue), new AbsoluteValueCalculator()},
+            {typeof(Addition), new AdditionCalculator()},
+            {typeof(BinaryNegation), new BinaryNegationCalculator()},
+            {typeof(Condition), new ConditionCalculator()},
+            {typeof(Conjunction), new ConjunctionCalculator()},
+            {typeof(DifferentValuesCount), new DifferentValuesCountCalculator()},
+            {typeof(Disjunction), new DisjunctionCalculator()},
+            {typeof(Division), new DivisionCalculator()},
+            {typeof(Equivalency), new EquivalencyCalculator()},
+            {typeof(ExclusiveDisjunction), new ExclusiveDisjunctionCalculator()},
+            {typeof(Exponentiation), new ExponentiationCalculator()},
+            {typeof(Factorial), new FactorialCalculator()},
+            {typeof(GCD), new GcdCalculator()},
+            {typeof(Subtraction), new SubtractionCalculator()},
+            {typeof(MaterialImplication), new MaterialImplicationCalculator()},
+            {typeof(Multiplication), new MultiplicationCalculator()},
+            {typeof(IsEqual), new IsEqualCalculator()},
+            {typeof(IsGreaterOrEqual), new IsGreaterOrEqualCalculator()},
+            {typeof(IsGreaterThan), new IsGreaterThanCalculator()},
+            {typeof(IsLessOrEqual), new IsLessOrEqualCalculator()},
+            {typeof(IsLessThan), new IsLessThanCalculator()},
+            {typeof(IsNotEqual), new IsNotEqualCalculator()},
+            {typeof(Maximum), new MaximumMinimumCalculator()},
+            {typeof(Minimum), new MaximumMinimumCalculator()},
+            {typeof(Negation), new NegationCalculator()},
+            {typeof(Remainder), new RemainderCalculator()}
         };
 
         protected IDictionary<GoalType, IGoalCalculator>  GoalCalculators => new Dictionary<GoalType, IGoalCalculator>
@@ -128,14 +128,14 @@ namespace MilpManager.Abstraction
             return variable;
         }
 
-        public virtual IVariable Operation(OperationType type, params IVariable[] variables)
+        public virtual IVariable Operation<TOperationType>(params IVariable[] variables) where TOperationType : OperationType
         {
-            if (Operations[type].SupportsOperation(type, variables))
+            if (Operations[typeof(TOperationType)].SupportsOperation<TOperationType>(variables))
             {
-                return Operations[type].Calculate(this, type, variables);
+                return Operations[typeof(TOperationType)].Calculate< TOperationType>(this, variables);
             }
 
-            throw new NotSupportedException(SolverUtilities.FormatUnsupportedMessage(type, variables));
+            throw new NotSupportedException(SolverUtilities.FormatUnsupportedMessage(typeof(TOperationType), variables));
         }
 
         public virtual IVariable Set(ConstraintType type, IVariable left, IVariable right)

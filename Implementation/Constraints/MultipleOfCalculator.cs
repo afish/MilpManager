@@ -7,7 +7,7 @@ namespace MilpManager.Implementation.Constraints
         public IVariable Set(IMilpManager milpManager, ConstraintType type, IVariable leftVariable, IVariable rightVariable)
         {
             IVariable any = milpManager.CreateAnonymous(Domain.AnyInteger);
-            leftVariable.Set(ConstraintType.Equal,any.Operation(OperationType.Multiplication, rightVariable));
+            leftVariable.Set(ConstraintType.Equal,any.Operation<Multiplication>(rightVariable));
 
             return leftVariable;
         }

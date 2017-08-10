@@ -4,86 +4,86 @@ using MilpManager.Abstraction;
 
 namespace MilpManager.Implementation.Operations
 {
-    public class MaximumMinimumCalculator : IOperationCalculator
-    {
-        public bool SupportsOperation(OperationType type, params IVariable[] arguments)
-        {
-            return (type == OperationType.Maximum || type == OperationType.Minimum) && arguments.Length >= 2;
-        }
+	public class MaximumMinimumCalculator : BaseOperationCalculator
+	{
+		private static Domain CalculateDomain(params IVariable[] arguments)
+		{
+			if (arguments.Any(a => a.IsReal()))
+			{
+				if (arguments.All(a => a.IsPositiveOrZero()))
+				{
+					return Domain.PositiveOrZeroReal;
+				}
+				return Domain.AnyReal;
+			}
 
-        public IVariable Calculate(IMilpManager milpManager, OperationType type, params IVariable[] arguments)
-        {
-            if (!SupportsOperation(type, arguments)) throw new NotSupportedException(SolverUtilities.FormatUnsupportedMessage(type, arguments));
-            if (arguments.Length > 2)
-            {
-                return arguments[0].Operation(type, milpManager.Operation(type, arguments.Skip(1).ToArray()));
-            }
-            return CalculateForTwoVariables(milpManager, type, arguments);
-        }
+			if (arguments.All(a => a.IsBinary()))
+			{
+				return Domain.BinaryInteger;
+			}
 
-        private static IVariable CalculateForTwoVariables(IMilpManager milpManager, OperationType type, IVariable[] arguments)
-        {
-            if (arguments.All(a => a.IsConstant()))
-            {
-                var values = arguments.Select(a => a.ConstantValue.Value);
-                var result = type == OperationType.Maximum ? values.Max() : values.Min();
-                if (arguments.All(a => a.IsInteger()))
-                {
-                    return milpManager.FromConstant((int) result);
-                }
-                else
-                {
-                    return milpManager.FromConstant(result);
-                }
-            }
-            var first = arguments[0];
-            var second = arguments[1];
+			if (arguments.All(a => a.IsPositiveOrZero() || a.IsBinary()))
+			{
+				return Domain.PositiveOrZeroInteger;
+			}
 
-            IVariable max = milpManager.CreateAnonymous(CalculateDomain(arguments));
-            IVariable min = milpManager.CreateAnonymous(CalculateDomain(arguments));
+			return Domain.AnyInteger;
+		}
 
-            max.Set(ConstraintType.GreaterOrEqual, first);
-            max.Set(ConstraintType.GreaterOrEqual, second);
-            min.Set(ConstraintType.LessOrEqual, first);
-            min.Set(ConstraintType.LessOrEqual, second);
+		protected override bool SupportsOperationInternal<TOperationType>(params IVariable[] arguments)
+		{
+			return arguments.Length >= 2;
+		}
 
-            max.Operation(OperationType.Subtraction, min)
-                .Set(ConstraintType.Equal,
-                    first.Operation(OperationType.Subtraction, second).Operation(OperationType.AbsoluteValue));
+		protected override IVariable CalculateInternal<TOperationType>(IMilpManager milpManager, params IVariable[] arguments)
+		{
+			if (arguments.Length > 2)
+			{
+				return arguments[0].Operation<TOperationType>(milpManager.Operation<TOperationType>(arguments.Skip(1).ToArray()));
+			}
+			else
+			{
+				var first = arguments[0];
+				var second = arguments[1];
 
-            max.ConstantValue = arguments.All(a => a.ConstantValue.HasValue)
-                ? Math.Max(arguments[0].ConstantValue.Value, arguments[1].ConstantValue.Value)
-                : (double?)null;
-            min.ConstantValue = arguments.All(a => a.ConstantValue.HasValue)
-                ? Math.Min(arguments[0].ConstantValue.Value, arguments[1].ConstantValue.Value)
-                : (double?)null;
-            max.Expression = $"max({arguments[0].FullExpression()}, {arguments[1].FullExpression()}";
-            min.Expression = $"min({arguments[0].FullExpression()}, {arguments[1].FullExpression()}";
-            return type == OperationType.Maximum ? max : min;
-        }
+				IVariable max = milpManager.CreateAnonymous(CalculateDomain(arguments));
+				IVariable min = milpManager.CreateAnonymous(CalculateDomain(arguments));
 
-        private static Domain CalculateDomain(params IVariable[] arguments)
-        {
-            if (arguments.Any(a => a.IsReal()))
-            {
-                if (arguments.All(a => a.IsPositiveOrZero()))
-                {
-                    return Domain.PositiveOrZeroReal;
-                }
-                return Domain.AnyReal;
-            }
+				max.Set(ConstraintType.GreaterOrEqual, first);
+				max.Set(ConstraintType.GreaterOrEqual, second);
+				min.Set(ConstraintType.LessOrEqual, first);
+				min.Set(ConstraintType.LessOrEqual, second);
 
-            if (arguments.All(a => a.IsBinary()))
-            {
-                return Domain.BinaryInteger;
-            }
+				max.Operation<Subtraction>(min)
+					.Set(ConstraintType.Equal,
+						first.Operation<Subtraction>(second).Operation<AbsoluteValue>());
 
-            if (arguments.All(a => a.IsPositiveOrZero() || a.IsBinary()))
-            {
-                return Domain.PositiveOrZeroInteger;
-            }
+				max.ConstantValue = arguments.All(a => a.ConstantValue.HasValue)
+					? Math.Max(arguments[0].ConstantValue.Value, arguments[1].ConstantValue.Value)
+					: (double?)null;
+				min.ConstantValue = arguments.All(a => a.ConstantValue.HasValue)
+					? Math.Min(arguments[0].ConstantValue.Value, arguments[1].ConstantValue.Value)
+					: (double?)null;
+				max.Expression = $"max({arguments[0].FullExpression()}, {arguments[1].FullExpression()}";
+				min.Expression = $"min({arguments[0].FullExpression()}, {arguments[1].FullExpression()}";
+				return typeof(TOperationType) == typeof(Maximum) ? max : min;
+			}
+		}
 
-            return Domain.AnyInteger;
-        }
-    }
+		protected override IVariable CalculateConstantInternal<TOperationType>(IMilpManager milpManager, params IVariable[] arguments)
+		{
+			var values = arguments.Select(a => a.ConstantValue.Value);
+			var result = typeof(TOperationType) == typeof(Maximum) ? values.Max() : values.Min();
+			if (arguments.All(a => a.IsInteger()))
+			{
+				return milpManager.FromConstant((int)result);
+			}
+			else
+			{
+				return milpManager.FromConstant(result);
+			}
+		}
+
+		protected override Type[] SupportedTypes => new[] {typeof (Maximum), typeof (Minimum)};
+	}
 }

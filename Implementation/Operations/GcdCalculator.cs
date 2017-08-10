@@ -4,52 +4,54 @@ using MilpManager.Abstraction;
 
 namespace MilpManager.Implementation.Operations
 {
-    public class GcdCalculator : IOperationCalculator
-    {
-        public bool SupportsOperation(OperationType type, params IVariable[] arguments)
-        {
-            return type == OperationType.GCD && arguments.Length == 2 &&
-                   arguments.All(a => (a.IsPositiveOrZero() || a.IsBinary()) && a.IsInteger());
-        }
+	public class GcdCalculator : BaseOperationCalculator
+	{
+		private static IVariable CalculateInternal(IMilpManager milpManager, params IVariable[] arguments)
+		{
+			var a = arguments[0];
+			var b = arguments[1];
+			var gcd = milpManager.CreateAnonymous(Domain.PositiveOrZeroInteger);
+			var x = milpManager.CreateAnonymous(Domain.PositiveOrZeroInteger);
+			var y = milpManager.CreateAnonymous(Domain.PositiveOrZeroInteger);
+			var m = milpManager.CreateAnonymous(Domain.AnyInteger);
+			var n = milpManager.CreateAnonymous(Domain.AnyInteger);
 
-        public IVariable Calculate(IMilpManager milpManager, OperationType type, params IVariable[] arguments)
-        {
-            if (!SupportsOperation(type, arguments)) throw new NotSupportedException(SolverUtilities.FormatUnsupportedMessage(type, arguments));
-            if (arguments.All(v => v.IsConstant()))
-            {
-                return milpManager.FromConstant(Gcd((int) arguments[0].ConstantValue.Value, (int) arguments[1].ConstantValue.Value));
-            }
-            var a = arguments[0];
-            var b = arguments[1];
-            var gcd = CalculateInternal(milpManager, a, b);
+			gcd.Set(ConstraintType.GreaterOrEqual, milpManager.FromConstant(1));
+			a.Set(ConstraintType.Equal, x.Operation<Multiplication>(gcd));
+			b.Set(ConstraintType.Equal, y.Operation<Multiplication>(gcd));
+			gcd.Set(ConstraintType.Equal, m.Operation<Multiplication>(a).Operation<Addition>(n.Operation<Multiplication>(b)));
 
-            return gcd;
-        }
+			gcd.ConstantValue = a.ConstantValue.HasValue && b.ConstantValue.HasValue
+				? Gcd((int) a.ConstantValue.Value, (int) b.ConstantValue.Value)
+				: (double?) null;
+			gcd.Expression = $"gcd({a.FullExpression()}, {b.FullExpression()})";
+			return gcd;
+		}
+		private static int Gcd(int a, int b)
+		{
+			return b == 0 ? a : Gcd(b, a % b);
+		}
 
-        private static IVariable CalculateInternal(IMilpManager milpManager, params IVariable[] arguments)
-        {
-            var a = arguments[0];
-            var b = arguments[1];
-            var gcd = milpManager.CreateAnonymous(Domain.PositiveOrZeroInteger);
-            var x = milpManager.CreateAnonymous(Domain.PositiveOrZeroInteger);
-            var y = milpManager.CreateAnonymous(Domain.PositiveOrZeroInteger);
-            var m = milpManager.CreateAnonymous(Domain.AnyInteger);
-            var n = milpManager.CreateAnonymous(Domain.AnyInteger);
+		protected override bool SupportsOperationInternal<TOperationType>(params IVariable[] arguments)
+		{
+			return arguments.Length == 2 &&
+				   arguments.All(a => (a.IsPositiveOrZero() || a.IsBinary()) && a.IsInteger());
+		}
 
-            gcd.Set(ConstraintType.GreaterOrEqual, milpManager.FromConstant(1));
-            a.Set(ConstraintType.Equal, x.Operation(OperationType.Multiplication, gcd));
-            b.Set(ConstraintType.Equal, y.Operation(OperationType.Multiplication, gcd));
-            gcd.Set(ConstraintType.Equal, m.Operation(OperationType.Multiplication, a).Operation(OperationType.Addition, n.Operation(OperationType.Multiplication, b)));
+		protected override IVariable CalculateInternal<TOperationType>(IMilpManager milpManager, params IVariable[] arguments)
+		{
+			var a = arguments[0];
+			var b = arguments[1];
+			var gcd = CalculateInternal(milpManager, a, b);
 
-            gcd.ConstantValue = a.ConstantValue.HasValue && b.ConstantValue.HasValue
-                ? Gcd((int) a.ConstantValue.Value, (int) b.ConstantValue.Value)
-                : (double?) null;
-            gcd.Expression = $"gcd({a.FullExpression()}, {b.FullExpression()})";
-            return gcd;
-        }
-        private static int Gcd(int a, int b)
-        {
-            return b == 0 ? a : Gcd(b, a % b);
-        }
-    }
+			return gcd;
+		}
+
+		protected override IVariable CalculateConstantInternal<TOperationType>(IMilpManager milpManager, params IVariable[] arguments)
+		{
+			return milpManager.FromConstant(Gcd((int)arguments[0].ConstantValue.Value, (int)arguments[1].ConstantValue.Value));
+		}
+
+		protected override Type[] SupportedTypes => new[] {typeof (GCD)};
+	}
 }

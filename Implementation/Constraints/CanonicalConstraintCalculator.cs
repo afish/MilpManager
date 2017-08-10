@@ -22,15 +22,15 @@ namespace MilpManager.Implementation.Constraints
                     milpManager.SetGreaterOrEqual(leftVariable, rightVariable);
                     break;
                 case ConstraintType.LessThan:
-                    milpManager.Operation(OperationType.IsLessThan, leftVariable, rightVariable)
+                    milpManager.Operation<IsLessThan>(leftVariable, rightVariable)
                         .Set(ConstraintType.Equal, milpManager.FromConstant(1));
                     break;
                 case ConstraintType.GreaterThan:
-                    milpManager.Operation(OperationType.IsGreaterThan, leftVariable, rightVariable)
+                    milpManager.Operation<IsGreaterThan>(leftVariable, rightVariable)
                         .Set(ConstraintType.Equal, milpManager.FromConstant(1));
                     break;
                 case ConstraintType.NotEqual:
-                    milpManager.Operation(OperationType.IsNotEqual, leftVariable, rightVariable)
+                    milpManager.Operation<IsNotEqual>(leftVariable, rightVariable)
                         .Set(ConstraintType.Equal, milpManager.FromConstant(1));
                     break;
                 default:

@@ -31,8 +31,8 @@ namespace MilpManager.Implementation.CompositeOperations
 
             for (int i = 0; i < arguments.Length; ++i)
             {
-                milpManager.FromConstant(i).Operation(OperationType.IsEqual, index)
-                    .Operation(OperationType.MaterialImplication, result.Operation(OperationType.IsEqual, arguments[i]))
+                milpManager.FromConstant(i).Operation<IsEqual>(index)
+                    .Operation<MaterialImplication>(result.Operation<IsEqual>(arguments[i]))
                     .MakeTrue();
             }
 

@@ -16,7 +16,7 @@ namespace MilpManager.Implementation.Goals
             if (!SupportsOperation(type, arguments)) throw new NotSupportedException(SolverUtilities.FormatUnsupportedMessage(type, arguments));
             if (arguments.All(a => a.IsConstant()))
             {
-                return milpManager.Operation(OperationType.Minimum, arguments);
+                return milpManager.Operation<Minimum>(arguments);
             }
 
             var result = milpManager.CreateAnonymous(arguments.Any(a => a.IsReal()) ? Domain.AnyReal : Domain.AnyInteger);

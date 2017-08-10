@@ -68,9 +68,9 @@ namespace MilpManager.Implementation.CompositeOperations
                 (result, pair) =>
                 {
                     power /= 2;
-                    return result.Operation(OperationType.Addition,
-                        pair.Item1.Operation(OperationType.IsGreaterOrEqual, pair.Item2).Operation(OperationType.Multiplication, milpManager.FromConstant(power)),
-                        pair.Item1.Operation(OperationType.IsLessOrEqual, pair.Item2).Operation(OperationType.Multiplication, milpManager.FromConstant(-power))
+                    return result.Operation<Addition>(
+                        pair.Item1.Operation<IsGreaterOrEqual>(pair.Item2).Operation<Multiplication>(milpManager.FromConstant(power)),
+                        pair.Item1.Operation<IsLessOrEqual>(pair.Item2).Operation<Multiplication>(milpManager.FromConstant(-power))
                     );
                 });
         }

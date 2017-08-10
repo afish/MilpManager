@@ -55,8 +55,8 @@ namespace MilpManager.Implementation.CompositeOperations
                     })
                     .ToList();
 
-            milpManager.Operation(OperationType.Addition,
-                variables.Select(v => v.Item1.Operation(OperationType.Multiplication, milpManager.FromConstant(v.Item2)))
+            milpManager.Operation<Addition>(
+                variables.Select(v => v.Item1.Operation<Multiplication>(milpManager.FromConstant(v.Item2)))
                     .ToArray()).Set(ConstraintType.Equal, arguments[0]);
 
             return variables.Select((v, index) => {

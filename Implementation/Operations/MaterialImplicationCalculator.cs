@@ -4,24 +4,25 @@ using MilpManager.Abstraction;
 
 namespace MilpManager.Implementation.Operations
 {
-    public class MaterialImplicationCalculator : IOperationCalculator
-    {
-        public bool SupportsOperation(OperationType type, params IVariable[] arguments)
-        {
-            return type == OperationType.MaterialImplication && arguments.Length == 2 && arguments.All(a => a.IsBinary());
-        }
+	public class MaterialImplicationCalculator : BaseOperationCalculator
+	{
+		protected override bool SupportsOperationInternal<TOperationType>(params IVariable[] arguments)
+		{
+			return arguments.Length == 2 && arguments.All(a => a.IsBinary());
+		}
 
-        public IVariable Calculate(IMilpManager milpManager, OperationType type, params IVariable[] arguments)
-        {
-            if (!SupportsOperation(type, arguments)) throw new NotSupportedException(SolverUtilities.FormatUnsupportedMessage(type, arguments));
-            if (arguments.All(a => a.IsConstant()))
-            {
-                return milpManager.FromConstant((int)(arguments[0].ConstantValue.Value == 0 ? 1 : arguments[1].ConstantValue.Value));
-            }
+		protected override IVariable CalculateInternal<TOperationType>(IMilpManager milpManager, params IVariable[] arguments)
+		{
+			var variable = arguments[0].Operation<BinaryNegation>().Operation<Disjunction>(arguments[1]);
+			variable.Expression = $"{arguments[0].FullExpression()} => {arguments[1].FullExpression()}";
+			return variable;
+		}
 
-            var variable = arguments[0].Operation(OperationType.BinaryNegation).Operation(OperationType.Disjunction, arguments[1]);
-            variable.Expression = $"{arguments[0].FullExpression()} => {arguments[1].FullExpression()}";
-            return variable;
-        }
-    }
+		protected override IVariable CalculateConstantInternal<TOperationType>(IMilpManager milpManager, params IVariable[] arguments)
+		{
+			return milpManager.FromConstant((int)(arguments[0].ConstantValue.Value == 0 ? 1 : arguments[1].ConstantValue.Value));
+		}
+
+		protected override Type[] SupportedTypes => new[] {typeof (MaterialImplication)};
+	}
 }

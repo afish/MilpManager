@@ -88,6 +88,12 @@
     <Compile Include="Implementation\CompositeOperations\ArrayGetParameters.cs" />
     <Compile Include="Implementation\CompositeOperations\DecompositionCalculator.cs" />
     <Compile Include="Implementation\CompositeOperations\DecompositionParameters.cs" />
+    <Compile Include="Implementation\CompositeOperations\IsLexicographicalEqualCalculator.cs" />
+    <Compile Include="Implementation\CompositeOperations\IsLexicographicalGreaterOrEqualCalculator.cs" />
+    <Compile Include="Implementation\CompositeOperations\IsLexicographicalGreaterThanCalculator.cs" />
+    <Compile Include="Implementation\CompositeOperations\IsLexicographicalLessOrEqualCalculator.cs" />
+    <Compile Include="Implementation\CompositeOperations\IsLexicographicalLessThanCalculator.cs" />
+    <Compile Include="Implementation\CompositeOperations\IsLexicographicalNotEqualCalculator.cs" />
     <Compile Include="Implementation\Goals\IGoalCalculator.cs" />
     <Compile Include="Abstraction\IMilpSolver.cs" />
     <Compile Include="Abstraction\ICompositeOperationParameters.cs" />
@@ -131,6 +137,7 @@
     <Compile Include="Implementation\Goals\MinimizeCalculator.cs" />
     <Compile Include="Implementation\Goals\MinimizeMaximumCalculator.cs" />
     <Compile Include="Implementation\Operations\AbsoluteValueCalculator.cs" />
+    <Compile Include="Implementation\Operations\BaseOperationCalculator.cs" />
     <Compile Include="Implementation\Operations\BinaryNegationCalculator.cs" />
     <Compile Include="Implementation\Operations\ConditionCalculator.cs" />
     <Compile Include="Implementation\Operations\ConjunctionCalculator.cs" />

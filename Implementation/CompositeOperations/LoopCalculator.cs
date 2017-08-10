@@ -27,7 +27,7 @@ namespace MilpManager.Implementation.CompositeOperations
             for (int i = 1; i <= options.MaxIterations; ++i)
             {
                 var counter = milpManager.FromConstant(i);
-                var isLooping = counter.Operation(OperationType.IsLessOrEqual, totalBound);
+                var isLooping = counter.Operation<IsLessOrEqual>(totalBound);
 
                 options.BeforeIterationAction(counter, isLooping, totalBound, arguments);
 
@@ -38,7 +38,7 @@ namespace MilpManager.Implementation.CompositeOperations
                         options.BeforeBody[v](arguments[v], counter, isLooping, totalBound, arguments);
                     }
 
-                    arguments[v] = milpManager.Operation(OperationType.Condition, isLooping, options.Body[v](arguments[v], counter, isLooping, totalBound, arguments), arguments[v]);
+                    arguments[v] = milpManager.Operation<Condition>(isLooping, options.Body[v](arguments[v], counter, isLooping, totalBound, arguments), arguments[v]);
 
                     if (options.AfterBody.Length > v)
                     {

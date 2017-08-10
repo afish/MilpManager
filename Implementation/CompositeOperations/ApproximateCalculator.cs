@@ -29,10 +29,10 @@ namespace MilpManager.Implementation.CompositeOperations
             var points = typedParameters.Arguments.Select(a => Tuple.Create(milpManager.FromConstant(a), milpManager.FromConstant(typedParameters.Function(a)))).ToArray();
             var variables = points.Select(p => milpManager.CreateAnonymous(typedParameters.ArgumentMustBeOnAGrid ? Domain.BinaryInteger : Domain.PositiveOrZeroReal).Set(ConstraintType.LessOrEqual, one)).ToArray();
 
-            x.Set(ConstraintType.Equal, milpManager.Operation(OperationType.Addition, points.Select((point, index) => variables[index].Operation(OperationType.Multiplication, point.Item1)).ToArray()));
-            var y = milpManager.Operation(OperationType.Addition, points.Select((point, index) => variables[index].Operation(OperationType.Multiplication, point.Item2)).ToArray());
+            x.Set(ConstraintType.Equal, milpManager.Operation<Addition>(points.Select((point, index) => variables[index].Operation<Multiplication>(point.Item1)).ToArray()));
+            var y = milpManager.Operation<Addition>(points.Select((point, index) => variables[index].Operation<Multiplication>(point.Item2)).ToArray());
 
-            milpManager.Operation(OperationType.Addition, variables).Set(ConstraintType.Equal, one);
+            milpManager.Operation<Addition>(variables).Set(ConstraintType.Equal, one);
             milpManager.Set(CompositeConstraintType.SpecialOrderedSetType2, variables.First(), variables.Skip(1).ToArray());
 
             y.ConstantValue = x.IsConstant() ? typedParameters.Function(x.ConstantValue.Value) : (double?) null;

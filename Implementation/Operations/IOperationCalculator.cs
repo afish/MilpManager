@@ -4,8 +4,8 @@ namespace MilpManager.Implementation.Operations
 {
     public interface IOperationCalculator
     {
-        bool SupportsOperation(OperationType type, params IVariable[] arguments);
+        bool SupportsOperation<TOperationType>(params IVariable[] arguments) where TOperationType : OperationType;
 
-        IVariable Calculate(IMilpManager milpManager, OperationType type, params IVariable[] arguments);
+        IVariable Calculate<TOperationType>(IMilpManager milpManager, params IVariable[] arguments) where TOperationType : OperationType;
     }
 }

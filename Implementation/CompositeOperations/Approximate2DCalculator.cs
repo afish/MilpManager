@@ -29,45 +29,45 @@ namespace MilpManager.Implementation.CompositeOperations
             var one = milpManager.FromConstant(1);
 
             var variables =
-                Enumerable.Range(0, typedParameters.ArgumentsX.Count()).Select(p =>
-                Enumerable.Range(0, typedParameters.ArgumentsY.Count()).Select(q =>
+                Enumerable.Range(0, typedParameters.ArgumentsX.Length).Select(p =>
+                Enumerable.Range(0, typedParameters.ArgumentsY.Length).Select(q =>
                     milpManager.CreateAnonymous(typedParameters.ArgumentMustBeOnAGrid
                         ? Domain.BinaryInteger
                         : Domain.PositiveOrZeroReal).Set(ConstraintType.LessOrEqual, one)).ToArray())
                 .ToArray();
 
-            x.Set(ConstraintType.Equal, milpManager.Operation(OperationType.Addition,
-                Enumerable.Range(0, typedParameters.ArgumentsX.Count()).SelectMany(indexX =>
-                Enumerable.Range(0, typedParameters.ArgumentsY.Count()).Select(indexY => 
-                    variables[indexX][indexY].Operation(OperationType.Multiplication, milpManager.FromConstant(typedParameters.ArgumentsX.ElementAt(indexX))))).ToArray()
+            x.Set(ConstraintType.Equal, milpManager.Operation<Addition>(
+                Enumerable.Range(0, typedParameters.ArgumentsX.Length).SelectMany(indexX =>
+                Enumerable.Range(0, typedParameters.ArgumentsY.Length).Select(indexY => 
+                    variables[indexX][indexY].Operation<Multiplication>(milpManager.FromConstant(typedParameters.ArgumentsX.ElementAt(indexX))))).ToArray()
             ));
-            y.Set(ConstraintType.Equal, milpManager.Operation(OperationType.Addition,
-                Enumerable.Range(0, typedParameters.ArgumentsX.Count()).SelectMany(indexX =>
-                Enumerable.Range(0, typedParameters.ArgumentsY.Count()).Select(indexY =>
-                    variables[indexX][indexY].Operation(OperationType.Multiplication, milpManager.FromConstant(typedParameters.ArgumentsY.ElementAt(indexY))))).ToArray()
+            y.Set(ConstraintType.Equal, milpManager.Operation<Addition>(
+                Enumerable.Range(0, typedParameters.ArgumentsX.Length).SelectMany(indexX =>
+                Enumerable.Range(0, typedParameters.ArgumentsY.Length).Select(indexY =>
+                    variables[indexX][indexY].Operation<Multiplication>(milpManager.FromConstant(typedParameters.ArgumentsY.ElementAt(indexY))))).ToArray()
             ));
-            var z = milpManager.Operation(OperationType.Addition,
-                Enumerable.Range(0, typedParameters.ArgumentsX.Count()).SelectMany(indexX =>
-                Enumerable.Range(0, typedParameters.ArgumentsY.Count()).Select(indexY =>
-                    variables[indexX][indexY].Operation(OperationType.Multiplication, milpManager.FromConstant(typedParameters.Function(typedParameters.ArgumentsX.ElementAt(indexX), typedParameters.ArgumentsY.ElementAt(indexY)))))).ToArray()
+            var z = milpManager.Operation<Addition>(
+                Enumerable.Range(0, typedParameters.ArgumentsX.Length).SelectMany(indexX =>
+                Enumerable.Range(0, typedParameters.ArgumentsY.Length).Select(indexY =>
+                    variables[indexX][indexY].Operation<Multiplication>(milpManager.FromConstant(typedParameters.Function(typedParameters.ArgumentsX.ElementAt(indexX), typedParameters.ArgumentsY.ElementAt(indexY)))))).ToArray()
             );
 
-            milpManager.Operation(OperationType.Addition, variables.SelectMany(v => v).ToArray()).Set(ConstraintType.Equal, one);
+            milpManager.Operation<Addition>(variables.SelectMany(v => v).ToArray()).Set(ConstraintType.Equal, one);
 
-            var xSet = Enumerable.Range(0, typedParameters.ArgumentsX.Count()).Select(indexX => milpManager.Operation(OperationType.Addition, Enumerable.Range(0, typedParameters.ArgumentsY.Count()).Select(indexY => variables[indexX][indexY]).ToArray())).ToArray();
+            var xSet = Enumerable.Range(0, typedParameters.ArgumentsX.Length).Select(indexX => milpManager.Operation<Addition>(Enumerable.Range(0, typedParameters.ArgumentsY.Length).Select(indexY => variables[indexX][indexY]).ToArray())).ToArray();
              milpManager.Set(CompositeConstraintType.SpecialOrderedSetType2, xSet.First(), xSet.Skip(1).ToArray());
 
-            var ySet = Enumerable.Range(0, typedParameters.ArgumentsY.Count()).Select(indexY => milpManager.Operation(OperationType.Addition, Enumerable.Range(0, typedParameters.ArgumentsX.Count()).Select(indexX => variables[indexX][indexY]).ToArray())).ToArray();
+            var ySet = Enumerable.Range(0, typedParameters.ArgumentsY.Length).Select(indexY => milpManager.Operation<Addition>(Enumerable.Range(0, typedParameters.ArgumentsX.Length).Select(indexX => variables[indexX][indexY]).ToArray())).ToArray();
             milpManager.Set(CompositeConstraintType.SpecialOrderedSetType2, ySet.First(), ySet.Skip(1).ToArray());
 
             if (!typedParameters.ArgumentMustBeOnAGrid)
             {
-                var triangleSet = Enumerable.Range(0, typedParameters.ArgumentsY.Count()).SelectMany(indexY => 
+                var triangleSet = Enumerable.Range(0, typedParameters.ArgumentsY.Length).SelectMany(indexY => 
                 {
-                    var variablesToSet = Enumerable.Range(0, typedParameters.ArgumentsX.Count()).Where(indexX => indexX + indexY < variables[indexX].Length).Select(indexX => variables[indexX][indexX + indexY]).ToArray();
+                    var variablesToSet = Enumerable.Range(0, typedParameters.ArgumentsX.Length).Where(indexX => indexX + indexY < variables[indexX].Length).Select(indexX => variables[indexX][indexX + indexY]).ToArray();
                     if (variablesToSet.Any())
                     {
-                        return new[] {milpManager.Operation(OperationType.Addition, variablesToSet)};
+                        return new[] {milpManager.Operation<Addition>(variablesToSet)};
                     }
 
                     return new IVariable[0];

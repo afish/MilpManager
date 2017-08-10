@@ -30,7 +30,7 @@ namespace MilpManager.Implementation.CompositeOperations
             var catenatedArguments = string.Join(", ", arguments.Select(a => a.FullExpression()).ToArray());
             for (int i = 0; i < arguments.Length; ++i)
             {
-                arguments[i] = milpManager.Operation(OperationType.Condition, milpManager.FromConstant(i).Operation(OperationType.IsEqual, index), value, arguments[i]);
+                arguments[i] = milpManager.Operation<Condition>(milpManager.FromConstant(i).Operation<IsEqual>(index), value, arguments[i]);
                 arguments[i].Expression = $"arraySet(wantedIndex: {index.FullExpression()}, value: {value.FullExpression()}, inArrayIndex: {i}, {catenatedArguments})";
             }
             

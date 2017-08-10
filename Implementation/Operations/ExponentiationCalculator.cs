@@ -4,89 +4,87 @@ using MilpManager.Abstraction;
 
 namespace MilpManager.Implementation.Operations
 {
-    public class ExponentiationCalculator : IOperationCalculator
-    {
-        public bool SupportsOperation(OperationType type, params IVariable[] arguments)
-        {
-            return type == OperationType.Exponentiation && arguments.Length == 2 &&
-                   ((arguments.All(a => (a.IsPositiveOrZero() || a.IsBinary()) && a.IsInteger())) || arguments.All(a => a.IsConstant()));
-        }
+	public class ExponentiationCalculator : BaseOperationCalculator
+	{
+		private static IVariable CalculatePower(IVariable number, IVariable power, IMilpManager milpManager, IVariable isEdgeCase)
+		{
+			var digits = (int)Math.Ceiling(Math.Log(milpManager.IntegerWidth, 2.0));
 
-        public IVariable Calculate(IMilpManager milpManager, OperationType type, params IVariable[] arguments)
-        {
-            if (!SupportsOperation(type, arguments)) throw new NotSupportedException(SolverUtilities.FormatUnsupportedMessage(type, arguments));
-            if (arguments.All(a => a.IsConstant()))
-            {
-                var constantResult = Math.Pow(arguments[0].ConstantValue.Value, arguments[1].ConstantValue.Value);
-                if (arguments.All(a => a.IsInteger()))
-                {
-                    return milpManager.FromConstant((int) constantResult);
-                }
-                else
-                {
-                    return milpManager.FromConstant(constantResult);
-                }
-            }
-            var number = arguments[0];
-            var power = arguments[1];
+			var infinity = milpManager.FromConstant(milpManager.MaximumIntegerValue);
+			var currentPower = milpManager.Operation<Minimum>(number, isEdgeCase.Operation<BinaryNegation>().Operation<Multiplication>(infinity));
+			var decomposition = power.CompositeOperation(CompositeOperationType.UnsignedMagnitudeDecomposition).Take(digits).ToArray();
+			var one = milpManager.FromConstant(1);
+			var result = one;
 
-            var one = milpManager.FromConstant(1);
-            var zero = milpManager.FromConstant(0);
-            var isNumberLessOrEqualOne = number.Operation(OperationType.IsLessOrEqual, one);
-            var isPowerZero = power.Operation(OperationType.IsLessOrEqual, zero);
-            var isPowerOne = power.Operation(OperationType.IsEqual, one);
-            var isEdgeCase = milpManager.Operation(OperationType.Disjunction, isNumberLessOrEqualOne, isPowerZero, isPowerOne);
-            var result = milpManager.Operation(
-                OperationType.Condition,
-                isPowerZero,
-                one,
-                milpManager.Operation(
-                    OperationType.Condition,
-                    isNumberLessOrEqualOne,
-                    number,
-                    milpManager.Operation(
-                        OperationType.Condition,
-                        isPowerOne,
-                        number,
-                        CalculatePower(number, power, milpManager, isEdgeCase)
-                    )
-                )
-            );
+			for (int i = 0; i < digits; ++i)
+			{
+				if (i > 0)
+				{
+					var isAnyNonzeroDigitLater = milpManager.Operation<Disjunction>(decomposition.Skip(i).ToArray());
+					var numberToMultiply = milpManager.Operation<Minimum>(currentPower, isAnyNonzeroDigitLater.Operation<Multiplication>(infinity));
+					currentPower = numberToMultiply.Operation<Multiplication>(numberToMultiply);
+				}
 
-            result.ConstantValue = number.ConstantValue.HasValue && power.ConstantValue.HasValue
-                ? number.ConstantValue == 0 
-                    ? 0.0
-                    : power.ConstantValue == 0
-                        ? number.ConstantValue
-                        : Math.Pow(number.ConstantValue.Value, power.ConstantValue.Value)
-                : (double?) null;
-            result.Expression = $"{number.FullExpression()} ** {power.FullExpression()}";
-            return result;
-        }
+				result = result.Operation<Multiplication>(one.Operation<Maximum>(currentPower.Operation<Multiplication>(decomposition[i])));
+			}
 
-        private static IVariable CalculatePower(IVariable number, IVariable power, IMilpManager milpManager, IVariable isEdgeCase)
-        {
-            var digits = (int)Math.Ceiling(Math.Log(milpManager.IntegerWidth, 2.0));
+			return result;
+		}
 
-            var infinity = milpManager.FromConstant(milpManager.MaximumIntegerValue);
-            var currentPower = milpManager.Operation(OperationType.Minimum, number, isEdgeCase.Operation(OperationType.BinaryNegation).Operation(OperationType.Multiplication, infinity));
-            var decomposition = power.CompositeOperation(CompositeOperationType.UnsignedMagnitudeDecomposition).Take(digits).ToArray();
-            var one = milpManager.FromConstant(1);
-            var result = one;
+		protected override bool SupportsOperationInternal<TOperationType>(params IVariable[] arguments)
+		{
+			return arguments.Length == 2 && (arguments.All(a => (a.IsPositiveOrZero() || a.IsBinary()) && a.IsInteger()) || arguments.All(a => a.IsConstant()));
+		}
 
-            for (int i = 0; i < digits; ++i)
-            {
-                if (i > 0)
-                {
-                    var isAnyNonzeroDigitLater = milpManager.Operation(OperationType.Disjunction, decomposition.Skip(i).ToArray());
-                    var numberToMultiply = milpManager.Operation(OperationType.Minimum, currentPower, isAnyNonzeroDigitLater.Operation(OperationType.Multiplication, infinity));
-                    currentPower = numberToMultiply.Operation(OperationType.Multiplication, numberToMultiply);
-                }
+		protected override IVariable CalculateInternal<TOperationType>(IMilpManager milpManager, params IVariable[] arguments)
+		{
+			var number = arguments[0];
+			var power = arguments[1];
 
-                result = result.Operation(OperationType.Multiplication, one.Operation(OperationType.Maximum, currentPower.Operation(OperationType.Multiplication, decomposition[i])));
-            }
+			var one = milpManager.FromConstant(1);
+			var zero = milpManager.FromConstant(0);
+			var isNumberLessOrEqualOne = number.Operation<IsLessOrEqual>(one);
+			var isPowerZero = power.Operation<IsLessOrEqual>(zero);
+			var isPowerOne = power.Operation<IsEqual>(one);
+			var isEdgeCase = milpManager.Operation<Disjunction>(isNumberLessOrEqualOne, isPowerZero, isPowerOne);
+			var result = milpManager.Operation<Condition>(
+				isPowerZero,
+				one,
+				milpManager.Operation<Condition>(
+					isNumberLessOrEqualOne,
+					number,
+					milpManager.Operation<Condition>(
+						isPowerOne,
+						number,
+						CalculatePower(number, power, milpManager, isEdgeCase)
+					)
+				)
+			);
 
-            return result;
-        }
-    }
+			result.ConstantValue = number.ConstantValue.HasValue && power.ConstantValue.HasValue
+				? number.ConstantValue == 0
+					? 0.0
+					: power.ConstantValue == 0
+						? number.ConstantValue
+						: Math.Pow(number.ConstantValue.Value, power.ConstantValue.Value)
+				: (double?)null;
+			result.Expression = $"{number.FullExpression()} ** {power.FullExpression()}";
+			return result;
+		}
+
+		protected override IVariable CalculateConstantInternal<TOperationType>(IMilpManager milpManager, params IVariable[] arguments)
+		{
+			var constantResult = Math.Pow(arguments[0].ConstantValue.Value, arguments[1].ConstantValue.Value);
+			if (arguments.All(a => a.IsInteger()))
+			{
+				return milpManager.FromConstant((int)constantResult);
+			}
+			else
+			{
+				return milpManager.FromConstant(constantResult);
+			}
+		}
+
+		protected override Type[] SupportedTypes => new[] {typeof (Exponentiation)};
+	}
 }

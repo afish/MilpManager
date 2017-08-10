@@ -1,43 +1,44 @@
 ﻿using System;
-using System.Linq;
 using MilpManager.Abstraction;
 
 namespace MilpManager.Implementation.Operations
 {
-    public class AbsoluteValueCalculator : IOperationCalculator
-    {
-        public bool SupportsOperation(OperationType type, params IVariable[] arguments)
-        {
-            return type == OperationType.AbsoluteValue && arguments.Length == 1;
-        }
+	public class AbsoluteValueCalculator : BaseOperationCalculator
+	{
 
-        public IVariable Calculate(IMilpManager milpManager, OperationType type, params IVariable[] arguments)
-        {
-            if(!SupportsOperation(type,arguments)) throw new NotSupportedException(SolverUtilities.FormatUnsupportedMessage(type, arguments));
-            if (arguments.All(x => x.IsConstant()))
-            {
-                if (arguments[0].IsInteger())
-                {
-                    return milpManager.FromConstant(Math.Abs((int)arguments[0].ConstantValue.Value));
-                }
-                return milpManager.FromConstant(Math.Abs(arguments[0].ConstantValue.Value));
-            }
+		protected override bool SupportsOperationInternal<TOperationType>(params IVariable[] arguments)
+		{
+			return arguments.Length == 1;
+		}
 
-            var number = arguments[0];
-            var numberNegated = number.Operation(OperationType.Negation);
-            var result = milpManager.CreateAnonymous(number.IsInteger() ? Domain.PositiveOrZeroInteger : Domain.PositiveOrZeroReal);
+		protected override IVariable CalculateInternal<TOperationType>(IMilpManager milpManager, params IVariable[] arguments)
+		{
+			var number = arguments[0];
+			var numberNegated = number.Operation<Negation>();
+			var result = milpManager.CreateAnonymous(number.IsInteger() ? Domain.PositiveOrZeroInteger : Domain.PositiveOrZeroReal);
 
-            result.Set(ConstraintType.GreaterOrEqual, number)
-                .Set(ConstraintType.GreaterOrEqual, numberNegated);
+			result.Set(ConstraintType.GreaterOrEqual, number)
+				.Set(ConstraintType.GreaterOrEqual, numberNegated);
 
-            milpManager.Operation(OperationType.Addition,
-                    result.Operation(OperationType.IsEqual, number),
-                    result.Operation(OperationType.IsEqual, numberNegated))
-                .Set(ConstraintType.GreaterOrEqual, milpManager.FromConstant(1));
+			milpManager.Operation<Addition>(
+					result.Operation<IsEqual>(number),
+					result.Operation<IsEqual>(numberNegated))
+				.Set(ConstraintType.GreaterOrEqual, milpManager.FromConstant(1));
 
-            result.ConstantValue = number.ConstantValue.HasValue ? Math.Abs(number.ConstantValue.Value) : number.ConstantValue;
-            result.Expression = $"|{number.FullExpression()}|";
-            return result;
-        }
-    }
+			result.ConstantValue = number.ConstantValue.HasValue ? Math.Abs(number.ConstantValue.Value) : number.ConstantValue;
+			result.Expression = $"|{number.FullExpression()}|";
+			return result;
+		}
+
+		protected override IVariable CalculateConstantInternal<TOperationType>(IMilpManager milpManager, params IVariable[] arguments)
+		{
+			if (arguments[0].IsInteger())
+			{
+				return milpManager.FromConstant(Math.Abs((int)arguments[0].ConstantValue.Value));
+			}
+			return milpManager.FromConstant(Math.Abs(arguments[0].ConstantValue.Value));
+		}
+
+		protected override Type[] SupportedTypes => new[] {typeof (AbsoluteValue)};
+	}
 }

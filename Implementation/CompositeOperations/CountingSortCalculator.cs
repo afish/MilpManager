@@ -27,13 +27,13 @@ namespace MilpManager.Implementation.CompositeOperations
             {
                 valuesWithCounts[value] = arguments.Aggregate(zero,
                     (current, val) =>
-                        current.Operation(OperationType.Addition, val.Operation(OperationType.IsEqual, value)));
+                        current.Operation<Addition>(val.Operation<IsEqual>(value)));
             }
             
             var sum = zero;
             foreach (var value in values)
             {
-                sum = sum.Operation(OperationType.Addition, valuesWithCounts[value]);
+                sum = sum.Operation<Addition>(valuesWithCounts[value]);
                 valuesWithCounts[value] = sum;
             }
 
@@ -41,10 +41,10 @@ namespace MilpManager.Implementation.CompositeOperations
             var results = Enumerable.Range(1, arguments.Length).Select(p =>
             {
                 var position = milpManager.FromConstant(p);
-                var result = milpManager.Operation(OperationType.Minimum,
+                var result = milpManager.Operation<Minimum>(
                     values.Select(value =>
-                        milpManager.Operation(OperationType.Condition,
-                            position.Operation(OperationType.IsLessOrEqual, valuesWithCounts[value]), value, infinity)
+                        milpManager.Operation<Condition>(
+                            position.Operation<IsLessOrEqual>(valuesWithCounts[value]), value, infinity)
                         ).ToArray());
                 result.Expression = $"countingSort(position: {p}, {string.Join(", ", arguments.Select(a => a.FullExpression()).ToArray())})";
                 return result;

@@ -13,7 +13,7 @@ namespace MilpManager.Implementation.Goals
         public IVariable Calculate(IMilpManager milpManager, GoalType type, params IVariable[] arguments)
         {
             if (!SupportsOperation(type, arguments)) throw new NotSupportedException(SolverUtilities.FormatUnsupportedMessage(type, arguments));
-            return arguments[0].Operation(OperationType.Negation);
+            return arguments[0].Operation<Negation>();
         }
     }
 }

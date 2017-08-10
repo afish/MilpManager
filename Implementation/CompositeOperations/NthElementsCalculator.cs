@@ -25,8 +25,8 @@ namespace MilpManager.Implementation.CompositeOperations
                 return typedParameters.Indexes.Select(i => sorted[(int)i.ConstantValue.Value]);
             }
             var variables = new List<IVariable>();
-            var sums = arguments.Select(a => Tuple.Create(a, milpManager.Operation(OperationType.Addition,
-                arguments.Where(b => a != b).Select(b => a.Operation(OperationType.IsGreaterOrEqual, b).Create()).ToArray()).Create())).ToArray();
+            var sums = arguments.Select(a => Tuple.Create(a, milpManager.Operation<Addition>(
+                arguments.Where(b => a != b).Select(b => a.Operation<IsGreaterOrEqual>(b).Create()).ToArray()).Create())).ToArray();
 
             var huge = milpManager.FromConstant(milpManager.MaximumIntegerValue);
             foreach(var indexVariable in typedParameters.Indexes)
@@ -34,8 +34,8 @@ namespace MilpManager.Implementation.CompositeOperations
                 var result = huge;
                 foreach (var sum in sums)
                 {
-                    result = result.Operation(OperationType.Minimum, milpManager.Operation(OperationType.Condition,
-                        sum.Item2.Operation(OperationType.IsGreaterOrEqual, indexVariable),
+                    result = result.Operation<Minimum>(milpManager.Operation<Condition>(
+                        sum.Item2.Operation<IsGreaterOrEqual>(indexVariable),
                         sum.Item1,
                         huge
                     ));
