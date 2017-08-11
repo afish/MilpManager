@@ -85,6 +85,22 @@ namespace MilpManager.Implementation
 		}
 
 		/// <summary>
+		/// Adds constraint to a solver
+		/// </summary>
+		/// <typeparam name="TConstraintType">Constraint type</typeparam>
+		/// <param name="variable">Variable to constrain</param>
+		/// <param name="right">Right hand side of a constraint</param>
+		/// <returns>Variable passed as an argument</returns>
+		public static IVariable Set(this IVariable variable, Type constraintType, IVariable right)
+		{
+			if (variable == null) throw new ArgumentNullException(nameof(variable));
+			return (IVariable)typeof(VariableExtensions)
+				.GetMethod(nameof(Set), new[] { typeof(IVariable), typeof(IVariable) })
+				.MakeGenericMethod(constraintType)
+				.Invoke(null, new object[] { variable, right });
+		}
+
+		/// <summary>
 		/// Adds composite constraint to a solver
 		/// </summary>
 		/// <param name="variable">Variable to constraint</param>

@@ -6,10 +6,13 @@
 		{
 			IntegerWidth = integerWidth;
 			Epsilon = epsilon;
+			StoreDebugExpressions = false;
+			CacheConstants = true;
 		}
 
 		public int IntegerWidth { get; }
 		public double Epsilon { get; }
 		public bool StoreDebugExpressions { get; set; }
+		public bool CacheConstants { get; set; }
 	}
 }

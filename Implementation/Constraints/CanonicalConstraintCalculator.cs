@@ -10,32 +10,62 @@ namespace MilpManager.Implementation.Constraints
 		{
 			if (typeof (TConstraintType) == typeof (Equal))
 			{
-				milpManager.SetEqual(leftVariable, rightVariable);
-				leftVariable.ConstantValue = rightVariable.ConstantValue ?? leftVariable.ConstantValue;
-				rightVariable.ConstantValue = leftVariable.ConstantValue ?? rightVariable.ConstantValue;
+				if (leftVariable != rightVariable)
+				{
+					milpManager.SetEqual(leftVariable, rightVariable);
+					leftVariable.ConstantValue = rightVariable.ConstantValue ?? leftVariable.ConstantValue;
+					rightVariable.ConstantValue = leftVariable.ConstantValue ?? rightVariable.ConstantValue;
+				}
 			}
 			else if (typeof (TConstraintType) == typeof (LessOrEqual))
 			{
-				milpManager.SetLessOrEqual(leftVariable, rightVariable);
+				if (leftVariable != rightVariable)
+				{
+					milpManager.SetLessOrEqual(leftVariable, rightVariable);
+				}
 			}
 			else if (typeof (TConstraintType) == typeof (GreaterOrEqual))
 			{
-				milpManager.SetGreaterOrEqual(leftVariable, rightVariable);
+				if (leftVariable != rightVariable)
+				{
+					milpManager.SetGreaterOrEqual(leftVariable, rightVariable);
+				}
 			}
 			else if (typeof (TConstraintType) == typeof (LessThan))
 			{
-				milpManager.Operation<IsLessThan>(leftVariable, rightVariable)
-					.Set<Equal>(milpManager.FromConstant(1));
+				if (leftVariable != rightVariable)
+				{
+					milpManager.Operation<IsLessThan>(leftVariable, rightVariable)
+						.Set<Equal>(milpManager.FromConstant(1));
+				}
+				else
+				{
+					ReportInfeasibleConstraint(leftVariable, rightVariable, "less than");
+				}
 			}
 			else if (typeof (TConstraintType) == typeof (GreaterThan))
 			{
-				milpManager.Operation<IsGreaterThan>(leftVariable, rightVariable)
+				if (leftVariable != rightVariable)
+				{
+					milpManager.Operation<IsGreaterThan>(leftVariable, rightVariable)
 					.Set<Equal>(milpManager.FromConstant(1));
+				}
+				else
+				{
+					ReportInfeasibleConstraint(leftVariable, rightVariable, "greater than");
+				}
 			}
 			else if (typeof (TConstraintType) == typeof (NotEqual))
-			{
-				milpManager.Operation<IsNotEqual>(leftVariable, rightVariable)
+				{
+					if (leftVariable != rightVariable)
+					{
+						milpManager.Operation<IsNotEqual>(leftVariable, rightVariable)
 					.Set<Equal>(milpManager.FromConstant(1));
+				}
+				else
+				{
+					ReportInfeasibleConstraint(leftVariable, rightVariable, "not equal to");
+				}
 			}
 			else
 			{
@@ -43,6 +73,11 @@ namespace MilpManager.Implementation.Constraints
 			}
 
 			return leftVariable;
+		}
+
+		private void ReportInfeasibleConstraint(IVariable leftVariable, IVariable rightVariable, string constraint)
+		{
+			throw new InvalidOperationException($"Setting variable to be {constraint} itself should result in infeasible model. Left variable: {leftVariable.FullExpression()}, right variable: {rightVariable.FullExpression()}");
 		}
 	}
 }
