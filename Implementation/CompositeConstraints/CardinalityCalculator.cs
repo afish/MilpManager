@@ -8,7 +8,7 @@ namespace MilpManager.Implementation.CompositeConstraints
             IVariable leftVariable, params IVariable[] rightVariable)
         {
             leftVariable.Operation<DifferentValuesCount>(rightVariable)
-                .Set(ConstraintType.Equal, milpManager.FromConstant((parameters as CardinalityParameters).ValuesCount));
+                .Set<Equal>(milpManager.FromConstant((parameters as CardinalityParameters).ValuesCount));
 
             return leftVariable;
         }

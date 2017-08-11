@@ -16,10 +16,10 @@ namespace MilpManager.Implementation.Operations
 			var m = milpManager.CreateAnonymous(Domain.AnyInteger);
 			var n = milpManager.CreateAnonymous(Domain.AnyInteger);
 
-			gcd.Set(ConstraintType.GreaterOrEqual, milpManager.FromConstant(1));
-			a.Set(ConstraintType.Equal, x.Operation<Multiplication>(gcd));
-			b.Set(ConstraintType.Equal, y.Operation<Multiplication>(gcd));
-			gcd.Set(ConstraintType.Equal, m.Operation<Multiplication>(a).Operation<Addition>(n.Operation<Multiplication>(b)));
+			gcd.Set<GreaterOrEqual>(milpManager.FromConstant(1));
+			a.Set<Equal>(x.Operation<Multiplication>(gcd));
+			b.Set<Equal>(y.Operation<Multiplication>(gcd));
+			gcd.Set<Equal>(m.Operation<Multiplication>(a).Operation<Addition>(n.Operation<Multiplication>(b)));
 
 			gcd.ConstantValue = a.ConstantValue.HasValue && b.ConstantValue.HasValue
 				? Gcd((int) a.ConstantValue.Value, (int) b.ConstantValue.Value)

@@ -4,6 +4,6 @@ namespace MilpManager.Implementation.Constraints
 {
     public interface IConstraintCalculator
     {
-        IVariable Set(IMilpManager milpManager, ConstraintType type, IVariable leftVariable, IVariable rightVariable);
+        IVariable Set<TConstraintType>(IMilpManager milpManager, IVariable leftVariable, IVariable rightVariable) where TConstraintType : ConstraintType;
     }
 }

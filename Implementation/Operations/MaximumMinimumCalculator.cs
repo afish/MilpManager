@@ -49,14 +49,13 @@ namespace MilpManager.Implementation.Operations
 				IVariable max = milpManager.CreateAnonymous(CalculateDomain(arguments));
 				IVariable min = milpManager.CreateAnonymous(CalculateDomain(arguments));
 
-				max.Set(ConstraintType.GreaterOrEqual, first);
-				max.Set(ConstraintType.GreaterOrEqual, second);
-				min.Set(ConstraintType.LessOrEqual, first);
-				min.Set(ConstraintType.LessOrEqual, second);
+				max.Set<GreaterOrEqual>(first);
+				max.Set<GreaterOrEqual>(second);
+				min.Set<LessOrEqual>(first);
+				min.Set<LessOrEqual>(second);
 
 				max.Operation<Subtraction>(min)
-					.Set(ConstraintType.Equal,
-						first.Operation<Subtraction>(second).Operation<AbsoluteValue>());
+					.Set<Equal>(first.Operation<Subtraction>(second).Operation<AbsoluteValue>());
 
 				max.ConstantValue = arguments.All(a => a.ConstantValue.HasValue)
 					? Math.Max(arguments[0].ConstantValue.Value, arguments[1].ConstantValue.Value)

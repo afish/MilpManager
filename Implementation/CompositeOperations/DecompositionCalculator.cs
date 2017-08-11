@@ -49,7 +49,7 @@ namespace MilpManager.Implementation.CompositeOperations
                         var variable = milpManager.CreateAnonymous(decompositionBase == 2 ? Domain.BinaryInteger : Domain.PositiveOrZeroInteger);
                         if (decompositionBase > 2)
                         {
-                            variable = variable.Set(ConstraintType.LessOrEqual,milpManager.FromConstant((int) decompositionBase - 1));
+                            variable = variable.Set<LessOrEqual>(milpManager.FromConstant((int) decompositionBase - 1));
                         }
                         return Tuple.Create(variable, baseRaised);
                     })
@@ -57,7 +57,7 @@ namespace MilpManager.Implementation.CompositeOperations
 
             milpManager.Operation<Addition>(
                 variables.Select(v => v.Item1.Operation<Multiplication>(milpManager.FromConstant(v.Item2)))
-                    .ToArray()).Set(ConstraintType.Equal, arguments[0]);
+                    .ToArray()).Set<Equal>(arguments[0]);
 
             return variables.Select((v, index) => {
                 var result = v.Item1;

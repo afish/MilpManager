@@ -21,8 +21,8 @@ namespace MilpManager.Implementation.Operations
 			second.Operation<Subtraction>(first)
 				.Operation<Addition>(
 					result.Operation<Multiplication>(milpManager.FromConstant(milpManager.IntegerInfinity)))
-				.Set(ConstraintType.GreaterOrEqual, milpManager.FromConstant(0))
-				.Set(ConstraintType.LessOrEqual, milpManager.FromConstant(milpManager.IntegerInfinity - (arguments.Any(a => a.IsReal()) ? milpManager.Epsilon : 1)));
+				.Set<GreaterOrEqual>(milpManager.FromConstant(0))
+				.Set<LessOrEqual>(milpManager.FromConstant(milpManager.IntegerInfinity - (arguments.Any(a => a.IsReal()) ? milpManager.Epsilon : 1)));
 
 			result.ConstantValue = arguments.All(a => a.ConstantValue.HasValue)
 				? arguments[0].ConstantValue > arguments[1].ConstantValue ? 1 : 0

@@ -2,14 +2,14 @@
 
 namespace MilpManager.Implementation.Constraints
 {
-    public class MultipleOfCalculator : IConstraintCalculator
-    {
-        public IVariable Set(IMilpManager milpManager, ConstraintType type, IVariable leftVariable, IVariable rightVariable)
-        {
-            IVariable any = milpManager.CreateAnonymous(Domain.AnyInteger);
-            leftVariable.Set(ConstraintType.Equal,any.Operation<Multiplication>(rightVariable));
+	public class MultipleOfCalculator : IConstraintCalculator
+	{
+		public IVariable Set<TConstraintType>(IMilpManager milpManager, IVariable leftVariable, IVariable rightVariable) where TConstraintType : ConstraintType
+		{
+			IVariable any = milpManager.CreateAnonymous(Domain.AnyInteger);
+			leftVariable.Set<Equal>(any.Operation<Multiplication>(rightVariable));
 
-            return leftVariable;
-        }
-    }
+			return leftVariable;
+		}
+	}
 }

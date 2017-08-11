@@ -14,12 +14,12 @@ namespace MilpManager.Implementation.CompositeConstraints
 
             var allVariables = new[] {leftVariable}.Concat(rightVariable).ToArray();
             var boundaryVariables = allVariables.Select(v => milpManager.CreateAnonymous(Domain.BinaryInteger)).ToArray();
-            milpManager.Operation<Addition>(boundaryVariables).Set(ConstraintType.LessOrEqual, one);
+            milpManager.Operation<Addition>(boundaryVariables).Set<LessOrEqual>(one);
             foreach (var pair in allVariables.Zip(boundaryVariables, Tuple.Create))
             {
                 pair.Item1
-                    .Set(ConstraintType.LessOrEqual, pair.Item2.Operation<Multiplication>(maximumIntegerValue))
-                    .Set(ConstraintType.GreaterOrEqual, pair.Item2.Operation<Multiplication>(maximumIntegerValue).Operation<Negation>());
+                    .Set<LessOrEqual>(pair.Item2.Operation<Multiplication>(maximumIntegerValue))
+                    .Set<GreaterOrEqual>(pair.Item2.Operation<Multiplication>(maximumIntegerValue).Operation<Negation>());
             }
 
             return leftVariable;

@@ -17,13 +17,13 @@ namespace MilpManager.Implementation.Operations
 			var numberNegated = number.Operation<Negation>();
 			var result = milpManager.CreateAnonymous(number.IsInteger() ? Domain.PositiveOrZeroInteger : Domain.PositiveOrZeroReal);
 
-			result.Set(ConstraintType.GreaterOrEqual, number)
-				.Set(ConstraintType.GreaterOrEqual, numberNegated);
+			result.Set<GreaterOrEqual>(number)
+				.Set<GreaterOrEqual>(numberNegated);
 
 			milpManager.Operation<Addition>(
 					result.Operation<IsEqual>(number),
 					result.Operation<IsEqual>(numberNegated))
-				.Set(ConstraintType.GreaterOrEqual, milpManager.FromConstant(1));
+				.Set<GreaterOrEqual>(milpManager.FromConstant(1));
 
 			result.ConstantValue = number.ConstantValue.HasValue ? Math.Abs(number.ConstantValue.Value) : number.ConstantValue;
 			result.Expression = $"|{number.FullExpression()}|";

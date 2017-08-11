@@ -33,15 +33,15 @@ namespace MilpManager.Implementation.CompositeOperations
                 Enumerable.Range(0, typedParameters.ArgumentsY.Length).Select(q =>
                     milpManager.CreateAnonymous(typedParameters.ArgumentMustBeOnAGrid
                         ? Domain.BinaryInteger
-                        : Domain.PositiveOrZeroReal).Set(ConstraintType.LessOrEqual, one)).ToArray())
+                        : Domain.PositiveOrZeroReal).Set<LessOrEqual>(one)).ToArray())
                 .ToArray();
 
-            x.Set(ConstraintType.Equal, milpManager.Operation<Addition>(
+            x.Set<Equal>(milpManager.Operation<Addition>(
                 Enumerable.Range(0, typedParameters.ArgumentsX.Length).SelectMany(indexX =>
                 Enumerable.Range(0, typedParameters.ArgumentsY.Length).Select(indexY => 
                     variables[indexX][indexY].Operation<Multiplication>(milpManager.FromConstant(typedParameters.ArgumentsX.ElementAt(indexX))))).ToArray()
             ));
-            y.Set(ConstraintType.Equal, milpManager.Operation<Addition>(
+            y.Set<Equal>(milpManager.Operation<Addition>(
                 Enumerable.Range(0, typedParameters.ArgumentsX.Length).SelectMany(indexX =>
                 Enumerable.Range(0, typedParameters.ArgumentsY.Length).Select(indexY =>
                     variables[indexX][indexY].Operation<Multiplication>(milpManager.FromConstant(typedParameters.ArgumentsY.ElementAt(indexY))))).ToArray()
@@ -52,7 +52,7 @@ namespace MilpManager.Implementation.CompositeOperations
                     variables[indexX][indexY].Operation<Multiplication>(milpManager.FromConstant(typedParameters.Function(typedParameters.ArgumentsX.ElementAt(indexX), typedParameters.ArgumentsY.ElementAt(indexY)))))).ToArray()
             );
 
-            milpManager.Operation<Addition>(variables.SelectMany(v => v).ToArray()).Set(ConstraintType.Equal, one);
+            milpManager.Operation<Addition>(variables.SelectMany(v => v).ToArray()).Set<Equal>(one);
 
             var xSet = Enumerable.Range(0, typedParameters.ArgumentsX.Length).Select(indexX => milpManager.Operation<Addition>(Enumerable.Range(0, typedParameters.ArgumentsY.Length).Select(indexY => variables[indexX][indexY]).ToArray())).ToArray();
              milpManager.Set(CompositeConstraintType.SpecialOrderedSetType2, xSet.First(), xSet.Skip(1).ToArray());

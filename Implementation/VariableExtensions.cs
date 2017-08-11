@@ -74,14 +74,14 @@ namespace MilpManager.Implementation
 		/// <summary>
 		/// Adds constraint to a solver
 		/// </summary>
+		/// <typeparam name="TConstraintType">Constraint type</typeparam>
 		/// <param name="variable">Variable to constrain</param>
-		/// <param name="type">Constraint type</param>
 		/// <param name="right">Right hand side of a constraint</param>
 		/// <returns>Variable passed as an argument</returns>
-		public static IVariable Set(this IVariable variable, ConstraintType type, IVariable right)
+		public static IVariable Set<TConstraintType>(this IVariable variable, IVariable right) where TConstraintType : ConstraintType
 		{
 			if (variable == null) throw new ArgumentNullException(nameof(variable));
-			return variable.MilpManager.Set(type, variable, right);
+			return variable.MilpManager.Set<TConstraintType>(variable, right);
 		}
 
 		/// <summary>
@@ -135,7 +135,7 @@ namespace MilpManager.Implementation
 		{
 			if (variable == null) throw new ArgumentNullException(nameof(variable));
 			var newVariable = variable.MilpManager.CreateAnonymous(newDomain);
-			variable.Set(ConstraintType.Equal, newVariable);
+			variable.Set<Equal>(newVariable);
 
 			return newVariable;
 		}
@@ -250,7 +250,7 @@ namespace MilpManager.Implementation
 		public static IVariable MakeTrue(this IVariable variable)
 		{
 			if (variable == null) throw new ArgumentNullException(nameof(variable));
-			return variable.Set(ConstraintType.Equal, variable.MilpManager.FromConstant(1));
+			return variable.Set<Equal>(variable.MilpManager.FromConstant(1));
 		}
 
 
@@ -262,7 +262,7 @@ namespace MilpManager.Implementation
 		public static IVariable MakeFalse(this IVariable variable)
 		{
 			if (variable == null) throw new ArgumentNullException(nameof(variable));
-			return variable.Set(ConstraintType.Equal, variable.MilpManager.FromConstant(0));
+			return variable.Set<Equal>(variable.MilpManager.FromConstant(0));
 		}
 
 		/// <summary>

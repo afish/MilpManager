@@ -20,7 +20,7 @@ namespace MilpManager.Implementation.CompositeOperations
             var options = parameters as LoopParameters;
 
             var totalBound = milpManager.CreateAnonymous(Domain.PositiveOrZeroInteger);
-            totalBound.Set(ConstraintType.LessOrEqual, milpManager.FromConstant(options.MaxIterations));
+            totalBound.Set<LessOrEqual>(milpManager.FromConstant(options.MaxIterations));
 
             options.BeforeLoopAction(totalBound, arguments);
 

@@ -43,11 +43,11 @@ namespace MilpManager.Abstraction
 		/// <summary>
 		///  Adds constraint for left hand side using value of right hand side
 		/// </summary>
+		/// <typeparam name="TConstraintType">Constraint type</typeparam>
 		/// <param name="left">Variable to set</param>
 		/// <param name="right">Variable representing constraint's right hand side</param>
-		/// <param name="type">Constraint type</param>
 		/// <returns>Returns left</returns>
-		IVariable Set(ConstraintType type, IVariable left, IVariable right);
+		IVariable Set<TConstraintType>(IVariable left, IVariable right) where TConstraintType : ConstraintType;
 		/// <summary>
 		///  Performs composite operation on passed arguments
 		/// </summary>

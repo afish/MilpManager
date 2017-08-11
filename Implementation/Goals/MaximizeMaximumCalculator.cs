@@ -21,7 +21,7 @@ namespace MilpManager.Implementation.Goals
 
             var result = milpManager.CreateAnonymous(arguments.Any(a => a.IsReal()) ? Domain.AnyReal : Domain.AnyInteger);
             arguments.Aggregate(milpManager.FromConstant(0),(existing, next) => existing.Operation<Disjunction>(result.Operation<IsEqual>(next)))
-                .Set(ConstraintType.Equal, milpManager.FromConstant(1));
+                .Set<Equal>(milpManager.FromConstant(1));
 
             return result;
         }

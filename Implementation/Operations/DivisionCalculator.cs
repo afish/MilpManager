@@ -68,10 +68,10 @@ namespace MilpManager.Implementation.Operations
 			IVariable one = milpManager.FromConstant(1);
 			var result = milpManager.CreateAnonymous(domain);
 			result.Operation<Multiplication>(arguments[1])
-				.Set(ConstraintType.LessOrEqual, arguments[0]);
+				.Set<LessOrEqual>(arguments[0]);
 			result.Operation<Addition>(one)
 				.Operation<Multiplication>(arguments[1])
-				.Set(ConstraintType.GreaterOrEqual, arguments[0].Operation<Addition>(one));
+				.Set<GreaterOrEqual>(arguments[0].Operation<Addition>(one));
 
 			result.ConstantValue = arguments.All(a => a.ConstantValue.HasValue)
 				? arguments[1].ConstantValue.Value == 0

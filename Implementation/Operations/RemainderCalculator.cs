@@ -18,15 +18,14 @@ namespace MilpManager.Implementation.Operations
 
 			var one = milpManager.FromConstant(1);
 			var any = milpManager.CreateAnonymous(Domain.PositiveOrZeroInteger);
-			any.Operation<Multiplication>(denominator).Set(ConstraintType.LessOrEqual, numerator);
+			any.Operation<Multiplication>(denominator).Set<LessOrEqual>(numerator);
 			any.Operation<Addition>(one)
 				.Operation<Multiplication>(denominator)
-				.Set(ConstraintType.GreaterOrEqual, numerator.Operation<Addition>(one));
+				.Set<GreaterOrEqual>(numerator.Operation<Addition>(one));
 
 			IVariable result = milpManager.CreateAnonymous(Domain.PositiveOrZeroInteger);
-			result.Set(ConstraintType.LessOrEqual, denominator);
-			result.Set(ConstraintType.Equal,
-				numerator.Operation<Subtraction>(denominator.Operation<Multiplication>(any)));
+			result.Set<LessOrEqual>(denominator);
+			result.Set<Equal>(numerator.Operation<Subtraction>(denominator.Operation<Multiplication>(any)));
 
 			result.ConstantValue = numerator.ConstantValue % denominator.ConstantValue;
 			result.Expression = $"{numerator.FullExpression()} % {denominator.FullExpression()}";

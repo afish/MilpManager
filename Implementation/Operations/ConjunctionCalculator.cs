@@ -17,8 +17,8 @@ namespace MilpManager.Implementation.Operations
 			var sum = milpManager.Operation<Addition>(arguments);
 			var argumentsCount = arguments.Length;
 			sum.Operation<Subtraction>(milpManager.FromConstant(argumentsCount).Operation<Multiplication>(variable))
-				.Set(ConstraintType.LessOrEqual, milpManager.FromConstant(argumentsCount - 1))
-				.Set(ConstraintType.GreaterOrEqual, milpManager.FromConstant(0));
+				.Set<LessOrEqual>(milpManager.FromConstant(argumentsCount - 1))
+				.Set<GreaterOrEqual>(milpManager.FromConstant(0));
 
 			variable.ConstantValue = arguments.Aggregate((double?)1.0, (a, b) => a.HasValue && b.ConstantValue.HasValue ? Math.Min(a.Value, b.ConstantValue.Value) : (double?)null);
 			variable.Expression = $"{string.Join(" && ", arguments.Select(a => a.FullExpression()).ToArray())}";

@@ -11,16 +11,16 @@ namespace MilpManager.Abstraction
 {
     public abstract class BaseMilpManager : IMilpManager
     {
-        protected IDictionary<ConstraintType, IConstraintCalculator> Constraints => new Dictionary
-            <ConstraintType, IConstraintCalculator>
+        protected IDictionary<Type, IConstraintCalculator> Constraints => new Dictionary
+            <Type, IConstraintCalculator>
         {
-            {ConstraintType.Equal, new CanonicalConstraintCalculator()},
-            {ConstraintType.GreaterOrEqual, new CanonicalConstraintCalculator()},
-            {ConstraintType.GreaterThan, new CanonicalConstraintCalculator()},
-            {ConstraintType.LessOrEqual, new CanonicalConstraintCalculator()},
-            {ConstraintType.LessThan, new CanonicalConstraintCalculator()},
-            {ConstraintType.NotEqual, new CanonicalConstraintCalculator()},
-            {ConstraintType.MultipleOf, new MultipleOfCalculator()}
+            {typeof(Equal), new CanonicalConstraintCalculator()},
+            {typeof(GreaterOrEqual), new CanonicalConstraintCalculator()},
+            {typeof(GreaterThan), new CanonicalConstraintCalculator()},
+            {typeof(LessOrEqual), new CanonicalConstraintCalculator()},
+            {typeof(LessThan), new CanonicalConstraintCalculator()},
+            {typeof(NotEqual), new CanonicalConstraintCalculator()},
+            {typeof(MultipleOf), new MultipleOfCalculator()}
         };
 
         protected IDictionary<CompositeConstraintType, ICompositeConstraintCalculator> CompositeConstraints => new Dictionary
@@ -115,7 +115,7 @@ namespace MilpManager.Abstraction
             var variable = Create(name, value.Domain.MakeNonConstant());
             variable.ConstantValue = value.ConstantValue;
             variable.Expression = $"{value.FullExpression()}";
-            Set(ConstraintType.Equal, variable, value);
+            Set<Equal>(variable, value);
             return variable;
         }
 
@@ -124,7 +124,7 @@ namespace MilpManager.Abstraction
             var variable = CreateAnonymous(value.Domain.MakeNonConstant());
             variable.ConstantValue = value.ConstantValue;
             variable.Expression = $"{value.FullExpression()}";
-            Set(ConstraintType.Equal, variable, value);
+            Set<Equal>(variable, value);
             return variable;
         }
 
@@ -132,15 +132,15 @@ namespace MilpManager.Abstraction
         {
             if (Operations[typeof(TOperationType)].SupportsOperation<TOperationType>(variables))
             {
-                return Operations[typeof(TOperationType)].Calculate< TOperationType>(this, variables);
+                return Operations[typeof(TOperationType)].Calculate<TOperationType>(this, variables);
             }
 
             throw new NotSupportedException(SolverUtilities.FormatUnsupportedMessage(typeof(TOperationType), variables));
         }
 
-        public virtual IVariable Set(ConstraintType type, IVariable left, IVariable right)
+        public virtual IVariable Set<TConstraintType>(IVariable left, IVariable right) where TConstraintType : ConstraintType
         {
-            return Constraints[type].Set(this, type, left, right);
+            return Constraints[typeof(TConstraintType)].Set<TConstraintType>(this, left, right);
         }
 
         public virtual IEnumerable<IVariable> CompositeOperation(CompositeOperationType type,
@@ -183,13 +183,13 @@ namespace MilpManager.Abstraction
 
         public virtual void SetGreaterOrEqual(IVariable variable, IVariable bound)
         {
-            bound.Set(ConstraintType.LessOrEqual, variable);
+            bound.Set<LessOrEqual>(variable);
         }
 
         public virtual void SetEqual(IVariable variable, IVariable bound)
         {
-            bound.Set(ConstraintType.LessOrEqual, variable);
-            variable.Set(ConstraintType.LessOrEqual, bound);
+            bound.Set<LessOrEqual>(variable);
+            variable.Set<LessOrEqual>(bound);
         }
 
         public virtual IVariable FromConstant(double value)

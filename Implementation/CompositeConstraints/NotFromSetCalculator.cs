@@ -11,7 +11,7 @@ namespace MilpManager.Implementation.CompositeConstraints
             rightVariable.Aggregate(milpManager.FromConstant(0),
                 (current, variable) =>
                     current.Operation<Addition>(leftVariable.Operation<IsEqual>(variable))).Create()
-                .Set(ConstraintType.Equal, milpManager.FromConstant(0));
+                .Set<Equal>(milpManager.FromConstant(0));
 
             return leftVariable;
         }

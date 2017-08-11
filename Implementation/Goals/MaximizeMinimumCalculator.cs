@@ -22,7 +22,7 @@ namespace MilpManager.Implementation.Goals
             var result = milpManager.CreateAnonymous(arguments.Any(a => a.IsReal()) ? Domain.AnyReal : Domain.AnyInteger);
             foreach (var argument in arguments)
             {
-                result.Set(ConstraintType.LessOrEqual, argument);
+                result.Set<LessOrEqual>(argument);
             }
 
             return result;
