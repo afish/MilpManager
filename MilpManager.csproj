@@ -78,8 +78,10 @@
     <Compile Include="Abstraction\BaseMilpManager.cs" />
     <Compile Include="Abstraction\BaseMilpSolver.cs" />
     <Compile Include="Abstraction\CompositeConstraintType.cs" />
+    <Compile Include="Abstraction\DefaultCalculators.cs" />
     <Compile Include="Abstraction\GoalType.cs" />
     <Compile Include="Abstraction\ICompositeConstraintParameters.cs" />
+    <Compile Include="Abstraction\MilpManagerSettings.cs" />
     <Compile Include="Implementation\CompositeOperations\Approximate2DCalculator.cs" />
     <Compile Include="Implementation\CompositeOperations\Approximate2DParameters.cs" />
     <Compile Include="Implementation\CompositeOperations\ArraySetCalculator.cs" />
