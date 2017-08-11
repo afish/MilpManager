@@ -21,7 +21,7 @@ namespace MilpManager.Abstraction
 
 		protected IDictionary<GoalType, IGoalCalculator> GoalCalculators = DefaultCalculators.GoalCalculators;
 
-		public readonly MilpManagerSettings Settings;
+		public MilpManagerSettings Settings { get; }
 
 		protected BaseMilpManager(MilpManagerSettings settings)
 		{
@@ -40,7 +40,7 @@ namespace MilpManager.Abstraction
 		{
 			var variable = Create(name, value.Domain.MakeNonConstant());
 			variable.ConstantValue = value.ConstantValue;
-			variable.Expression = $"{value.FullExpression()}";
+			SolverUtilities.SetExpression(variable, $"{value.FullExpression()}");
 			Set<Equal>(variable, value);
 			return variable;
 		}
@@ -49,7 +49,7 @@ namespace MilpManager.Abstraction
 		{
 			var variable = CreateAnonymous(value.Domain.MakeNonConstant());
 			variable.ConstantValue = value.ConstantValue;
-			variable.Expression = $"{value.FullExpression()}";
+			SolverUtilities.SetExpression(variable, $"{value.FullExpression()}");
 			Set<Equal>(variable, value);
 			return variable;
 		}

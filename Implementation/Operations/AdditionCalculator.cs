@@ -40,7 +40,7 @@ namespace MilpManager.Implementation.Operations
 			{
 				var result = milpManager.SumVariables(x, y, domain);
 				result.ConstantValue = x.ConstantValue + y.ConstantValue;
-				result.Expression = $"{x.FullExpression()} + {y.FullExpression()}";
+				SolverUtilities.SetExpression(result, $"{x.FullExpression()} + {y.FullExpression()}");
 				return result;
 			});
 		}

@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
+using MilpManager.Implementation;
 
 namespace MilpManager.Abstraction
 {
@@ -32,7 +33,7 @@ namespace MilpManager.Abstraction
             variable.Name = name;
             variable.Domain = domain;
             variable.MilpManager = this;
-            variable.Expression = "";
+			SolverUtilities.SetExpression(variable, "");
             Variables[name] = variable;
             return variable;
         }
@@ -51,7 +52,7 @@ namespace MilpManager.Abstraction
             variable.ConstantValue = value;
             variable.Domain = domain;
             variable.MilpManager = this;
-            variable.Expression = $"{value}";
+			SolverUtilities.SetExpression(variable, $"{value}");
             return variable;
         }
 
@@ -64,7 +65,7 @@ namespace MilpManager.Abstraction
             variable.ConstantValue = value;
             variable.Domain = domain;
             variable.MilpManager = this;
-            variable.Expression = $"{value}";
+			SolverUtilities.SetExpression(variable, $"{value}");
             return variable;
         }
         public override IVariable SumVariables(IVariable first, IVariable second, Domain domain)

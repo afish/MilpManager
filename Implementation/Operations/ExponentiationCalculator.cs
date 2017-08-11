@@ -68,7 +68,7 @@ namespace MilpManager.Implementation.Operations
 						? number.ConstantValue
 						: Math.Pow(number.ConstantValue.Value, power.ConstantValue.Value)
 				: (double?)null;
-			result.Expression = $"{number.FullExpression()} ** {power.FullExpression()}";
+			SolverUtilities.SetExpression(result, $"{number.FullExpression()} ** {power.FullExpression()}");
 			return result;
 		}
 

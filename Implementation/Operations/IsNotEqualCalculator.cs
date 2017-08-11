@@ -23,7 +23,7 @@ namespace MilpManager.Implementation.Operations
 			disjunction.ConstantValue = arguments.All(a => a.ConstantValue.HasValue)
 				? arguments[0].ConstantValue != arguments[1].ConstantValue ? 1 : 0
 				: (double?)null;
-			disjunction.Expression = $"{arguments[0].FullExpression()} ?!= {arguments[1].FullExpression()}";
+			SolverUtilities.SetExpression(disjunction, $"{arguments[0].FullExpression()} ?!= {arguments[1].FullExpression()}");
 			return disjunction;
 		}
 

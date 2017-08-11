@@ -16,7 +16,7 @@ namespace MilpManager.Implementation.Operations
 
 			var result = milpManager.NegateVariable(arguments[0], domain);
 			result.ConstantValue = -arguments[0].ConstantValue;
-			result.Expression = $"-{arguments[0].FullExpression()}";
+			SolverUtilities.SetExpression(result, $"-{arguments[0].FullExpression()}");
 			return result;
 		}
 

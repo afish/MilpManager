@@ -26,7 +26,7 @@ namespace MilpManager.Implementation.Operations
 				.Set<GreaterOrEqual>(milpManager.FromConstant(1));
 
 			result.ConstantValue = number.ConstantValue.HasValue ? Math.Abs(number.ConstantValue.Value) : number.ConstantValue;
-			result.Expression = $"|{number.FullExpression()}|";
+			SolverUtilities.SetExpression(result, $"|{number.FullExpression()}|");
 			return result;
 		}
 

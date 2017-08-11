@@ -14,7 +14,7 @@ namespace MilpManager.Implementation.Operations
 		protected override IVariable CalculateInternal<TOperationType>(IMilpManager milpManager, params IVariable[] arguments)
 		{
 			var variable = arguments[0].Operation<BinaryNegation>().Operation<Disjunction>(arguments[1]);
-			variable.Expression = $"{arguments[0].FullExpression()} => {arguments[1].FullExpression()}";
+			SolverUtilities.SetExpression(variable, $"{arguments[0].FullExpression()} => {arguments[1].FullExpression()}");
 			return variable;
 		}
 

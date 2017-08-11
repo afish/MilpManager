@@ -16,9 +16,16 @@ namespace MilpManager.Implementation.Operations
 		{
 			if (!SupportsOperation<TOperationType>(arguments)) throw new NotSupportedException(SolverUtilities.FormatUnsupportedMessage(typeof(TOperationType), arguments));
 
-			return arguments.All(x => x.IsConstant())
-				? CalculateConstantInternal<TOperationType>(milpManager, arguments)
-				: CalculateInternal<TOperationType>(milpManager, arguments);
+			if (arguments.All(x => x.IsConstant()))
+			{
+				return CalculateConstantInternal<TOperationType>(milpManager, arguments);
+			}
+			else
+			{
+				var result = CalculateInternal<TOperationType>(milpManager, arguments);
+
+				return result;
+			}
 		}
 
 		protected abstract bool SupportsOperationInternal<TOperationType>(params IVariable[] arguments)

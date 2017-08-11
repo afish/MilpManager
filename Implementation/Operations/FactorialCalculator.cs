@@ -38,7 +38,7 @@ namespace MilpManager.Implementation.Operations
 			}
 
 			var finalResult = result.ChangeDomain(Domain.PositiveOrZeroInteger);
-			finalResult.Expression = $"{number.FullExpression()}!";
+			SolverUtilities.SetExpression(finalResult, $"{number.FullExpression()}!");
 			return finalResult;
 		}
 

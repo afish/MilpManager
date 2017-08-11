@@ -20,7 +20,7 @@ namespace MilpManager.Implementation.Operations
 				trueBranch,
 				falseBranch
 				).ChangeDomain(trueBranch.LowestEncompassingDomain(falseBranch)));
-			result.Expression = $"{arguments[0].FullExpression()} ? {arguments[1].FullExpression()} : {arguments[2].FullExpression()}";
+			SolverUtilities.SetExpression(result, $"{arguments[0].FullExpression()} ? {arguments[1].FullExpression()} : {arguments[2].FullExpression()}");
 			result.ConstantValue = !arguments[0].ConstantValue.HasValue
 				? null
 				: (int)arguments[0].ConstantValue.Value == 1 ? trueBranch.ConstantValue : falseBranch.ConstantValue;

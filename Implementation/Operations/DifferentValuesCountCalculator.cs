@@ -24,7 +24,7 @@ namespace MilpManager.Implementation.Operations
 				total = total.Operation<Addition>(different);
 			}
 
-			total.Expression = $"differentValuesCount({string.Join(",", arguments.Select(a => a.FullExpression()).ToArray())})";
+			SolverUtilities.SetExpression(total, $"differentValuesCount({string.Join(",", arguments.Select(a => a.FullExpression()).ToArray())})");
 			return total;
 		}
 

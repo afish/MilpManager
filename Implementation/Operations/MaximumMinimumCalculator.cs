@@ -63,8 +63,10 @@ namespace MilpManager.Implementation.Operations
 				min.ConstantValue = arguments.All(a => a.ConstantValue.HasValue)
 					? Math.Min(arguments[0].ConstantValue.Value, arguments[1].ConstantValue.Value)
 					: (double?)null;
-				max.Expression = $"max({arguments[0].FullExpression()}, {arguments[1].FullExpression()}";
-				min.Expression = $"min({arguments[0].FullExpression()}, {arguments[1].FullExpression()}";
+
+				SolverUtilities.SetExpression(max, $"max({arguments[0].FullExpression()}, {arguments[1].FullExpression()}");
+				SolverUtilities.SetExpression(min, $"min({arguments[0].FullExpression()}, {arguments[1].FullExpression()}");
+
 				return typeof(TOperationType) == typeof(Maximum) ? max : min;
 			}
 		}

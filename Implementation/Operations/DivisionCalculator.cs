@@ -61,7 +61,7 @@ namespace MilpManager.Implementation.Operations
 				var finalDomain = arguments.All(x => x.IsConstant()) ? domain.MakeConstant() : domain;
 				var physicalResult = milpManager.DivideVariableByConstant(arguments[0], arguments[1], finalDomain);
 				physicalResult.ConstantValue = arguments[0].ConstantValue / arguments[1].ConstantValue;
-				physicalResult.Expression = $"{arguments[0].FullExpression()} / {arguments[1].FullExpression()}";
+				SolverUtilities.SetExpression(physicalResult, $"{arguments[0].FullExpression()} / {arguments[1].FullExpression()}");
 				return physicalResult;
 			}
 
@@ -78,7 +78,7 @@ namespace MilpManager.Implementation.Operations
 					? (double?)null
 					: (long)arguments[0].ConstantValue.Value / (long)arguments[1].ConstantValue.Value
 				: null;
-			result.Expression = $"{arguments[0].FullExpression()} / {arguments[1].FullExpression()}";
+			SolverUtilities.SetExpression(result, $"{arguments[0].FullExpression()} / {arguments[1].FullExpression()}");
 			return result;
 		}
 

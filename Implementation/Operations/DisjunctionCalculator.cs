@@ -21,7 +21,7 @@ namespace MilpManager.Implementation.Operations
 				.Set<GreaterOrEqual>(milpManager.FromConstant(-(argumentsCount - 1)));
 
 			variable.ConstantValue = arguments.Aggregate((double?)0.0, (a, b) => a.HasValue && b.ConstantValue.HasValue ? Math.Max(a.Value, b.ConstantValue.Value) : (double?)null);
-			variable.Expression = $"{string.Join(" || ", arguments.Select(a => a.FullExpression()).ToArray())}";
+			SolverUtilities.SetExpression(variable, $"{string.Join(" || ", arguments.Select(a => a.FullExpression()).ToArray())}");
 			return variable;
 		}
 

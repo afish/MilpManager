@@ -1,6 +1,4 @@
-﻿using System.Security.Cryptography.X509Certificates;
-
-namespace MilpManager.Abstraction
+﻿namespace MilpManager.Abstraction
 {
     public interface IVariable
     {

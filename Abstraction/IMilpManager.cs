@@ -21,6 +21,10 @@ namespace MilpManager.Abstraction
 		/// </summary>
 		double Epsilon { get; }
 		/// <summary>
+		///  Settings used by manager
+		/// </summary>
+		MilpManagerSettings Settings { get; }
+		/// <summary>
 		///  Creates variable based on existing value
 		/// </summary>
 		/// <param name="name">Name of created variable</param>

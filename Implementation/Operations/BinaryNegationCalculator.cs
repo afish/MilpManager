@@ -14,7 +14,7 @@ namespace MilpManager.Implementation.Operations
 		protected override IVariable CalculateInternal<TOperationType>(IMilpManager milpManager, params IVariable[] arguments)
 		{
 			var result = milpManager.FromConstant(1).Operation<Subtraction>(arguments[0]).ChangeDomain(Domain.BinaryInteger).Create();
-			result.Expression = $"!{arguments[0].FullExpression()}";
+			SolverUtilities.SetExpression(result, $"!{arguments[0].FullExpression()}");
 			return result;
 		}
 

@@ -24,7 +24,7 @@ namespace MilpManager.Implementation.Operations
 			gcd.ConstantValue = a.ConstantValue.HasValue && b.ConstantValue.HasValue
 				? Gcd((int) a.ConstantValue.Value, (int) b.ConstantValue.Value)
 				: (double?) null;
-			gcd.Expression = $"gcd({a.FullExpression()}, {b.FullExpression()})";
+			SolverUtilities.SetExpression(gcd, $"gcd({a.FullExpression()}, {b.FullExpression()})");
 			return gcd;
 		}
 		private static int Gcd(int a, int b)

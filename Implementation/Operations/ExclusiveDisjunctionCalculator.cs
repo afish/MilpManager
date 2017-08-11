@@ -17,7 +17,7 @@ namespace MilpManager.Implementation.Operations
 				milpManager.Operation<Disjunction>(
 				milpManager.Operation<Conjunction>(a.Operation<BinaryNegation>(), b),
 				milpManager.Operation<Conjunction>(a, b.Operation<BinaryNegation>())));
-			variable.Expression = $"{string.Join(" ^ ", arguments.Select(a => a.FullExpression()).ToArray())}";
+			SolverUtilities.SetExpression(variable, $"{string.Join(" ^ ", arguments.Select(a => a.FullExpression()).ToArray())}");
 			return variable;
 		}
 

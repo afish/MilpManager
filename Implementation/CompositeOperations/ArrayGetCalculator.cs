@@ -37,7 +37,7 @@ namespace MilpManager.Implementation.CompositeOperations
             }
 
             result.ConstantValue = index.ConstantValue.HasValue ? arguments[(int)index.ConstantValue.Value].ConstantValue : null;
-            result.Expression = $"arrayGet(index: {index.FullExpression()}, {string.Join(", ", arguments.Select(a => a.FullExpression()).ToArray())})";
+			SolverUtilities.SetExpression(result, $"arrayGet(index: {index.FullExpression()}, {string.Join(", ", arguments.Select(a => a.FullExpression()).ToArray())})");
 
             return new[] {result};
         }

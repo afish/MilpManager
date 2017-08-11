@@ -24,7 +24,7 @@ namespace MilpManager.Implementation.CompositeOperations
 
             return decomposition.Zip(Enumerable.Range(0, milpManager.IntegerWidth), (v, index) =>
             {
-                v.Expression = $"unsignedMagnitudeDecomposition(bit: {index}, {arguments[0].FullExpression()})";
+				SolverUtilities.SetExpression(v, $"unsignedMagnitudeDecomposition(bit: {index}, {arguments[0].FullExpression()})");
                 return v;
             });
         }

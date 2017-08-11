@@ -28,7 +28,7 @@ namespace MilpManager.Implementation.Operations
 			result.Set<Equal>(numerator.Operation<Subtraction>(denominator.Operation<Multiplication>(any)));
 
 			result.ConstantValue = numerator.ConstantValue % denominator.ConstantValue;
-			result.Expression = $"{numerator.FullExpression()} % {denominator.FullExpression()}";
+			SolverUtilities.SetExpression(result, $"{numerator.FullExpression()} % {denominator.FullExpression()}");
 			return result;
 		}
 
