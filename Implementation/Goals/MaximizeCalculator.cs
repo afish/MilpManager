@@ -3,17 +3,18 @@ using MilpManager.Abstraction;
 
 namespace MilpManager.Implementation.Goals
 {
-    public class MaximizeCalculator : IGoalCalculator
-    {
-        public bool SupportsOperation(GoalType type, params IVariable[] arguments)
-        {
-            return type == GoalType.Maximize && arguments.Length == 1;
-        }
+	public class MaximizeCalculator : BaseGoalCalculator
+	{
+		protected override bool SupportsOperationInternal<TGoalType>(params IVariable[] arguments)
+		{
+			return arguments.Length == 1;
+		}
 
-        public IVariable Calculate(IMilpManager milpManager, GoalType type, params IVariable[] arguments)
-        {
-            if (!SupportsOperation(type, arguments)) throw new NotSupportedException(SolverUtilities.FormatUnsupportedMessage(type, arguments));
-            return arguments[0];
-        }
-    }
+		protected override IVariable CalculateInternal<TGoalType>(IMilpManager milpManager, params IVariable[] arguments)
+		{
+			return arguments[0];
+		}
+
+		protected override Type[] SupportedTypes => new[] {typeof (Maximize)};
+	}
 }

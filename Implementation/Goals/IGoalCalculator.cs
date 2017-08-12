@@ -4,8 +4,8 @@ namespace MilpManager.Implementation.Goals
 {
     public interface  IGoalCalculator
     {
-        bool SupportsOperation(GoalType type, params IVariable[] arguments);
+        bool SupportsOperation<TGoalType>(params IVariable[] arguments) where TGoalType : GoalType;
 
-        IVariable Calculate(IMilpManager milpManager, GoalType type, params IVariable[] arguments);
+        IVariable Calculate<TGoalType>(IMilpManager milpManager, params IVariable[] arguments) where TGoalType : GoalType;
     }
 }

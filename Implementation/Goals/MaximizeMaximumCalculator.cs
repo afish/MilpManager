@@ -4,26 +4,27 @@ using MilpManager.Abstraction;
 
 namespace MilpManager.Implementation.Goals
 {
-    public class MaximizeMaximumCalculator : IGoalCalculator
-    {
-        public bool SupportsOperation(GoalType type, params IVariable[] arguments)
-        {
-            return type == GoalType.MaximizeMaximum && arguments.Any();
-        }
+	public class MaximizeMaximumCalculator : BaseGoalCalculator
+	{
+		protected override bool SupportsOperationInternal<TGoalType>(params IVariable[] arguments)
+		{
+			return arguments.Any();
+		}
 
-        public IVariable Calculate(IMilpManager milpManager, GoalType type, params IVariable[] arguments)
-        {
-            if (!SupportsOperation(type, arguments)) throw new NotSupportedException(SolverUtilities.FormatUnsupportedMessage(type, arguments));
-            if (arguments.All(a => a.IsConstant()))
-            {
-                return milpManager.Operation<Maximum>(arguments);
-            }
+		protected override IVariable CalculateInternal<TGoalType>(IMilpManager milpManager, params IVariable[] arguments)
+		{
+			var result = milpManager.CreateAnonymous(arguments.Any(a => a.IsReal()) ? Domain.AnyReal : Domain.AnyInteger);
+			arguments.Aggregate(milpManager.FromConstant(0), (existing, next) => existing.Operation<Disjunction>(result.Operation<IsEqual>(next)))
+				.Set<Equal>(milpManager.FromConstant(1));
 
-            var result = milpManager.CreateAnonymous(arguments.Any(a => a.IsReal()) ? Domain.AnyReal : Domain.AnyInteger);
-            arguments.Aggregate(milpManager.FromConstant(0),(existing, next) => existing.Operation<Disjunction>(result.Operation<IsEqual>(next)))
-                .Set<Equal>(milpManager.FromConstant(1));
+			return result;
+		}
 
-            return result;
-        }
-    }
+		protected override Type[] SupportedTypes => new[] {typeof (MaximizeMaximum)};
+
+		protected override IVariable CalculateConstantInternal<TGoalType>(IMilpManager milpManager, params IVariable[] arguments)
+		{
+			return milpManager.Operation<Maximum>(arguments);
+		}
+	}
 }

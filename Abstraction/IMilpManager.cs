@@ -89,10 +89,10 @@ namespace MilpManager.Abstraction
 		/// <summary>
 		///  Makes goal based on variables. The goal is not added to solver
 		/// </summary>
-		/// <param name="type">Goal type</param>
+		/// <typeparam name="TGoalType">Goal type</typeparam>
 		/// <param name="variables">Variables to create goal from</param>
 		/// <returns>Variable representing goal</returns>
-		IVariable MakeGoal(GoalType type, params IVariable[] variables);
+		IVariable MakeGoal<TGoalType>(params IVariable[] variables) where TGoalType : GoalType;
 		/// <summary>
 		/// Calculates sum of variables.
 		/// </summary>

@@ -84,14 +84,14 @@ namespace MilpManager.Abstraction
 			{typeof(SpecialOrderedSetType2), new SOS2Calculator()}
 		};
 
-		public static IDictionary<GoalType, IGoalCalculator> GoalCalculators => new Dictionary<GoalType, IGoalCalculator>
+		public static IDictionary<Type, IGoalCalculator> GoalCalculators => new Dictionary<Type, IGoalCalculator>
 		{
-			{GoalType.Minimize, new MinimizeCalculator() },
-			{GoalType.Maximize, new MaximizeCalculator() },
-			{GoalType.MaximizeMinium, new MaximizeMinimumCalculator() },
-			{GoalType.MinimizeMaximum, new MinimizeMaximumCalculator() },
-			{GoalType.MaximizeMaximum, new MaximizeMaximumCalculator() },
-			{GoalType.MinimizeMinimum, new MinimizeMinimumCalculator() }
+			{typeof(Minimize), new MinimizeCalculator() },
+			{typeof(Maximize), new MaximizeCalculator() },
+			{typeof(MaximizeMinimum), new MaximizeMinimumCalculator() },
+			{typeof(MinimizeMaximum), new MinimizeMaximumCalculator() },
+			{typeof(MaximizeMaximum), new MaximizeMaximumCalculator() },
+			{typeof(MinimizeMinimum), new MinimizeMinimumCalculator() }
 		};
 	}
 }

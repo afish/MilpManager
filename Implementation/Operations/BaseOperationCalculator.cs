@@ -6,7 +6,6 @@ namespace MilpManager.Implementation.Operations
 {
 	public abstract class BaseOperationCalculator : IOperationCalculator
 	{
-
 		public bool SupportsOperation<TOperationType>(params IVariable[] arguments) where TOperationType : OperationType
 		{
 			return SupportedTypes.Contains(typeof (TOperationType)) && SupportsOperationInternal<TOperationType>(arguments);

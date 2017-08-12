@@ -4,22 +4,23 @@ using MilpManager.Abstraction;
 
 namespace MilpManager.Implementation.Goals
 {
-    public class MinimizeMinimumCalculator : IGoalCalculator
-    {
-        public bool SupportsOperation(GoalType type, params IVariable[] arguments)
-        {
-            return type == GoalType.MinimizeMinimum && arguments.Any();
-        }
+	public class MinimizeMinimumCalculator : BaseGoalCalculator
+	{
+		protected override bool SupportsOperationInternal<TGoalType>(params IVariable[] arguments)
+		{
+			return arguments.Any();
+		}
 
-        public IVariable Calculate(IMilpManager milpManager, GoalType type, params IVariable[] arguments)
-        {
-            if (!SupportsOperation(type, arguments)) throw new NotSupportedException(SolverUtilities.FormatUnsupportedMessage(type, arguments));
-            if (arguments.All(a => a.IsConstant()))
-            {
-                return milpManager.Operation<Minimum>(arguments);
-            }
-            
-            return milpManager.MakeGoal(GoalType.MaximizeMaximum, arguments).MakeGoal(GoalType.Minimize);
-        }
-    }
+		protected override IVariable CalculateInternal<TGoalType>(IMilpManager milpManager, params IVariable[] arguments)
+		{
+			return milpManager.MakeGoal<MaximizeMaximum>(arguments).MakeGoal<Minimize>();
+		}
+
+		protected override Type[] SupportedTypes => new[] {typeof (MinimizeMinimum)};
+
+		protected override IVariable CalculateConstantInternal<TGoalType>(IMilpManager milpManager, params IVariable[] arguments)
+		{
+			return milpManager.Operation<Minimum>(arguments);
+		}
+	}
 }

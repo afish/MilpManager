@@ -1,0 +1,45 @@
+﻿using System;
+using System.Linq;
+using MilpManager.Abstraction;
+
+namespace MilpManager.Implementation.Goals
+{
+	public abstract class BaseGoalCalculator : IGoalCalculator
+	{
+		public bool SupportsOperation<TGoalType>(params IVariable[] arguments) where TGoalType : GoalType
+		{
+			return SupportedTypes.Contains(typeof(TGoalType)) && SupportsOperationInternal<TGoalType>(arguments);
+		}
+
+		public IVariable Calculate<TGoalType>(IMilpManager milpManager, params IVariable[] arguments) where TGoalType : GoalType
+		{
+			if (!SupportsOperation<TGoalType>(arguments)) throw new NotSupportedException(SolverUtilities.FormatUnsupportedMessage(typeof(TGoalType), arguments));
+
+			if (arguments.All(x => x.IsConstant()))
+			{
+				return CalculateConstantInternal<TGoalType>(milpManager, arguments);
+			}
+			else
+			{
+				var result = CalculateInternal<TGoalType>(milpManager, arguments);
+
+				return result;
+			}
+		}
+
+		protected virtual IVariable CalculateConstantInternal<TGoalType>(IMilpManager milpManager,
+			params IVariable[] arguments)
+			where TGoalType : GoalType
+		{
+			return CalculateInternal<TGoalType>(milpManager, arguments);
+		}
+
+		protected abstract bool SupportsOperationInternal<TGoalType>(params IVariable[] arguments)
+			where TGoalType : GoalType;
+
+		protected abstract IVariable CalculateInternal<TGoalType>(IMilpManager milpManager, params IVariable[] arguments)
+			where TGoalType : GoalType;
+
+		protected abstract Type[] SupportedTypes { get; }
+	}
+}

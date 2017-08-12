@@ -19,7 +19,7 @@ namespace MilpManager.Abstraction
 
 		protected IDictionary<Type, IOperationCalculator> Operations = DefaultCalculators.Operations;
 
-		protected IDictionary<GoalType, IGoalCalculator> GoalCalculators = DefaultCalculators.GoalCalculators;
+		protected IDictionary<Type, IGoalCalculator> GoalCalculators = DefaultCalculators.GoalCalculators;
 
 		public MilpManagerSettings Settings { get; }
 
@@ -96,14 +96,14 @@ namespace MilpManager.Abstraction
 			return CompositeConstraints[typeof(TCompositeConstraintType)].Set<TCompositeConstraintType>(this, parameters, left, variables);
 		}
 
-		public IVariable MakeGoal(GoalType type, params IVariable[] variables)
+		public IVariable MakeGoal<TGoalType>(params IVariable[] variables) where TGoalType : GoalType
 		{
-			if (GoalCalculators[type].SupportsOperation(type, variables))
+			if (GoalCalculators[typeof(TGoalType)].SupportsOperation<TGoalType>(variables))
 			{
-				return GoalCalculators[type].Calculate(this, type, variables);
+				return GoalCalculators[typeof(TGoalType)].Calculate<TGoalType>(this, variables);
 			}
 
-			throw new NotSupportedException(SolverUtilities.FormatUnsupportedMessage(type, variables));
+			throw new NotSupportedException(SolverUtilities.FormatUnsupportedMessage(typeof(TGoalType), variables));
 		}
 
 		public virtual void SetGreaterOrEqual(IVariable variable, IVariable bound)

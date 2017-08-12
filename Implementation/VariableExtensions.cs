@@ -118,14 +118,14 @@ namespace MilpManager.Implementation
 		/// <summary>
 		/// Makes goal
 		/// </summary>
+		/// <typeparam name="TGoalType">Goal type</typeparam>
 		/// <param name="variable">Variable to make goal</param>
-		/// <param name="type">Goal type</param>
 		/// <param name="variables">Additional variables required to make a goal</param>
 		/// <returns>Variable representing goal</returns>
-		public static IVariable MakeGoal(this IVariable variable, GoalType type, params IVariable[] variables)
+		public static IVariable MakeGoal<TGoalType>(this IVariable variable, params IVariable[] variables) where TGoalType : GoalType
 		{
 			if (variable == null) throw new ArgumentNullException(nameof(variable));
-			return variable.MilpManager.MakeGoal(type, new[] { variable }.Concat(variables).ToArray());
+			return variable.MilpManager.MakeGoal<TGoalType>(new[] { variable }.Concat(variables).ToArray());
 		}
 
 		/// <summary>

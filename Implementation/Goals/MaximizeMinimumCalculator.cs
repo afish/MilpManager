@@ -4,28 +4,29 @@ using MilpManager.Abstraction;
 
 namespace MilpManager.Implementation.Goals
 {
-    public class MaximizeMinimumCalculator : IGoalCalculator
-    {
-        public bool SupportsOperation(GoalType type, params IVariable[] arguments)
-        {
-            return type == GoalType.MaximizeMinium && arguments.Any();
-        }
+	public class MaximizeMinimumCalculator : BaseGoalCalculator
+	{
+		protected override bool SupportsOperationInternal<TGoalType>(params IVariable[] arguments)
+		{
+			return arguments.Any();
+		}
 
-        public IVariable Calculate(IMilpManager milpManager, GoalType type, params IVariable[] arguments)
-        {
-            if (!SupportsOperation(type, arguments)) throw new NotSupportedException(SolverUtilities.FormatUnsupportedMessage(type, arguments));
-            if (arguments.All(a => a.IsConstant()))
-            {
-                return milpManager.Operation<Minimum>(arguments);
-            }
+		protected override IVariable CalculateInternal<TGoalType>(IMilpManager milpManager, params IVariable[] arguments)
+		{
+			var result = milpManager.CreateAnonymous(arguments.Any(a => a.IsReal()) ? Domain.AnyReal : Domain.AnyInteger);
+			foreach (var argument in arguments)
+			{
+				result.Set<LessOrEqual>(argument);
+			}
 
-            var result = milpManager.CreateAnonymous(arguments.Any(a => a.IsReal()) ? Domain.AnyReal : Domain.AnyInteger);
-            foreach (var argument in arguments)
-            {
-                result.Set<LessOrEqual>(argument);
-            }
+			return result;
+		}
 
-            return result;
-        }
-    }
+		protected override Type[] SupportedTypes => new[] {typeof (MaximizeMinimum) };
+
+		protected override IVariable CalculateConstantInternal<TGoalType>(IMilpManager milpManager, params IVariable[] arguments)
+		{
+			return milpManager.Operation<Minimum>(arguments);
+		}
+	}
 }
