@@ -2,16 +2,16 @@
 {
 	public class MilpManagerSettings
 	{
-		public MilpManagerSettings(int integerWidth, double epsilon = 0.000000001)
+		public MilpManagerSettings()
 		{
-			IntegerWidth = integerWidth;
-			Epsilon = epsilon;
+			IntegerWidth = 10;
+			Epsilon = 0.000000001;
 			StoreDebugExpressions = false;
 			CacheConstants = true;
 		}
 
-		public int IntegerWidth { get; }
-		public double Epsilon { get; }
+		public int IntegerWidth { get; set; }
+		public double Epsilon { get; set; }
 		public bool StoreDebugExpressions { get; set; }
 		public bool CacheConstants { get; set; }
 	}
