@@ -12,7 +12,7 @@ namespace MilpManager.Implementation.Operations
 
 			var infinity = milpManager.FromConstant(milpManager.MaximumIntegerValue);
 			var currentPower = milpManager.Operation<Minimum>(number, isEdgeCase.Operation<BinaryNegation>().Operation<Multiplication>(infinity));
-			var decomposition = power.CompositeOperation(CompositeOperationType.UnsignedMagnitudeDecomposition).Take(digits).ToArray();
+			var decomposition = power.CompositeOperation<UnsignedMagnitudeDecomposition>().Take(digits).ToArray();
 			var one = milpManager.FromConstant(1);
 			var result = one;
 

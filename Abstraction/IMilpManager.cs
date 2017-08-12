@@ -55,18 +55,18 @@ namespace MilpManager.Abstraction
 		/// <summary>
 		///  Performs composite operation on passed arguments
 		/// </summary>
-		/// <param name="type">Type of operation to perform</param>
+		/// <typeparam name="TCompositeOperationType">Type of operation to perform</typeparam>
 		/// <param name="variables">Operation arguments</param>
 		/// <returns>Sequence of results of operation</returns>
-		IEnumerable<IVariable> CompositeOperation(CompositeOperationType type, params IVariable[] variables);
+		IEnumerable<IVariable> CompositeOperation<TCompositeOperationType>(params IVariable[] variables) where TCompositeOperationType : CompositeOperationType;
 		/// <summary>
 		///  Performs composite operation on passed arguments
 		/// </summary>
-		/// <param name="type">Type of operation to perform</param>
+		/// <typeparam name="TCompositeOperationType">Type of operation to perform</typeparam>
 		/// <param name="parameters">Additional operation parameters (depends on the type of operation)</param>
 		/// <param name="variables">Operation arguments</param>
 		/// <returns>Sequence of results of operation</returns>
-		IEnumerable<IVariable> CompositeOperation(CompositeOperationType type, ICompositeOperationParameters parameters, params IVariable[] variables);
+		IEnumerable<IVariable> CompositeOperation<TCompositeOperationType>(ICompositeOperationParameters parameters, params IVariable[] variables) where TCompositeOperationType : CompositeOperationType;
 		/// <summary>
 		///  Adds constraint for left hand side using values of right hand side
 		/// </summary>

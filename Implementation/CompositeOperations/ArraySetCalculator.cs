@@ -5,25 +5,24 @@ using MilpManager.Abstraction;
 
 namespace MilpManager.Implementation.CompositeOperations
 {
-	public class ArraySetCalculator : ICompositeOperationCalculator
+	public class ArraySetCalculator : BaseCompositeOperationCalculator
 	{
-		public bool SupportsOperation(CompositeOperationType type, ICompositeOperationParameters parameters,
+		protected override bool SupportsOperationInternal<TCompositeOperationType>(ICompositeOperationParameters parameters,
 			params IVariable[] arguments)
 		{
-			return type == CompositeOperationType.ArraySet && arguments.Any() && parameters is ArraySetParameters &&
-				   ((ArraySetParameters) parameters).Index.IsInteger() &&
-				   ((ArraySetParameters) parameters).Index.IsNonNegative();
+			return arguments.Any() && parameters is ArraySetParameters &&
+				   ((ArraySetParameters)parameters).Index.IsInteger() &&
+				   ((ArraySetParameters)parameters).Index.IsNonNegative();
 		}
 
-		public IEnumerable<IVariable> Calculate(IMilpManager milpManager, CompositeOperationType type, ICompositeOperationParameters parameters,
-			params IVariable[] arguments)
+		protected override IEnumerable<IVariable> CalculateInternal<TCompositeOperationType>(IMilpManager milpManager,
+			ICompositeOperationParameters parameters, params IVariable[] arguments)
 		{
-			if (!SupportsOperation(type, parameters, arguments)) throw new NotSupportedException(SolverUtilities.FormatUnsupportedMessage(type, parameters, arguments));
-			var index = ((ArraySetParameters) parameters).Index;
+			var index = ((ArraySetParameters)parameters).Index;
 			var value = ((ArraySetParameters)parameters).Value;
 			if (index.IsConstant())
 			{
-				arguments[(int) index.ConstantValue.Value] = value;
+				arguments[(int)index.ConstantValue.Value] = value;
 				return arguments;
 			}
 
@@ -33,8 +32,16 @@ namespace MilpManager.Implementation.CompositeOperations
 				arguments[i] = milpManager.Operation<Condition>(milpManager.FromConstant(i).Operation<IsEqual>(index), value, arguments[i]);
 				SolverUtilities.SetExpression(arguments[i], $"arraySet(wantedIndex: {index.FullExpression()}, value: {value.FullExpression()}, inArrayIndex: {i}, {catenatedArguments})");
 			}
-			
+
 			return arguments;
 		}
+
+		protected override IEnumerable<IVariable> CalculateConstantInternal<TCompositeOperationType>(IMilpManager milpManager,
+			ICompositeOperationParameters parameters, params IVariable[] arguments)
+		{
+			return CalculateInternal<TCompositeOperationType>(milpManager, parameters, arguments);
+		}
+
+		protected override Type[] SupportedTypes => new[] {typeof (ArraySet)};
 	}
 }

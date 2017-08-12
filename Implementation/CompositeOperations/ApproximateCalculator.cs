@@ -5,26 +5,25 @@ using MilpManager.Abstraction;
 
 namespace MilpManager.Implementation.CompositeOperations
 {
-	public class ApproximateCalculator : ICompositeOperationCalculator
+	public class ApproximateCalculator : BaseCompositeOperationCalculator
 	{
-		public bool SupportsOperation(CompositeOperationType type, ICompositeOperationParameters parameters,
+		protected override bool SupportsOperationInternal<TCompositeOperationType>(ICompositeOperationParameters parameters,
 			params IVariable[] arguments)
 		{
-			return type == CompositeOperationType.Approximate && arguments.Length == 1 && parameters is ApproximateParameters;
+			return arguments.Length == 1 && parameters is ApproximateParameters;
 		}
 
-		public IEnumerable<IVariable> Calculate(IMilpManager milpManager, CompositeOperationType type, ICompositeOperationParameters parameters,
-			params IVariable[] arguments)
+		protected override IEnumerable<IVariable> CalculateInternal<TCompositeOperationType>(IMilpManager milpManager,
+			ICompositeOperationParameters parameters, params IVariable[] arguments)
 		{
-			if (!SupportsOperation(type, parameters, arguments)) throw new NotSupportedException(SolverUtilities.FormatUnsupportedMessage(type, parameters, arguments));
 			var typedParameters = parameters as ApproximateParameters;
 			var x = arguments.First();
 
 			if (arguments.All(i => i.IsConstant()))
 			{
-				return new [] { milpManager.FromConstant(typedParameters.Function(x.ConstantValue.Value))};
+				return new[] { milpManager.FromConstant(typedParameters.Function(x.ConstantValue.Value)) };
 			}
-			
+
 			var one = milpManager.FromConstant(1);
 			var points = typedParameters.Arguments.Select(a => Tuple.Create(milpManager.FromConstant(a), milpManager.FromConstant(typedParameters.Function(a)))).ToArray();
 			var variables = points.Select(p => milpManager.CreateAnonymous(typedParameters.ArgumentMustBeOnAGrid ? Domain.BinaryInteger : Domain.PositiveOrZeroReal).Set<LessOrEqual>(one)).ToArray();
@@ -35,10 +34,18 @@ namespace MilpManager.Implementation.CompositeOperations
 			milpManager.Operation<Addition>(variables).Set<Equal>(one);
 			milpManager.Set(CompositeConstraintType.SpecialOrderedSetType2, variables.First(), variables.Skip(1).ToArray());
 
-			y.ConstantValue = x.IsConstant() ? typedParameters.Function(x.ConstantValue.Value) : (double?) null;
+			y.ConstantValue = x.IsConstant() ? typedParameters.Function(x.ConstantValue.Value) : (double?)null;
 			SolverUtilities.SetExpression(y, $"approximation({typedParameters.FunctionDescription})");
 
-			return new[] {y};
+			return new[] { y };
 		}
+
+		protected override IEnumerable<IVariable> CalculateConstantInternal<TCompositeOperationType>(IMilpManager milpManager,
+			ICompositeOperationParameters parameters, params IVariable[] arguments)
+		{
+			return CalculateInternal<TCompositeOperationType>(milpManager, parameters, arguments);
+		}
+
+		protected override Type[] SupportedTypes => new[] {typeof (Approximate)};
 	}
 }

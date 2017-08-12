@@ -5,41 +5,48 @@ using MilpManager.Abstraction;
 
 namespace MilpManager.Implementation.CompositeOperations
 {
-    public class ArrayGetCalculator : ICompositeOperationCalculator
-    {
-        public bool SupportsOperation(CompositeOperationType type, ICompositeOperationParameters parameters,
-            params IVariable[] arguments)
-        {
-            return type == CompositeOperationType.ArrayGet && arguments.Any() && parameters is ArrayGetParameters &&
-                   ((ArrayGetParameters) parameters).Index.IsInteger() &&
-                   ((ArrayGetParameters) parameters).Index.IsNonNegative();
-        }
+	public class ArrayGetCalculator : BaseCompositeOperationCalculator
+	{
+		protected override bool SupportsOperationInternal<TCompositeOperationType>(ICompositeOperationParameters parameters,
+			params IVariable[] arguments)
+		{
+			return arguments.Any() && parameters is ArrayGetParameters &&
+				   ((ArrayGetParameters)parameters).Index.IsInteger() &&
+				   ((ArrayGetParameters)parameters).Index.IsNonNegative();
+		}
 
-        public IEnumerable<IVariable> Calculate(IMilpManager milpManager, CompositeOperationType type, ICompositeOperationParameters parameters,
-            params IVariable[] arguments)
-        {
-            if (!SupportsOperation(type, parameters, arguments)) throw new NotSupportedException(SolverUtilities.FormatUnsupportedMessage(type, parameters, arguments));
-            var typedParameters = (ArrayGetParameters) parameters;
-            if (typedParameters.Index.IsConstant())
-            {
-                return new[] { arguments[(int) typedParameters.Index.ConstantValue.Value] };
-            }
+		protected override IEnumerable<IVariable> CalculateInternal<TCompositeOperationType>(IMilpManager milpManager,
+			ICompositeOperationParameters parameters, params IVariable[] arguments)
+		{
+			var typedParameters = (ArrayGetParameters)parameters;
+			if (typedParameters.Index.IsConstant())
+			{
+				return new[] { arguments[(int)typedParameters.Index.ConstantValue.Value] };
+			}
 
-            var index = typedParameters.Index;
-            var result = milpManager.CreateAnonymous(arguments.Skip(1)
-                    .Aggregate(arguments[0].Domain, (domain, next) => domain.LowestEncompassingDomain(next.Domain)));
+			var index = typedParameters.Index;
+			var result = milpManager.CreateAnonymous(arguments.Skip(1)
+					.Aggregate(arguments[0].Domain, (domain, next) => domain.LowestEncompassingDomain(next.Domain)));
 
-            for (int i = 0; i < arguments.Length; ++i)
-            {
-                milpManager.FromConstant(i).Operation<IsEqual>(index)
-                    .Operation<MaterialImplication>(result.Operation<IsEqual>(arguments[i]))
-                    .MakeTrue();
-            }
+			for (int i = 0; i < arguments.Length; ++i)
+			{
+				milpManager.FromConstant(i).Operation<IsEqual>(index)
+					.Operation<MaterialImplication>(result.Operation<IsEqual>(arguments[i]))
+					.MakeTrue();
+			}
 
-            result.ConstantValue = index.ConstantValue.HasValue ? arguments[(int)index.ConstantValue.Value].ConstantValue : null;
+			result.ConstantValue = index.ConstantValue.HasValue ? arguments[(int)index.ConstantValue.Value].ConstantValue : null;
 			SolverUtilities.SetExpression(result, $"arrayGet(index: {index.FullExpression()}, {string.Join(", ", arguments.Select(a => a.FullExpression()).ToArray())})");
 
-            return new[] {result};
-        }
-    }
+			return new[] { result };
+		}
+
+		protected override IEnumerable<IVariable> CalculateConstantInternal<TCompositeOperationType>(IMilpManager milpManager,
+			ICompositeOperationParameters parameters, params IVariable[] arguments)
+		{
+			return CalculateInternal<TCompositeOperationType>(milpManager, parameters, arguments);
+		}
+
+		protected override Type[] SupportedTypes => new[] {typeof (ArrayGet)};
+	}
 }

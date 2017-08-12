@@ -15,7 +15,7 @@ namespace MilpManager.Abstraction
 
 		protected IDictionary<CompositeConstraintType, ICompositeConstraintCalculator> CompositeConstraints = DefaultCalculators.CompositeConstraints;
 
-		protected IDictionary<CompositeOperationType, ICompositeOperationCalculator> CompositeOperations = DefaultCalculators.CompositeOperations;
+		protected IDictionary<Type, ICompositeOperationCalculator> CompositeOperations = DefaultCalculators.CompositeOperations;
 
 		protected IDictionary<Type, IOperationCalculator> Operations = DefaultCalculators.Operations;
 
@@ -69,21 +69,20 @@ namespace MilpManager.Abstraction
 			return Constraints[typeof(TConstraintType)].Set<TConstraintType>(this, left, right);
 		}
 
-		public virtual IEnumerable<IVariable> CompositeOperation(CompositeOperationType type,
-			params IVariable[] variables)
+		public virtual IEnumerable<IVariable> CompositeOperation<TCompositeOperationType>(params IVariable[] variables) where TCompositeOperationType : CompositeOperationType
 		{
-			return CompositeOperation(type, null, variables);
+			return CompositeOperation<TCompositeOperationType>(null, variables);
 		}
 
-		public virtual IEnumerable<IVariable> CompositeOperation(CompositeOperationType type,
-			ICompositeOperationParameters parameters, params IVariable[] variables)
+		public virtual IEnumerable<IVariable> CompositeOperation<TCompositeOperationType>(ICompositeOperationParameters parameters, params IVariable[] variables)
+			where TCompositeOperationType : CompositeOperationType
 		{
-			if (CompositeOperations[type].SupportsOperation(type, parameters, variables))
+			if (CompositeOperations[typeof(TCompositeOperationType)].SupportsOperation<TCompositeOperationType>(parameters, variables))
 			{
-				return CompositeOperations[type].Calculate(this, type, parameters, variables);
+				return CompositeOperations[typeof(TCompositeOperationType)].Calculate<TCompositeOperationType>(this, parameters, variables);
 			}
 
-			throw new NotSupportedException(SolverUtilities.FormatUnsupportedMessage(type, parameters, variables));
+			throw new NotSupportedException(SolverUtilities.FormatUnsupportedMessage(typeof(TCompositeOperationType), parameters, variables));
 		}
 
 		public virtual IVariable Set(CompositeConstraintType type, IVariable left, params IVariable[] variables)

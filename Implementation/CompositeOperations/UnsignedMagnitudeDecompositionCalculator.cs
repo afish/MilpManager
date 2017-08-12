@@ -5,28 +5,36 @@ using MilpManager.Abstraction;
 
 namespace MilpManager.Implementation.CompositeOperations
 {
-    public class UnsignedMagnitudeDecompositionCalculator : ICompositeOperationCalculator
-    {
-        public bool SupportsOperation(CompositeOperationType type, ICompositeOperationParameters parameters, params IVariable[] arguments)
-        {
-            return type == CompositeOperationType.UnsignedMagnitudeDecomposition && arguments.Length == 1 &&
-                   (arguments[0].IsPositiveOrZero() || arguments[0].IsBinary()) && arguments[0].IsInteger();
-        }
+	public class UnsignedMagnitudeDecompositionCalculator : BaseCompositeOperationCalculator
+	{
+		protected override bool SupportsOperationInternal<TCompositeOperationType>(ICompositeOperationParameters parameters, params IVariable[] arguments)
+		{
+			return arguments.Length == 1 && (arguments[0].IsPositiveOrZero() || arguments[0].IsBinary()) && arguments[0].IsInteger();
+		}
 
-        public IEnumerable<IVariable> Calculate(IMilpManager milpManager, CompositeOperationType type, ICompositeOperationParameters parameters, params IVariable[] arguments)
-        {
-            if (!SupportsOperation(type, parameters, arguments)) throw new NotSupportedException(SolverUtilities.FormatUnsupportedMessage(type, parameters, arguments));
-            var decomposition = milpManager.CompositeOperation(CompositeOperationType.Decomposition, new DecompositionParameters { Base = 2 }, arguments);
-            if (arguments[0].IsConstant())
-            {
-                return decomposition;
-            }
+		protected override IEnumerable<IVariable> CalculateInternal<TCompositeOperationType>(IMilpManager milpManager,
+			ICompositeOperationParameters parameters, params IVariable[] arguments)
+		{
+			var decomposition = CalculateDecomposition(milpManager, arguments);
 
-            return decomposition.Zip(Enumerable.Range(0, milpManager.IntegerWidth), (v, index) =>
-            {
+			return decomposition.Zip(Enumerable.Range(0, milpManager.IntegerWidth), (v, index) =>
+			{
 				SolverUtilities.SetExpression(v, $"unsignedMagnitudeDecomposition(bit: {index}, {arguments[0].FullExpression()})");
-                return v;
-            });
-        }
-    }
+				return v;
+			});
+		}
+
+		protected override IEnumerable<IVariable> CalculateConstantInternal<TCompositeOperationType>(IMilpManager milpManager,
+			ICompositeOperationParameters parameters, params IVariable[] arguments)
+		{
+			return CalculateDecomposition(milpManager, arguments);
+		}
+
+		private static IEnumerable<IVariable> CalculateDecomposition(IMilpManager milpManager, IVariable[] arguments)
+		{
+			return milpManager.CompositeOperation<Decomposition>(new DecompositionParameters { Base = 2 }, arguments);
+		}
+
+		protected override Type[] SupportedTypes => new[] {typeof (UnsignedMagnitudeDecomposition)};
+	}
 }

@@ -87,7 +87,7 @@ namespace MilpManager.Implementation.Operations
 		{
 			var result = zero;
 
-			var secondDigits = second.CompositeOperation(CompositeOperationType.UnsignedMagnitudeDecomposition).ToArray();
+			var secondDigits = second.CompositeOperation<UnsignedMagnitudeDecomposition>().ToArray();
 			for (int index = 0, power = 1; index < secondDigits.Length; ++index, power = power*2)
 			{
 				result = result.Operation<Addition>(MultipleByBinaryDigit(baseMilpManager, first, secondDigits[index])

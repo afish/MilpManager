@@ -52,25 +52,25 @@ namespace MilpManager.Abstraction
 			{typeof(Remainder), new RemainderCalculator()}
 		};
 
-		public static IDictionary<CompositeOperationType, ICompositeOperationCalculator> CompositeOperations => new Dictionary
-			<CompositeOperationType, ICompositeOperationCalculator>
+		public static IDictionary<Type, ICompositeOperationCalculator> CompositeOperations => new Dictionary
+			<Type, ICompositeOperationCalculator>
 		{
-			{CompositeOperationType.Approximate, new ApproximateCalculator()},
-			{CompositeOperationType.Approximate2D, new Approximate2DCalculator()},
-			{CompositeOperationType.ArrayGet, new ArrayGetCalculator()},
-			{CompositeOperationType.ArraySet, new ArraySetCalculator()},
-			{CompositeOperationType.CountingSort, new CountingSortCalculator()},
-			{CompositeOperationType.Decomposition, new DecompositionCalculator()},
-			{CompositeOperationType.IsLexicographicalEqual, new IsLexicographicalEqualCalculator()},
-			{CompositeOperationType.IsLexicographicalGreaterOrEqual, new IsLexicographicalGreaterOrEqualCalculator()},
-			{CompositeOperationType.IsLexicographicalGreaterThan, new IsLexicographicalGreaterThanCalculator()},
-			{CompositeOperationType.IsLexicographicalLessOrEqual, new IsLexicographicalLessOrEqualCalculator()},
-			{CompositeOperationType.IsLexicographicalLessThan, new IsLexicographicalLessThanCalculator()},
-			{CompositeOperationType.IsLexicographicalNotEqual, new IsLexicographicalNotEqualCalculator()},
-			{CompositeOperationType.Loop, new LoopCalculator()},
-			{CompositeOperationType.NthElements, new NthElementsCalculator()},
-			{CompositeOperationType.SelectionSort, new SelectionSortCalculator()},
-			{CompositeOperationType.UnsignedMagnitudeDecomposition, new UnsignedMagnitudeDecompositionCalculator()}
+			{typeof(Approximate), new ApproximateCalculator()},
+			{typeof(Approximate2D), new Approximate2DCalculator()},
+			{typeof(ArrayGet), new ArrayGetCalculator()},
+			{typeof(ArraySet), new ArraySetCalculator()},
+			{typeof(CountingSort), new CountingSortCalculator()},
+			{typeof(Decomposition), new DecompositionCalculator()},
+			{typeof(IsLexicographicalEqual), new IsLexicographicalEqualCalculator()},
+			{typeof(IsLexicographicalGreaterOrEqual), new IsLexicographicalGreaterOrEqualCalculator()},
+			{typeof(IsLexicographicalGreaterThan), new IsLexicographicalGreaterThanCalculator()},
+			{typeof(IsLexicographicalLessOrEqual), new IsLexicographicalLessOrEqualCalculator()},
+			{typeof(IsLexicographicalLessThan), new IsLexicographicalLessThanCalculator()},
+			{typeof(IsLexicographicalNotEqual), new IsLexicographicalNotEqualCalculator()},
+			{typeof(Loop), new LoopCalculator()},
+			{typeof(NthElements), new NthElementsCalculator()},
+			{typeof(SelectionSort), new SelectionSortCalculator()},
+			{typeof(UnsignedMagnitudeDecomposition), new UnsignedMagnitudeDecompositionCalculator()}
 		};
 
 		public static IDictionary<CompositeConstraintType, ICompositeConstraintCalculator> CompositeConstraints => new Dictionary

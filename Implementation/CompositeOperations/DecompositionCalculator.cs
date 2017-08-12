@@ -5,40 +5,8 @@ using MilpManager.Abstraction;
 
 namespace MilpManager.Implementation.CompositeOperations
 {
-	public class DecompositionCalculator : ICompositeOperationCalculator
+	public class DecompositionCalculator : BaseCompositeOperationCalculator
 	{
-		public bool SupportsOperation(CompositeOperationType type, ICompositeOperationParameters parameters,
-			params IVariable[] arguments)
-		{
-			return type == CompositeOperationType.Decomposition && parameters is DecompositionParameters &&
-				   ((DecompositionParameters) parameters).Base >= 2 && arguments.Length == 1 && arguments[0].IsInteger() && arguments[0].IsNonNegative();
-		}
-
-		public IEnumerable<IVariable> Calculate(IMilpManager milpManager, CompositeOperationType type, ICompositeOperationParameters parameters, params IVariable[] arguments)
-		{
-			if (!SupportsOperation(type, parameters, arguments)) throw new NotSupportedException(SolverUtilities.FormatUnsupportedMessage(type, parameters, arguments));
-			return InternalCalculate(milpManager, arguments, ((DecompositionParameters) parameters).Base);
-		}
-
-		private IEnumerable<IVariable> InternalCalculate(IMilpManager milpManager, IVariable[] arguments, uint decompositionBase)
-		{
-			if (arguments[0].IsConstant())
-			{
-				uint currentValue = (uint)arguments[0].ConstantValue.Value;
-				for (int i = 0; i < GetDigitsCount(milpManager, decompositionBase); ++i)
-				{
-					yield return milpManager.FromConstant((int)(currentValue % decompositionBase));
-					currentValue /= decompositionBase;
-				}
-				yield break;
-			}
-
-			foreach (var i in CalculateForVariable(milpManager, arguments, decompositionBase))
-			{
-				yield return i;
-			}
-		}
-
 		private static IEnumerable<IVariable> CalculateForVariable(IMilpManager milpManager, IVariable[] arguments, uint decompositionBase)
 		{
 			List<Tuple<IVariable, int>> variables =
@@ -78,5 +46,37 @@ namespace MilpManager.Implementation.CompositeOperations
 
 			return digits;
 		}
+
+		protected override bool SupportsOperationInternal<TCompositeOperationType>(ICompositeOperationParameters parameters,
+			params IVariable[] arguments)
+		{
+			return parameters is DecompositionParameters &&
+				   ((DecompositionParameters)parameters).Base >= 2 && arguments.Length == 1 && arguments[0].IsInteger() && arguments[0].IsNonNegative();
+		}
+
+		protected override IEnumerable<IVariable> CalculateInternal<TCompositeOperationType>(IMilpManager milpManager,
+			ICompositeOperationParameters parameters, params IVariable[] arguments)
+		{
+			var decompositionBase = ((DecompositionParameters)parameters).Base;
+			foreach (var i in CalculateForVariable(milpManager, arguments, decompositionBase))
+			{
+				yield return i;
+			}
+		}
+
+		protected override IEnumerable<IVariable> CalculateConstantInternal<TCompositeOperationType>(IMilpManager milpManager,
+			ICompositeOperationParameters parameters, params IVariable[] arguments)
+		{
+			var decompositionBase = ((DecompositionParameters) parameters).Base;
+			uint currentValue = (uint)arguments[0].ConstantValue.Value;
+			for (int i = 0; i < GetDigitsCount(milpManager, decompositionBase); ++i)
+			{
+				yield return milpManager.FromConstant((int)(currentValue % decompositionBase));
+				currentValue /= decompositionBase;
+			}
+			yield break;
+		}
+
+		protected override Type[] SupportedTypes => new[] {typeof (Decomposition)};
 	}
 }

@@ -5,20 +5,17 @@ using MilpManager.Abstraction;
 
 namespace MilpManager.Implementation.CompositeOperations
 {
-	public class CountingSortCalculator : ICompositeOperationCalculator
+	public class CountingSortCalculator : BaseCompositeOperationCalculator
 	{
-		public bool SupportsOperation(CompositeOperationType type, ICompositeOperationParameters parameters, params IVariable[] arguments)
+		protected override bool SupportsOperationInternal<TCompositeOperationType>(ICompositeOperationParameters parameters,
+			params IVariable[] arguments)
 		{
-			return type == CompositeOperationType.CountingSort && arguments.Any() && parameters is CountingSortParameters;
+			return arguments.Any() && parameters is CountingSortParameters;
 		}
 
-		public IEnumerable<IVariable> Calculate(IMilpManager milpManager, CompositeOperationType type, ICompositeOperationParameters parameters, params IVariable[] arguments)
+		protected override IEnumerable<IVariable> CalculateInternal<TCompositeOperationType>(IMilpManager milpManager,
+			ICompositeOperationParameters parameters, params IVariable[] arguments)
 		{
-			if (!SupportsOperation(type, parameters, arguments)) throw new NotSupportedException(SolverUtilities.FormatUnsupportedMessage(type, parameters, arguments));
-			if (arguments.All(a => a.IsConstant()))
-			{
-				return arguments.OrderBy(a => a.ConstantValue.Value);
-			}
 			var castedParameters = parameters as CountingSortParameters;
 			var values = castedParameters.Values;
 			var valuesWithCounts = new Dictionary<IVariable, IVariable>();
@@ -29,7 +26,7 @@ namespace MilpManager.Implementation.CompositeOperations
 					(current, val) =>
 						current.Operation<Addition>(val.Operation<IsEqual>(value)));
 			}
-			
+
 			var sum = zero;
 			foreach (var value in values)
 			{
@@ -52,5 +49,13 @@ namespace MilpManager.Implementation.CompositeOperations
 
 			return results;
 		}
+
+		protected override IEnumerable<IVariable> CalculateConstantInternal<TCompositeOperationType>(IMilpManager milpManager,
+			ICompositeOperationParameters parameters, params IVariable[] arguments)
+		{
+			return arguments.OrderBy(a => a.ConstantValue.Value);
+		}
+
+		protected override Type[] SupportedTypes => new[] {typeof (CountingSort)};
 	}
 }

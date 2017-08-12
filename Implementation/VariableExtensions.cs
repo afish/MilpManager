@@ -61,14 +61,14 @@ namespace MilpManager.Implementation
 		/// <summary>
 		/// Performs composite operation
 		/// </summary>
+		/// <typeparam name="TCompositeOperationType">Operation type</typeparam>
 		/// <param name="variable">Variable to perform operation on</param>
-		/// <param name="type">Operation type</param>
 		/// <param name="variables">Operation arguments</param>
 		/// <returns>Operation result</returns>
-		public static IEnumerable<IVariable> CompositeOperation(this IVariable variable, CompositeOperationType type, params IVariable[] variables)
+		public static IEnumerable<IVariable> CompositeOperation<TCompositeOperationType>(this IVariable variable, params IVariable[] variables) where TCompositeOperationType : CompositeOperationType
 		{
 			if (variable == null) throw new ArgumentNullException(nameof(variable));
-			return variable.MilpManager.CompositeOperation(type, new[]{variable}.Concat(variables).ToArray());
+			return variable.MilpManager.CompositeOperation<TCompositeOperationType>(new[]{variable}.Concat(variables).ToArray());
 		}
 
 		/// <summary>

@@ -5,8 +5,8 @@ namespace MilpManager.Implementation.CompositeOperations
 {
     public interface ICompositeOperationCalculator
     {
-        bool SupportsOperation(CompositeOperationType type, ICompositeOperationParameters parameters, params IVariable[] arguments);
+        bool SupportsOperation<TCompositeOperationType>(ICompositeOperationParameters parameters, params IVariable[] arguments) where TCompositeOperationType : CompositeOperationType;
 
-        IEnumerable<IVariable> Calculate(IMilpManager milpManager, CompositeOperationType type, ICompositeOperationParameters parameters, params IVariable[] arguments);
+        IEnumerable<IVariable> Calculate<TCompositeOperationType>(IMilpManager milpManager, ICompositeOperationParameters parameters, params IVariable[] arguments) where TCompositeOperationType : CompositeOperationType;
     }
 }
