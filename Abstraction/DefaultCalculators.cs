@@ -73,15 +73,15 @@ namespace MilpManager.Abstraction
 			{typeof(UnsignedMagnitudeDecomposition), new UnsignedMagnitudeDecompositionCalculator()}
 		};
 
-		public static IDictionary<CompositeConstraintType, ICompositeConstraintCalculator> CompositeConstraints => new Dictionary
-			<CompositeConstraintType, ICompositeConstraintCalculator>
+		public static IDictionary<Type, ICompositeConstraintCalculator> CompositeConstraints => new Dictionary
+			<Type, ICompositeConstraintCalculator>
 		{
-			{CompositeConstraintType.AllDifferent, new AllDifferentCalculator()},
-			{CompositeConstraintType.Cardinality, new CardinalityCalculator()},
-			{CompositeConstraintType.FromSet, new FromSetCalculator()},
-			{CompositeConstraintType.NotFromSet, new NotFromSetCalculator()},
-			{CompositeConstraintType.SpecialOrderedSetType1, new SOS1Calculator()},
-			{CompositeConstraintType.SpecialOrderedSetType2, new SOS2Calculator()}
+			{typeof(AllDifferent), new AllDifferentCalculator()},
+			{typeof(Cardinality), new CardinalityCalculator()},
+			{typeof(FromSet), new FromSetCalculator()},
+			{typeof(NotFromSet), new NotFromSetCalculator()},
+			{typeof(SpecialOrderedSetType1), new SOS1Calculator()},
+			{typeof(SpecialOrderedSetType2), new SOS2Calculator()}
 		};
 
 		public static IDictionary<GoalType, IGoalCalculator> GoalCalculators => new Dictionary<GoalType, IGoalCalculator>

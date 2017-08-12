@@ -32,7 +32,7 @@ namespace MilpManager.Implementation.CompositeOperations
 			var y = milpManager.Operation<Addition>(points.Select((point, index) => variables[index].Operation<Multiplication>(point.Item2)).ToArray());
 
 			milpManager.Operation<Addition>(variables).Set<Equal>(one);
-			milpManager.Set(CompositeConstraintType.SpecialOrderedSetType2, variables.First(), variables.Skip(1).ToArray());
+			milpManager.Set<SpecialOrderedSetType2>(variables.First(), variables.Skip(1).ToArray());
 
 			y.ConstantValue = x.IsConstant() ? typedParameters.Function(x.ConstantValue.Value) : (double?)null;
 			SolverUtilities.SetExpression(y, $"approximation({typedParameters.FunctionDescription})");

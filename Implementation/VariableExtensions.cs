@@ -87,7 +87,7 @@ namespace MilpManager.Implementation
 		/// <summary>
 		/// Adds constraint to a solver
 		/// </summary>
-		/// <typeparam name="TConstraintType">Constraint type</typeparam>
+		/// <param name="constraintType">Constraint type</param>
 		/// <param name="variable">Variable to constrain</param>
 		/// <param name="right">Right hand side of a constraint</param>
 		/// <returns>Variable passed as an argument</returns>
@@ -102,16 +102,17 @@ namespace MilpManager.Implementation
 
 		/// <summary>
 		/// Adds composite constraint to a solver
-		/// </summary>
 		/// <param name="variable">Variable to constraint</param>
-		/// <param name="type">Constraint type</param>
+		/// </summary>
+		/// <typeparam name="TCompositeConstraintType">Constraint type</typeparam>
+		/// <param name="variable">Variable to constrain</param>
 		/// <param name="parameters">Additional constraint parameters</param>
 		/// <param name="right">Right hand side of a constraint</param>
 		/// <returns>Variable passed as an argument</returns>
-		public static IVariable Set(this IVariable variable, CompositeConstraintType type, ICompositeConstraintParameters parameters, params IVariable[] right)
+		public static IVariable Set<TCompositeConstraintType>(this IVariable variable, ICompositeConstraintParameters parameters, params IVariable[] right) where TCompositeConstraintType : CompositeConstraintType
 		{
 			if (variable == null) throw new ArgumentNullException(nameof(variable));
-			return variable.MilpManager.Set(type, parameters, variable, right);
+			return variable.MilpManager.Set< TCompositeConstraintType>(parameters, variable, right);
 		}
 
 		/// <summary>

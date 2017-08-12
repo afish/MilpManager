@@ -54,10 +54,10 @@ namespace MilpManager.Implementation.CompositeOperations
 			milpManager.Operation<Addition>(variables.SelectMany(v => v).ToArray()).Set<Equal>(one);
 
 			var xSet = Enumerable.Range(0, typedParameters.ArgumentsX.Length).Select(indexX => milpManager.Operation<Addition>(Enumerable.Range(0, typedParameters.ArgumentsY.Length).Select(indexY => variables[indexX][indexY]).ToArray())).ToArray();
-			milpManager.Set(CompositeConstraintType.SpecialOrderedSetType2, xSet.First(), xSet.Skip(1).ToArray());
+			milpManager.Set<SpecialOrderedSetType2>(xSet.First(), xSet.Skip(1).ToArray());
 
 			var ySet = Enumerable.Range(0, typedParameters.ArgumentsY.Length).Select(indexY => milpManager.Operation<Addition>(Enumerable.Range(0, typedParameters.ArgumentsX.Length).Select(indexX => variables[indexX][indexY]).ToArray())).ToArray();
-			milpManager.Set(CompositeConstraintType.SpecialOrderedSetType2, ySet.First(), ySet.Skip(1).ToArray());
+			milpManager.Set<SpecialOrderedSetType2>(ySet.First(), ySet.Skip(1).ToArray());
 
 			if (!typedParameters.ArgumentMustBeOnAGrid)
 			{
@@ -72,7 +72,7 @@ namespace MilpManager.Implementation.CompositeOperations
 					return new IVariable[0];
 				}).ToArray();
 
-				milpManager.Set(CompositeConstraintType.SpecialOrderedSetType2, triangleSet.First(), triangleSet.Skip(1).ToArray());
+				milpManager.Set<SpecialOrderedSetType2>(triangleSet.First(), triangleSet.Skip(1).ToArray());
 			}
 
 			z.ConstantValue = x.IsConstant() && y.IsConstant() ? typedParameters.Function(x.ConstantValue.Value, y.ConstantValue.Value) : (double?)null;

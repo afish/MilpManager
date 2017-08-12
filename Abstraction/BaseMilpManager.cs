@@ -13,7 +13,7 @@ namespace MilpManager.Abstraction
 	{
 		protected IDictionary<Type, IConstraintCalculator> Constraints = DefaultCalculators.Constraints;
 
-		protected IDictionary<CompositeConstraintType, ICompositeConstraintCalculator> CompositeConstraints = DefaultCalculators.CompositeConstraints;
+		protected IDictionary<Type, ICompositeConstraintCalculator> CompositeConstraints = DefaultCalculators.CompositeConstraints;
 
 		protected IDictionary<Type, ICompositeOperationCalculator> CompositeOperations = DefaultCalculators.CompositeOperations;
 
@@ -85,15 +85,15 @@ namespace MilpManager.Abstraction
 			throw new NotSupportedException(SolverUtilities.FormatUnsupportedMessage(typeof(TCompositeOperationType), parameters, variables));
 		}
 
-		public virtual IVariable Set(CompositeConstraintType type, IVariable left, params IVariable[] variables)
+		public virtual IVariable Set<TCompositeConstraintType>(IVariable left, params IVariable[] variables) where TCompositeConstraintType : CompositeConstraintType
 		{
-			return Set(type, null, left, variables);
+			return Set< TCompositeConstraintType>(null, left, variables);
 		}
 
-		public virtual IVariable Set(CompositeConstraintType type, ICompositeConstraintParameters parameters, IVariable left,
-			params IVariable[] variables)
+		public virtual IVariable Set<TCompositeConstraintType>(ICompositeConstraintParameters parameters, IVariable left,
+			params IVariable[] variables) where TCompositeConstraintType : CompositeConstraintType
 		{
-			return CompositeConstraints[type].Set(this, type, parameters, left, variables);
+			return CompositeConstraints[typeof(TCompositeConstraintType)].Set<TCompositeConstraintType>(this, parameters, left, variables);
 		}
 
 		public IVariable MakeGoal(GoalType type, params IVariable[] variables)

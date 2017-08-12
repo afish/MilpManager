@@ -70,22 +70,22 @@ namespace MilpManager.Abstraction
 		/// <summary>
 		///  Adds constraint for left hand side using values of right hand side
 		/// </summary>
-		/// <param name="type">Constraint type</param>
+		/// <typeparam name="TCompositeConstraintType">Constraint type</typeparam>
 		/// <param name="left">Variable to set</param>
 		/// <param name="variables">Variables to use as a right hand side</param>
 		/// <returns>Returns left</returns>
 		/// <remarks>Some constraints work on a sequence of variables, not on a left hand side directly. E.g., setting variables to AllDifferent.</remarks>
-		IVariable Set(CompositeConstraintType type, IVariable left, params IVariable[] variables);
+		IVariable Set<TCompositeConstraintType>( IVariable left, params IVariable[] variables) where TCompositeConstraintType : CompositeConstraintType;
 		/// <summary>
 		///  Adds constraint for left hand side using values of right hand side
 		/// </summary>
-		/// <param name="type">Constraint type</param>
+		/// <typeparam name="TCompositeConstraintType">Constraint type</typeparam>
 		/// <param name="left">Variable to set</param>
 		/// <param name="variables">Variables to use as a right hand side</param>
 		/// <param name="parameters">Additional constraint parameters (depends on the type of operation)</param>
 		/// <returns>Returns left</returns>
 		/// <remarks>Some constraints work on a sequence of variables, not on a left hand side directly. E.g., setting variables to AllDifferent.</remarks>
-		IVariable Set(CompositeConstraintType type, ICompositeConstraintParameters parameters, IVariable left, params IVariable[] variables);
+		IVariable Set<TCompositeConstraintType>(ICompositeConstraintParameters parameters, IVariable left, params IVariable[] variables) where TCompositeConstraintType : CompositeConstraintType;
 		/// <summary>
 		///  Makes goal based on variables. The goal is not added to solver
 		/// </summary>
