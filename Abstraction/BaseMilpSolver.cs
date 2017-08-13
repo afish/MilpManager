@@ -6,7 +6,7 @@ using MilpManager.Implementation;
 
 namespace MilpManager.Abstraction
 {
-	public abstract class BaseMilpSolver : BaseMilpManager, IMilpSolver
+	public abstract class BaseMilpSolver : BaseMilpManager, IMilpSolver, IModelSaver<SaveFileSettings>, IModelLoader<LoadFileSettings>
 	{
 		protected IDictionary<string, IVariable> Variables;
 		protected int VariableIndex;
@@ -128,17 +128,18 @@ namespace MilpManager.Abstraction
 			Variables[newVariable.Name] = newVariable;
 			return newVariable;
 		}
+
 		public virtual void SaveSolverData(Stream solverData)
 		{
 			var objectsToSerialize = GetObjectsToSerialize();
 			new BinaryFormatter().Serialize(solverData, new[] { Variables, objectsToSerialize});
 		}
 
-		public virtual void LoadModel(string modelPath, Stream solverData)
+		public void LoadModel(LoadFileSettings settings)
 		{
-			InternalLoadModelFromFile(modelPath);
-			var deserialized = (object[])new BinaryFormatter().Deserialize(solverData);
-			Variables = (IDictionary<string, IVariable>) deserialized[0];
+			InternalLoadModelFromFile(settings.Path);
+			var deserialized = (object[])new BinaryFormatter().Deserialize(settings.SolverData);
+			Variables = (IDictionary<string, IVariable>)deserialized[0];
 			VariableIndex = Variables.Count;
 			foreach (var variable in Variables)
 			{
@@ -157,7 +158,6 @@ namespace MilpManager.Abstraction
 		{
 			return Goals[name].Expression;
 		}
-		public abstract void SaveModelToFile(string modelPath);
 		public abstract void Solve();
 		public abstract double GetValue(IVariable variable);
 		public abstract SolutionStatus GetStatus();
@@ -176,5 +176,7 @@ namespace MilpManager.Abstraction
 		{
 			return $"_v_{VariableIndex++}";
 		}
+
+		public abstract void SaveModel(SaveFileSettings settings);
 	}
 }
