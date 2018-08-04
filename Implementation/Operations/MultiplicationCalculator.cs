@@ -48,37 +48,35 @@ namespace MilpManager.Implementation.Operations
 		     return MultiplyNonBinaryVariables(milpManager, nonBinaries, domain);
 	    }
 
-        private IVariable MultiplyNonBinaryVariables(IMilpManager milpManager, IVariable[] nonBinaries, Domain domain)
+        private IVariable MultiplyNonBinaryVariables(IMilpManager milpManager, IVariable[] arguments, Domain domain)
 		{
-			var first = nonBinaries[0];
-			var second = nonBinaries[1];
-		    var mightBeNegatives = !(first.IsNonNegative() && second.IsNonNegative());
+			var first = arguments[0];
+			var second = arguments[1];
 			first = MakePositiveIfNeeded(first);
 			second = MakePositiveIfNeeded(second);
 
 			var result = MakeLongMultiplication(milpManager, domain, second, first);
-			result = FixSign(milpManager, nonBinaries, mightBeNegatives, result);
+			result = FixSign(milpManager, arguments, result);
 			result = result.ChangeDomain(domain);
 
-			return result.Operation<Multiplication>(nonBinaries.Skip(2).ToArray());
+			return result.Operation<Multiplication>(arguments.Skip(2).ToArray());
 		}
 
-		private IVariable FixSign(IMilpManager milpManager, IVariable[] nonBinaries, bool mightBeNegatives, IVariable result)
+		public static IVariable FixSign(IMilpManager milpManager, IVariable[] arguments, IVariable result)
 		{
-		    var zero = milpManager.FromConstant(0);
+		    var mightBeNegatives = !(arguments[0].IsNonNegative() && arguments[1].IsNonNegative());
+            if (!mightBeNegatives) return result;
 
-            if (mightBeNegatives)
-			{
-				var sign =
-					nonBinaries[0].Operation<IsGreaterOrEqual>(zero)
-						.Operation<IsEqual>(nonBinaries[1].Operation<IsGreaterOrEqual>(zero));
-				var two = milpManager.FromConstant(2);
-				result =
-					MultiplyByBinaryDigit(milpManager, result, sign)
-						.Operation<Subtraction>(result.Operation<Division>(two))
-						.Operation<Multiplication>(two);
-			}
-			return result;
+		    var zero = milpManager.FromConstant(0);
+            var sign = arguments[0].Operation<IsGreaterOrEqual>(zero)
+		            .Operation<IsEqual>(arguments[1].Operation<IsGreaterOrEqual>(zero));
+		    var two = milpManager.FromConstant(2);
+		    result =
+		        MultiplyByBinaryDigit(milpManager, result, sign)
+		            .Operation<Subtraction>(result.Operation<Division>(two))
+		            .Operation<Multiplication>(two);
+
+		    return result;
 		}
 
 		private IVariable MakeLongMultiplication(IMilpManager milpManager, Domain domain, IVariable second,
@@ -118,7 +116,7 @@ namespace MilpManager.Implementation.Operations
 	        return result;
 	    }
 
-	    private static IVariable MakePositiveIfNeeded(IVariable variable)
+	    public static IVariable MakePositiveIfNeeded(IVariable variable)
 		{
 			if (!variable.IsNonNegative())
 			{
@@ -128,7 +126,7 @@ namespace MilpManager.Implementation.Operations
 			return variable;
 		}
 
-		private IVariable MultiplyByBinaryDigit(IMilpManager milpManager, IVariable number, IVariable digit)
+		private static IVariable MultiplyByBinaryDigit(IMilpManager milpManager, IVariable number, IVariable digit)
 		{
 			if (number.Domain == Domain.AnyInteger || number.Domain == Domain.AnyReal)
 			{
@@ -190,14 +188,18 @@ namespace MilpManager.Implementation.Operations
 						: milpManager.MultiplyVariableByConstant(y, x, domain);
 					result.ConstantValue = x.ConstantValue * y.ConstantValue;
 					SolverUtilities.SetExpression(result, $"{x.FullExpression()} * {y.FullExpression()}");
+
 					return result;
 				});
 			}
 
 			if (MultiplyBinaryVariables(arguments))
 			{
-				return milpManager.Operation<Conjunction>(arguments);
-		    }
+				var result = milpManager.Operation<Conjunction>(arguments);
+			    SolverUtilities.SetExpression(result, string.Join(" * ", arguments.Select(a => a.FullExpression())));
+
+			    return result;
+			}
 
 		    if (MultiplyWithMultipleConstants(arguments))
 		    {
@@ -221,7 +223,10 @@ namespace MilpManager.Implementation.Operations
 		        return arguments[0].Operation<Multiplication>(arguments[1]).Operation<Multiplication>(arguments.Skip(2).ToArray());
             }
 
-		    return MultiplyTwoAnyVariables(milpManager, domain, arguments.Take(2).ToArray());
+		    var final = MultiplyTwoAnyVariables(milpManager, domain, arguments.Take(2).ToArray());
+		    SolverUtilities.SetExpression(final, $"{arguments[0].FullExpression()} * {arguments[1].FullExpression()}");
+
+		    return final;
 		}
 
 		protected override IVariable CalculateConstantInternal<TOperationType>(IMilpManager milpManager, params IVariable[] arguments)

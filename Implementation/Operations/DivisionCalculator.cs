@@ -14,32 +14,12 @@ namespace MilpManager.Implementation.Operations
 				return Domain.BinaryInteger;
 			}
 
-			if (IsDividingByConstant(arguments))
-			{
-				if (arguments.All(a => a.IsInteger()))
-				{
-
-					if (arguments.All(a => a.IsNonNegative()))
-					{
-						return Domain.PositiveOrZeroInteger;
-					}
-					return Domain.AnyInteger;
-				}
-				else
-				{
-					if (arguments.All(a => a.IsNonNegative()))
-					{
-						return Domain.PositiveOrZeroReal;
-					}
-					return Domain.AnyReal;
-				}
-			}
-
 			if (arguments.All(a => a.IsNonNegative()))
 			{
-				return Domain.PositiveOrZeroInteger;
+			    return Domain.PositiveOrZeroInteger;
 			}
-			return Domain.AnyInteger;
+
+		    return Domain.AnyInteger;
 		}
 
 		private static bool IsDividingByConstant(IVariable[] arguments)
@@ -49,8 +29,7 @@ namespace MilpManager.Implementation.Operations
 
 		protected override bool SupportsOperationInternal<TOperationType>(params IVariable[] arguments)
 		{
-			return arguments.Length == 2 &&
-				   (IsDividingByConstant(arguments) || arguments.All(a => a.IsNonNegative() && a.IsInteger()));
+			return arguments.Length == 2 && arguments[1].IsInteger();
 		}
 
 		protected override IVariable CalculateInternal<TOperationType>(IMilpManager milpManager, params IVariable[] arguments)
@@ -62,6 +41,7 @@ namespace MilpManager.Implementation.Operations
 				var physicalResult = milpManager.DivideVariableByConstant(arguments[0], arguments[1], finalDomain);
 				physicalResult.ConstantValue = arguments[0].ConstantValue / arguments[1].ConstantValue;
 				SolverUtilities.SetExpression(physicalResult, $"{arguments[0].FullExpression()} / {arguments[1].FullExpression()}");
+
 				return physicalResult;
 			}
 
@@ -74,13 +54,19 @@ namespace MilpManager.Implementation.Operations
 		            : (long)arguments[0].ConstantValue.Value / (long)arguments[1].ConstantValue.Value
 		        : null;
 
-            result.Operation<Multiplication>(arguments[1])
-				.Set<LessOrEqual>(arguments[0]);
+		    var first = MultiplicationCalculator.MakePositiveIfNeeded(arguments[0]);
+		    var second = MultiplicationCalculator.MakePositiveIfNeeded(arguments[1]);
+
+            result.Operation<Multiplication>(second)
+				.Set<LessOrEqual>(first);
 
 			result.Operation<Addition>(milpManager.FromConstant(1))
-			    .Operation<Multiplication>(arguments[1])
-				.Set<GreaterOrEqual>(arguments[0].Operation<Addition>(one));
-			SolverUtilities.SetExpression(result, $"{arguments[0].FullExpression()} / {arguments[1].FullExpression()}");
+			    .Operation<Multiplication>(second)
+				.Set<GreaterOrEqual>(first.Operation<Addition>(one));
+
+		    result = MultiplicationCalculator.FixSign(milpManager, arguments, result);
+			SolverUtilities.SetExpression(result, $"{first.FullExpression()} / {second.FullExpression()}");
+
 			return result;
 		}
 

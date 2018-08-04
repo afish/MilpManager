@@ -8,13 +8,13 @@
 	public abstract class Conjunction : OperationType { }
 	public abstract class DifferentValuesCount : OperationType { }
 	public abstract class Disjunction : OperationType { }
-	public abstract class Division : OperationType { }
-	public abstract class Equivalency : OperationType { }
+    public abstract class Division : OperationType { }
+    public abstract class Equivalency : OperationType { }
 	public abstract class ExclusiveDisjunction : OperationType { }
 	public abstract class Exponentiation : OperationType { }
 	public abstract class GCD : OperationType { }
 	public abstract class Factorial : OperationType { }
-	public abstract class IsEqual : OperationType { }
+    public abstract class IsEqual : OperationType { }
 	public abstract class IsGreaterOrEqual : OperationType { }
 	public abstract class IsGreaterThan : OperationType { }
 	public abstract class IsLessOrEqual : OperationType { }
