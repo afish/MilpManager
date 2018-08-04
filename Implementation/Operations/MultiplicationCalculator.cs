@@ -17,7 +17,7 @@ namespace MilpManager.Implementation.Operations
 			return arguments.All(a => a.IsConstant());
 		}
 
-		private static bool MultiplyAtMostOneNonconstant(IVariable[] arguments)
+		private static bool MultiplyAtMostOneNonConstant(IVariable[] arguments)
 		{
 			return arguments.Count(a => a.IsNotConstant()) <= 1;
 		}
@@ -39,8 +39,8 @@ namespace MilpManager.Implementation.Operations
 
 			if (binaries.Any())
 			{
-				IVariable conjucted = baseMilpManager.Operation<Multiplication>(binaries);
-				return MultipleByBinaryDigit(baseMilpManager, nonBinaries[0], conjucted).ChangeDomain(domain)
+				IVariable conjuncted = baseMilpManager.Operation<Multiplication>(binaries);
+				return MultipleByBinaryDigit(baseMilpManager, nonBinaries[0], conjuncted).ChangeDomain(domain)
 					.Operation<Multiplication>(nonBinaries.Skip(1).ToArray());
 			}
 
@@ -151,7 +151,7 @@ namespace MilpManager.Implementation.Operations
 			return HasVariablesToMultiply(arguments) && (
 				MultiplyOnlyConstants(arguments) ||
 				MultiplyBinaryVariables(arguments) ||
-				MultiplyAtMostOneNonconstant(arguments) ||
+				MultiplyAtMostOneNonConstant(arguments) ||
 				MultiplyAnyIntegers(arguments));
 		}
 
@@ -164,7 +164,7 @@ namespace MilpManager.Implementation.Operations
 
 			var domain = CalculateDomain(arguments);
 
-			if (MultiplyAtMostOneNonconstant(arguments))
+			if (MultiplyAtMostOneNonConstant(arguments))
 			{
 				return arguments.Aggregate((x, y) =>
 				{

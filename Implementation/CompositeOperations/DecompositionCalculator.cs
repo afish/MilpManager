@@ -9,26 +9,55 @@ namespace MilpManager.Implementation.CompositeOperations
 	{
 		private static IEnumerable<IVariable> CalculateForVariable(IMilpManager milpManager, IVariable[] arguments, uint decompositionBase)
 		{
-			List<Tuple<IVariable, int>> variables =
+		    IVariable GetVariable()
+		    {
+		        var variable = milpManager.CreateAnonymous(decompositionBase == 2
+		            ? Domain.BinaryInteger
+		            : Domain.PositiveOrZeroInteger);
+		        if (decompositionBase > 2)
+		        {
+		            variable = variable.Set<LessOrEqual>(milpManager.FromConstant((int) decompositionBase - 1));
+		        }
+
+		        return variable;
+		    }
+
+		    List<Tuple<IVariable, int>> variables =
 				Enumerable.Range(0, GetDigitsCount(milpManager, decompositionBase))
-					.Select(i =>
-					{
-						var baseRaised = (int)Math.Pow(decompositionBase, i);
-						var variable = milpManager.CreateAnonymous(decompositionBase == 2 ? Domain.BinaryInteger : Domain.PositiveOrZeroInteger);
-						if (decompositionBase > 2)
-						{
-							variable = variable.Set<LessOrEqual>(milpManager.FromConstant((int) decompositionBase - 1));
-						}
-						return Tuple.Create(variable, baseRaised);
-					})
+					.Select(i => Tuple.Create(GetVariable(), (int)Math.Pow(decompositionBase, i)))
 					.ToList();
 
-			milpManager.Operation<Addition>(
-				variables.Select(v => v.Item1.Operation<Multiplication>(milpManager.FromConstant(v.Item2)))
-					.ToArray()).Set<Equal>(arguments[0]);
+		    var sum = milpManager.Operation<Addition>(
+		        variables.Select(v => v.Item1.Operation<Multiplication>(milpManager.FromConstant(v.Item2)))
+		            .ToArray()
+		        );
 
-			return variables.Select((v, index) => {
-				var result = v.Item1;
+		    List<IVariable> resultVariables = variables.Select(v => v.Item1).ToList();
+            
+            if (arguments[0].IsInteger())
+		    {
+		        sum.Set<Equal>(arguments[0]);
+		    }
+		    else
+		    {
+		        List<Tuple<IVariable, double>> fraction = Enumerable.Range(1, 100)
+		            .Select(i => Math.Pow(decompositionBase, -i)).Where(p => p >= milpManager.Epsilon)
+		            .Select(p => Tuple.Create(GetVariable(), p))
+		            .ToList();
+
+		        sum = sum.Operation<Addition>(fraction
+		            .Select(v => v.Item1.Operation<Multiplication>(milpManager.FromConstant(v.Item2))).ToArray());
+
+		        sum.Set<LessOrEqual>(arguments[0]);
+		        sum.Operation<Addition>(milpManager.FromConstant(1)
+		                .Operation<Multiplication>(milpManager.FromConstant(fraction.Last().Item2)))
+		            .Set<GreaterThan>(arguments[0]);
+
+		        resultVariables.AddRange(fraction.Select(v => v.Item1));
+            }
+
+		    return resultVariables.Select((v, index) => {
+				var result = v;
 				SolverUtilities.SetExpression(result, $"decomposition(digit: {index}, base: {decompositionBase}, {arguments[0].FullExpression()})");
 				return result;
 			});
@@ -51,7 +80,7 @@ namespace MilpManager.Implementation.CompositeOperations
 			params IVariable[] arguments)
 		{
 			return parameters is DecompositionParameters &&
-				   ((DecompositionParameters)parameters).Base >= 2 && arguments.Length == 1 && arguments[0].IsInteger() && arguments[0].IsNonNegative();
+				   ((DecompositionParameters)parameters).Base >= 2 && arguments.Length == 1 && arguments[0].IsNonNegative();
 		}
 
 		protected override IEnumerable<IVariable> CalculateInternal<TCompositeOperationType>(IMilpManager milpManager,
@@ -68,13 +97,27 @@ namespace MilpManager.Implementation.CompositeOperations
 			ICompositeOperationParameters parameters, params IVariable[] arguments)
 		{
 			var decompositionBase = ((DecompositionParameters) parameters).Base;
-			uint currentValue = (uint)arguments[0].ConstantValue.Value;
-			for (int i = 0; i < GetDigitsCount(milpManager, decompositionBase); ++i)
-			{
-				yield return milpManager.FromConstant((int)(currentValue % decompositionBase));
-				currentValue /= decompositionBase;
-			}
-			yield break;
+            
+		    uint currentValue = (uint) arguments[0].ConstantValue.Value;
+		    for (int i = 0; i < GetDigitsCount(milpManager, decompositionBase); ++i)
+		    {
+		        yield return milpManager.FromConstant((int) (currentValue % decompositionBase));
+		        currentValue /= decompositionBase;
+		    }
+
+		    if (arguments[0].IsReal())
+		    {
+		        double fraction = arguments[0].ConstantValue.Value - (uint)arguments[0].ConstantValue.Value;
+		        double precision = 1.0 / decompositionBase;
+		        while (precision >= milpManager.Epsilon)
+		        {
+		            var quantity = (int)(fraction / precision);
+		            yield return milpManager.FromConstant(quantity);
+		            fraction -= quantity * precision;
+
+		            precision /= decompositionBase;
+		        }
+		    }
 		}
 
 		protected override Type[] SupportedTypes => new[] {typeof (Decomposition)};

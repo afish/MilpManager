@@ -9,7 +9,7 @@ namespace MilpManager.Implementation.CompositeOperations
 	{
 		protected override bool SupportsOperationInternal<TCompositeOperationType>(ICompositeOperationParameters parameters, params IVariable[] arguments)
 		{
-			return arguments.Length == 1 && (arguments[0].IsPositiveOrZero() || arguments[0].IsBinary()) && arguments[0].IsInteger();
+		    return arguments.Length == 1 && arguments[0].IsNonNegative();
 		}
 
 		protected override IEnumerable<IVariable> CalculateInternal<TCompositeOperationType>(IMilpManager milpManager,
@@ -17,7 +17,7 @@ namespace MilpManager.Implementation.CompositeOperations
 		{
 			var decomposition = CalculateDecomposition(milpManager, arguments);
 
-			return decomposition.Zip(Enumerable.Range(0, milpManager.IntegerWidth), (v, index) =>
+			return decomposition.Select((v, index) =>
 			{
 				SolverUtilities.SetExpression(v, $"unsignedMagnitudeDecomposition(bit: {index}, {arguments[0].FullExpression()})");
 				return v;
