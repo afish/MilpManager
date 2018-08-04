@@ -14,13 +14,14 @@ namespace MilpManager.Implementation.Operations
 		protected override IVariable CalculateInternal<TOperationType>(IMilpManager milpManager, params IVariable[] arguments)
 		{
 			var variable = milpManager.CreateAnonymous(Domain.BinaryInteger);
-			var sum = milpManager.Operation<Addition>(arguments);
+		    variable.ConstantValue = arguments.Aggregate((double?)0.0, (a, b) => a.HasValue && b.ConstantValue.HasValue ? Math.Max(a.Value, b.ConstantValue.Value) : (double?)null);
+
+            var sum = milpManager.Operation<Addition>(arguments);
 			var argumentsCount = arguments.Length;
 			sum.Operation<Subtraction>(milpManager.FromConstant(argumentsCount).Operation<Multiplication>(variable))
 				.Set<LessOrEqual>(milpManager.FromConstant(0))
 				.Set<GreaterOrEqual>(milpManager.FromConstant(-(argumentsCount - 1)));
 
-			variable.ConstantValue = arguments.Aggregate((double?)0.0, (a, b) => a.HasValue && b.ConstantValue.HasValue ? Math.Max(a.Value, b.ConstantValue.Value) : (double?)null);
 			SolverUtilities.SetExpression(variable, $"{string.Join(" || ", arguments.Select(a => a.FullExpression()).ToArray())}");
 			return variable;
 		}

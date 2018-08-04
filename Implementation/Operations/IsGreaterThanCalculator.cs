@@ -14,8 +14,11 @@ namespace MilpManager.Implementation.Operations
 		protected override IVariable CalculateInternal<TOperationType>(IMilpManager milpManager, params IVariable[] arguments)
 		{
 			var result = milpManager.CreateAnonymous(Domain.BinaryInteger);
+		    result.ConstantValue = arguments.All(a => a.ConstantValue.HasValue)
+		        ? arguments[0].ConstantValue > arguments[1].ConstantValue ? 1 : 0
+		        : (double?)null;
 
-			var first = arguments[0];
+            var first = arguments[0];
 			var second = arguments[1];
 
 			second.Operation<Subtraction>(first)
@@ -24,9 +27,6 @@ namespace MilpManager.Implementation.Operations
 				.Set<GreaterOrEqual>(milpManager.FromConstant(0))
 				.Set<LessOrEqual>(milpManager.FromConstant(milpManager.IntegerInfinity - (arguments.Any(a => a.IsReal()) ? milpManager.Epsilon : 1)));
 
-			result.ConstantValue = arguments.All(a => a.ConstantValue.HasValue)
-				? arguments[0].ConstantValue > arguments[1].ConstantValue ? 1 : 0
-				: (double?)null;
 			SolverUtilities.SetExpression(result, $"{arguments[0].FullExpression()} ?> {arguments[1].FullExpression()}");
 			return result;
 		}

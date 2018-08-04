@@ -28,14 +28,15 @@ namespace MilpManager.Implementation.CompositeOperations
 			var result = milpManager.CreateAnonymous(arguments.Skip(1)
 					.Aggregate(arguments[0].Domain, (domain, next) => domain.LowestEncompassingDomain(next.Domain)));
 
-			for (int i = 0; i < arguments.Length; ++i)
+		    result.ConstantValue = index.ConstantValue.HasValue ? arguments[(int)index.ConstantValue.Value].ConstantValue : null;
+
+            for (int i = 0; i < arguments.Length; ++i)
 			{
 				milpManager.FromConstant(i).Operation<IsEqual>(index)
 					.Operation<MaterialImplication>(result.Operation<IsEqual>(arguments[i]))
 					.MakeTrue();
 			}
 
-			result.ConstantValue = index.ConstantValue.HasValue ? arguments[(int)index.ConstantValue.Value].ConstantValue : null;
 			SolverUtilities.SetExpression(result, $"arrayGet(index: {index.FullExpression()}, {string.Join(", ", arguments.Select(a => a.FullExpression()).ToArray())})");
 
 			return new[] { result };

@@ -10,8 +10,13 @@ namespace MilpManager.Implementation.Operations
 		{
 			var a = arguments[0];
 			var b = arguments[1];
+
 			var gcd = milpManager.CreateAnonymous(Domain.PositiveOrZeroInteger);
-			var x = milpManager.CreateAnonymous(Domain.PositiveOrZeroInteger);
+		    gcd.ConstantValue = a.ConstantValue.HasValue && b.ConstantValue.HasValue
+		        ? Gcd((int)a.ConstantValue.Value, (int)b.ConstantValue.Value)
+		        : (double?)null;
+
+            var x = milpManager.CreateAnonymous(Domain.PositiveOrZeroInteger);
 			var y = milpManager.CreateAnonymous(Domain.PositiveOrZeroInteger);
 			var m = milpManager.CreateAnonymous(Domain.AnyInteger);
 			var n = milpManager.CreateAnonymous(Domain.AnyInteger);
@@ -21,9 +26,6 @@ namespace MilpManager.Implementation.Operations
 			b.Set<Equal>(y.Operation<Multiplication>(gcd));
 			gcd.Set<Equal>(m.Operation<Multiplication>(a).Operation<Addition>(n.Operation<Multiplication>(b)));
 
-			gcd.ConstantValue = a.ConstantValue.HasValue && b.ConstantValue.HasValue
-				? Gcd((int) a.ConstantValue.Value, (int) b.ConstantValue.Value)
-				: (double?) null;
 			SolverUtilities.SetExpression(gcd, $"gcd({a.FullExpression()}, {b.FullExpression()})");
 			return gcd;
 		}

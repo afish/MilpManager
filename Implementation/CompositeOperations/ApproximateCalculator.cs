@@ -34,7 +34,7 @@ namespace MilpManager.Implementation.CompositeOperations
 			milpManager.Operation<Addition>(variables).Set<Equal>(one);
 			milpManager.Set<SpecialOrderedSetType2>(variables.First(), variables.Skip(1).ToArray());
 
-			y.ConstantValue = x.IsConstant() ? typedParameters.Function(x.ConstantValue.Value) : (double?)null;
+			y.ConstantValue = x.ConstantValue.HasValue ? typedParameters.Function(x.ConstantValue.Value) : (double?)null;
 			SolverUtilities.SetExpression(y, $"approximation({typedParameters.FunctionDescription})");
 
 			return new[] { y };

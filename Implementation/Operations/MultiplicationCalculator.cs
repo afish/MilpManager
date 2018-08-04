@@ -1,23 +1,24 @@
 ﻿using System;
 using System.Linq;
 using MilpManager.Abstraction;
+using MilpManager.Implementation.CompositeOperations;
 using Domain = MilpManager.Abstraction.Domain;
 
 namespace MilpManager.Implementation.Operations
 {
 	public class MultiplicationCalculator : BaseOperationCalculator
 	{
-		private static bool MultiplyAnyIntegers(IVariable[] arguments)
+		private static bool MultiplyWithMultipleConstants(IVariable[] arguments)
 		{
-			return arguments.All(a => a.IsInteger());
-		}
+			return arguments.Count(a => a.IsConstant()) > 1;
+	    }
 
-		private static bool MultiplyOnlyConstants(IVariable[] arguments)
-		{
-			return arguments.All(a => a.IsConstant());
-		}
+	    private static bool MultiplyWithMultipleBinaries(IVariable[] arguments)
+	    {
+	        return arguments.Count(a => a.IsBinary()) > 1;
+	    }
 
-		private static bool MultiplyAtMostOneNonConstant(IVariable[] arguments)
+        private static bool MultiplyAtMostOneNonConstant(IVariable[] arguments)
 		{
 			return arguments.Count(a => a.IsNotConstant()) <= 1;
 		}
@@ -32,75 +33,94 @@ namespace MilpManager.Implementation.Operations
 			return arguments.Length >= 1;
 		}
 
-		private IVariable MultiplyIntegers(IMilpManager baseMilpManager, Domain domain, IVariable[] arguments)
+		private IVariable MultiplyTwoAnyVariables(IMilpManager milpManager, Domain domain, IVariable[] arguments)
 		{
 			var binaries = arguments.Where(a => a.IsBinary()).ToArray();
 			var nonBinaries = arguments.Where(a => !a.IsBinary()).ToArray();
 
 			if (binaries.Any())
 			{
-				IVariable conjuncted = baseMilpManager.Operation<Multiplication>(binaries);
-				return MultipleByBinaryDigit(baseMilpManager, nonBinaries[0], conjuncted).ChangeDomain(domain)
-					.Operation<Multiplication>(nonBinaries.Skip(1).ToArray());
+			    IVariable conjuncted = binaries[0];
+
+			    return MultiplyByBinaryDigit(milpManager, nonBinaries[0], conjuncted).ChangeDomain(domain);
 			}
+            
+		     return MultiplyNonBinaryVariables(milpManager, nonBinaries, domain);
+	    }
 
-			return MultiplyNonBinaryIntegers(baseMilpManager, nonBinaries, domain);
-		}
-
-		private IVariable MultiplyNonBinaryIntegers(IMilpManager baseMilpManager, IVariable[] nonBinaries, Domain domain)
+        private IVariable MultiplyNonBinaryVariables(IMilpManager milpManager, IVariable[] nonBinaries, Domain domain)
 		{
-
 			var first = nonBinaries[0];
 			var second = nonBinaries[1];
-			var mightBeNegatives = first.Domain == Domain.AnyInteger || first.Domain == Domain.AnyConstantInteger ||
-					 second.Domain == Domain.AnyInteger || second.Domain == Domain.AnyConstantInteger;
+		    var mightBeNegatives = !(first.IsNonNegative() && second.IsNonNegative());
 			first = MakePositiveIfNeeded(first);
 			second = MakePositiveIfNeeded(second);
 
-			var zero = baseMilpManager.FromConstant(0);
-			var result = MakeLongMultiplication(baseMilpManager, domain, zero, second, first);
-			result = FixSign(baseMilpManager, nonBinaries, mightBeNegatives, zero, result);
+			var result = MakeLongMultiplication(milpManager, domain, second, first);
+			result = FixSign(milpManager, nonBinaries, mightBeNegatives, result);
 			result = result.ChangeDomain(domain);
 
 			return result.Operation<Multiplication>(nonBinaries.Skip(2).ToArray());
 		}
 
-		private IVariable FixSign(IMilpManager baseMilpManager, IVariable[] nonBinaries, bool mightBeNegatives, IVariable zero,
-			IVariable result)
+		private IVariable FixSign(IMilpManager milpManager, IVariable[] nonBinaries, bool mightBeNegatives, IVariable result)
 		{
-			if (mightBeNegatives)
+		    var zero = milpManager.FromConstant(0);
+
+            if (mightBeNegatives)
 			{
 				var sign =
 					nonBinaries[0].Operation<IsGreaterOrEqual>(zero)
 						.Operation<IsEqual>(nonBinaries[1].Operation<IsGreaterOrEqual>(zero));
-				var two = baseMilpManager.FromConstant(2);
+				var two = milpManager.FromConstant(2);
 				result =
-					MultipleByBinaryDigit(baseMilpManager, result, sign)
+					MultiplyByBinaryDigit(milpManager, result, sign)
 						.Operation<Subtraction>(result.Operation<Division>(two))
 						.Operation<Multiplication>(two);
 			}
 			return result;
 		}
 
-		private IVariable MakeLongMultiplication(IMilpManager baseMilpManager, Domain domain, IVariable zero, IVariable second,
+		private IVariable MakeLongMultiplication(IMilpManager milpManager, Domain domain, IVariable second,
 			IVariable first)
 		{
-			var result = zero;
+		    if (second.IsInteger())
+		    {
+		        var secondDigits = second.CompositeOperation<UnsignedMagnitudeDecomposition>().ToArray();
 
-			var secondDigits = second.CompositeOperation<UnsignedMagnitudeDecomposition>().ToArray();
-			for (int index = 0, power = 1; index < secondDigits.Length; ++index, power = power*2)
-			{
-				result = result.Operation<Addition>(MultipleByBinaryDigit(baseMilpManager, first, secondDigits[index])
-						.ChangeDomain(domain)
-						.Operation<Multiplication>(baseMilpManager.FromConstant(power))
-					);
-			}
-			return result;
+		        return MultiplyByDecomposition(milpManager, domain, first, secondDigits, milpManager.FromConstant(0));
+            }
+		    else
+		    {
+		        var secondDigits = second.CompositeOperation<UnsignedMagnitudeDecomposition>().ToArray();
+		        var secondNonFractionDigits = secondDigits.Take(DecompositionCalculator.GetDigitsCount(milpManager, 2)).ToArray();
+		        var secondFractionDigits = secondDigits.Skip(milpManager.IntegerWidth).Reverse().ToArray();
+
+                var nonFractionPart = MultiplyByDecomposition(milpManager, domain, first, secondNonFractionDigits, milpManager.FromConstant(0));
+                var fractionPart = MultiplyByDecomposition(milpManager, domain, first, secondFractionDigits, milpManager.FromConstant(0))
+                    .Operation<Multiplication>(milpManager.FromConstant(Math.Pow(2, -secondFractionDigits.Length)));
+
+                return nonFractionPart.Operation<Addition>(fractionPart);
+            }
 		}
 
-		private static IVariable MakePositiveIfNeeded(IVariable variable)
+	    private IVariable MultiplyByDecomposition(IMilpManager milpManager, Domain domain, IVariable first,
+	        IVariable[] secondDigits, IVariable result)
+	    {
+	        for (int index = 0, power = 1; index < secondDigits.Length; ++index, power = power * 2)
+	        {
+	            result = result.Operation<Addition>(MultiplyByBinaryDigit(milpManager, first, secondDigits[index])
+	                .ChangeDomain(domain)
+	                .Operation<Multiplication>(milpManager.FromConstant(power))
+	            );
+	        }
+
+	        return result;
+	    }
+
+	    private static IVariable MakePositiveIfNeeded(IVariable variable)
 		{
-			if (variable.Domain == Domain.AnyInteger || variable.Domain == Domain.AnyConstantInteger)
+			if (!variable.IsNonNegative())
 			{
 				variable = variable.Operation<AbsoluteValue>();
 			}
@@ -108,23 +128,24 @@ namespace MilpManager.Implementation.Operations
 			return variable;
 		}
 
-		private IVariable MultipleByBinaryDigit(IMilpManager baseMilpManager, IVariable number, IVariable digit)
+		private IVariable MultiplyByBinaryDigit(IMilpManager milpManager, IVariable number, IVariable digit)
 		{
-			if (number.Domain == Domain.AnyConstantInteger || number.Domain == Domain.AnyInteger)
+			if (number.Domain == Domain.AnyInteger || number.Domain == Domain.AnyReal)
 			{
 				var absoluteNumber = number.Operation<AbsoluteValue>();
-				var result = MultipleByBinaryDigit(baseMilpManager, absoluteNumber, digit);
-				var two = baseMilpManager.FromConstant(2);
-				return MultipleByBinaryDigit(baseMilpManager, result, number.Operation<IsGreaterOrEqual>(baseMilpManager.FromConstant(0)))
+				var result = MultiplyByBinaryDigit(milpManager, absoluteNumber, digit);
+				var two = milpManager.FromConstant(2);
+				return MultiplyByBinaryDigit(milpManager, result, number.Operation<IsGreaterOrEqual>(milpManager.FromConstant(0)))
 						.Operation<Subtraction>(result.Operation<Division>(two))
 						.Operation<Multiplication>(two);
 			}
 
-			IVariable digitMultipliedByInfinity = digit.Operation<Multiplication>(baseMilpManager.FromConstant(baseMilpManager.MaximumIntegerValue));
-			return baseMilpManager.Operation<Minimum>(
+			IVariable digitMultipliedByInfinity = digit.Operation<Multiplication>(milpManager.FromConstant(milpManager.MaximumIntegerValue));
+
+			return milpManager.Operation<Minimum>(
 				number,
 				digitMultipliedByInfinity
-				);
+			);
 		}
 
 		private static Domain CalculateDomain(IVariable[] arguments)
@@ -134,7 +155,7 @@ namespace MilpManager.Implementation.Operations
 			{
 				domain = Domain.BinaryInteger;
 			}
-			else if (arguments.All(a => a.IsPositiveOrZero() || a.IsBinary()))
+			else if (arguments.All(a => a.IsNonNegative()))
 			{
 				domain = arguments.Any(a => a.IsReal()) ? Domain.PositiveOrZeroReal : Domain.PositiveOrZeroInteger;
 			}
@@ -148,11 +169,7 @@ namespace MilpManager.Implementation.Operations
 
 		protected override bool SupportsOperationInternal<TOperationType>(params IVariable[] arguments)
 		{
-			return HasVariablesToMultiply(arguments) && (
-				MultiplyOnlyConstants(arguments) ||
-				MultiplyBinaryVariables(arguments) ||
-				MultiplyAtMostOneNonConstant(arguments) ||
-				MultiplyAnyIntegers(arguments));
+			return HasVariablesToMultiply(arguments);
 		}
 
 		protected override IVariable CalculateInternal<TOperationType>(IMilpManager milpManager, params IVariable[] arguments)
@@ -180,9 +197,31 @@ namespace MilpManager.Implementation.Operations
 			if (MultiplyBinaryVariables(arguments))
 			{
 				return milpManager.Operation<Conjunction>(arguments);
-			}
+		    }
 
-			return MultiplyIntegers(milpManager, domain, arguments);
+		    if (MultiplyWithMultipleConstants(arguments))
+		    {
+		        var constants = arguments.Where(a => a.IsConstant()).ToArray();
+		        var nonConstants = arguments.Where(a => a.IsNotConstant()).ToArray();
+
+		        return milpManager.Operation<Multiplication>(constants).Operation<Multiplication>(nonConstants);
+		    }
+
+		    if (MultiplyWithMultipleBinaries(arguments))
+		    {
+		        var binaries = arguments.Where(a => a.IsBinary()).ToArray();
+                IVariable conjuncted = milpManager.Operation<Multiplication>(binaries);
+		        var nonBinaries = arguments.Where(a => !a.IsBinary()).ToArray();
+
+                return conjuncted.Operation<Multiplication>(nonBinaries.ToArray());
+		    }
+
+            if (arguments.Length > 2)
+		    {
+		        return arguments[0].Operation<Multiplication>(arguments[1]).Operation<Multiplication>(arguments.Skip(2).ToArray());
+            }
+
+		    return MultiplyTwoAnyVariables(milpManager, domain, arguments.Take(2).ToArray());
 		}
 
 		protected override IVariable CalculateConstantInternal<TOperationType>(IMilpManager milpManager, params IVariable[] arguments)

@@ -19,7 +19,7 @@ namespace MilpManager.Implementation.Operations
 				if (arguments.All(a => a.IsInteger()))
 				{
 
-					if (arguments.All(a => a.IsPositiveOrZero() || a.IsBinary()))
+					if (arguments.All(a => a.IsNonNegative()))
 					{
 						return Domain.PositiveOrZeroInteger;
 					}
@@ -27,7 +27,7 @@ namespace MilpManager.Implementation.Operations
 				}
 				else
 				{
-					if (arguments.All(a => a.IsPositiveOrZero() || a.IsBinary()))
+					if (arguments.All(a => a.IsNonNegative()))
 					{
 						return Domain.PositiveOrZeroReal;
 					}
@@ -35,7 +35,7 @@ namespace MilpManager.Implementation.Operations
 				}
 			}
 
-			if (arguments.All(a => a.IsPositiveOrZero() || a.IsBinary()))
+			if (arguments.All(a => a.IsNonNegative()))
 			{
 				return Domain.PositiveOrZeroInteger;
 			}
@@ -50,7 +50,7 @@ namespace MilpManager.Implementation.Operations
 		protected override bool SupportsOperationInternal<TOperationType>(params IVariable[] arguments)
 		{
 			return arguments.Length == 2 &&
-				   (IsDividingByConstant(arguments) || arguments.All(a => (a.IsPositiveOrZero() || a.IsBinary()) && a.IsInteger()));
+				   (IsDividingByConstant(arguments) || arguments.All(a => a.IsNonNegative() && a.IsInteger()));
 		}
 
 		protected override IVariable CalculateInternal<TOperationType>(IMilpManager milpManager, params IVariable[] arguments)
@@ -67,17 +67,19 @@ namespace MilpManager.Implementation.Operations
 
 			IVariable one = milpManager.FromConstant(1);
 			var result = milpManager.CreateAnonymous(domain);
-			result.Operation<Multiplication>(arguments[1])
-				.Set<LessOrEqual>(arguments[0]);
-			result.Operation<Addition>(one)
-				.Operation<Multiplication>(arguments[1])
-				.Set<GreaterOrEqual>(arguments[0].Operation<Addition>(one));
 
-			result.ConstantValue = arguments.All(a => a.ConstantValue.HasValue)
-				? arguments[1].ConstantValue.Value == 0
-					? (double?)null
-					: (long)arguments[0].ConstantValue.Value / (long)arguments[1].ConstantValue.Value
-				: null;
+		    result.ConstantValue = arguments.All(a => a.ConstantValue.HasValue)
+		        ? arguments[1].ConstantValue.Value == 0
+		            ? (double?)null
+		            : (long)arguments[0].ConstantValue.Value / (long)arguments[1].ConstantValue.Value
+		        : null;
+
+            result.Operation<Multiplication>(arguments[1])
+				.Set<LessOrEqual>(arguments[0]);
+
+			result.Operation<Addition>(milpManager.FromConstant(1))
+			    .Operation<Multiplication>(arguments[1])
+				.Set<GreaterOrEqual>(arguments[0].Operation<Addition>(one));
 			SolverUtilities.SetExpression(result, $"{arguments[0].FullExpression()} / {arguments[1].FullExpression()}");
 			return result;
 		}

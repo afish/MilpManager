@@ -22,7 +22,7 @@ namespace MilpManager.Implementation.CompositeOperations
 			var value = ((ArraySetParameters)parameters).Value;
 			if (index.IsConstant())
 			{
-				arguments[(int)index.ConstantValue.Value] = value;
+			    arguments[(int)index.ConstantValue.Value] = value;
 				return arguments;
 			}
 

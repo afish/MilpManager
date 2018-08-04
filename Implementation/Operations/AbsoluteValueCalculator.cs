@@ -16,8 +16,9 @@ namespace MilpManager.Implementation.Operations
 			var number = arguments[0];
 			var numberNegated = number.Operation<Negation>();
 			var result = milpManager.CreateAnonymous(number.IsInteger() ? Domain.PositiveOrZeroInteger : Domain.PositiveOrZeroReal);
+		    result.ConstantValue = number.ConstantValue.HasValue ? Math.Abs(number.ConstantValue.Value) : number.ConstantValue;
 
-			result.Set<GreaterOrEqual>(number)
+            result.Set<GreaterOrEqual>(number)
 				.Set<GreaterOrEqual>(numberNegated);
 
 			milpManager.Operation<Addition>(
@@ -25,7 +26,6 @@ namespace MilpManager.Implementation.Operations
 					result.Operation<IsEqual>(numberNegated))
 				.Set<GreaterOrEqual>(milpManager.FromConstant(1));
 
-			result.ConstantValue = number.ConstantValue.HasValue ? Math.Abs(number.ConstantValue.Value) : number.ConstantValue;
 			SolverUtilities.SetExpression(result, $"|{number.FullExpression()}|");
 			return result;
 		}

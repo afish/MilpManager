@@ -24,10 +24,11 @@ namespace MilpManager.Implementation.Operations
 				.Set<GreaterOrEqual>(numerator.Operation<Addition>(one));
 
 			IVariable result = milpManager.CreateAnonymous(Domain.PositiveOrZeroInteger);
-			result.Set<LessOrEqual>(denominator);
+		    result.ConstantValue = numerator.ConstantValue % denominator.ConstantValue;
+
+            result.Set<LessOrEqual>(denominator);
 			result.Set<Equal>(numerator.Operation<Subtraction>(denominator.Operation<Multiplication>(any)));
 
-			result.ConstantValue = numerator.ConstantValue % denominator.ConstantValue;
 			SolverUtilities.SetExpression(result, $"{numerator.FullExpression()} % {denominator.FullExpression()}");
 			return result;
 		}

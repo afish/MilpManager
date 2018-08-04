@@ -51,7 +51,9 @@ namespace MilpManager.Implementation.CompositeOperations
 					variables[indexX][indexY].Operation<Multiplication>(milpManager.FromConstant(typedParameters.Function(typedParameters.ArgumentsX.ElementAt(indexX), typedParameters.ArgumentsY.ElementAt(indexY)))))).ToArray()
 			);
 
-			milpManager.Operation<Addition>(variables.SelectMany(v => v).ToArray()).Set<Equal>(one);
+		    z.ConstantValue = x.ConstantValue.HasValue && y.ConstantValue.HasValue ? typedParameters.Function(x.ConstantValue.Value, y.ConstantValue.Value) : (double?)null;
+
+            milpManager.Operation<Addition>(variables.SelectMany(v => v).ToArray()).Set<Equal>(one);
 
 			var xSet = Enumerable.Range(0, typedParameters.ArgumentsX.Length).Select(indexX => milpManager.Operation<Addition>(Enumerable.Range(0, typedParameters.ArgumentsY.Length).Select(indexY => variables[indexX][indexY]).ToArray())).ToArray();
 			milpManager.Set<SpecialOrderedSetType2>(xSet.First(), xSet.Skip(1).ToArray());
@@ -74,8 +76,6 @@ namespace MilpManager.Implementation.CompositeOperations
 
 				milpManager.Set<SpecialOrderedSetType2>(triangleSet.First(), triangleSet.Skip(1).ToArray());
 			}
-
-			z.ConstantValue = x.IsConstant() && y.IsConstant() ? typedParameters.Function(x.ConstantValue.Value, y.ConstantValue.Value) : (double?)null;
 			SolverUtilities.SetExpression(z, $"approximation2D({typedParameters.FunctionDescription})");
 
 			return new[] { z };

@@ -67,7 +67,7 @@ namespace MilpManager.Implementation.CompositeOperations
 			}
 
 			var result = compareResult.First();
-			result.ConstantValue = arguments.All(a => a.ConstantValue.HasValue) && typedParameters.Pattern.All(a => a.IsConstant())
+			result.ConstantValue = arguments.All(a => a.ConstantValue.HasValue) && typedParameters.Pattern.All(a => a.ConstantValue.HasValue)
 				? ConstantFinalResult(arguments.Zip(typedParameters.Pattern, Tuple.Create).Select(p => p.Item1.ConstantValue.Value - p.Item2.ConstantValue.Value).Select(v => v > 0 ? 1 : v < 0 ? -1 : 0).TakeWhile(v => v != 0).FirstOrDefault())
 				: (double?)null;
 			SolverUtilities.SetExpression(result,
