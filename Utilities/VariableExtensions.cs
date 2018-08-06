@@ -37,7 +37,7 @@ namespace MilpManager.Utilities
 		/// <param name="variable">Variable to perform operation on</param>
 		/// <param name="variables">Operation arguments</param>
 		/// <returns>Operation result</returns>
-		public static IVariable Operation<TOperationType>(this IVariable variable, params IVariable[] variables) where TOperationType : OperationType
+		public static IVariable Operation<TOperationType>(this IVariable variable, params IVariable[] variables) where TOperationType : Operation
 		{
 			if (variable == null) throw new ArgumentNullException(nameof(variable));
 			return variable.MilpManager.Operation<TOperationType>(new[]{variable}.Concat(variables).ToArray());
@@ -47,93 +47,291 @@ namespace MilpManager.Utilities
 		/// Performs operation
 		/// </summary>
 		/// <param name="variable">Variable to perform operation on</param>
-		/// <param name="operationType">Operation type</param>
+		/// <param name="operation">Operation type</param>
 		/// <param name="variables">Operation arguments</param>
 		/// <returns>Operation result</returns>
-		public static IVariable Operation(this IVariable variable, Type operationType, params IVariable[] variables)
+		public static IVariable Operation(this IVariable variable, Type operation, params IVariable[] variables)
 		{
 			return (IVariable) typeof (VariableExtensions)
 				.GetMethod(nameof(Operation), new[] {typeof (IVariable), typeof (IVariable[])})
-				.MakeGenericMethod(operationType)
+				.MakeGenericMethod(operation)
 				.Invoke(null, new object[] {variable, variables});
-		}
+	    }
 
-		/// <summary>
-		/// Performs composite operation
-		/// </summary>
-		/// <typeparam name="TCompositeOperationType">Operation type</typeparam>
-		/// <param name="variable">Variable to perform operation on</param>
-		/// <param name="variables">Operation arguments</param>
-		/// <returns>Operation result</returns>
-		public static IEnumerable<IVariable> CompositeOperation<TCompositeOperationType>(this IVariable variable, params IVariable[] variables) where TCompositeOperationType : CompositeOperationType
+	    /// <summary>
+	    /// Performs operation
+	    /// </summary>
+	    /// <param name="variable">Variable to perform operation on</param>
+	    /// <param name="operationType">Operation type</param>
+	    /// <param name="variables">Operation arguments</param>
+	    /// <returns>Operation result</returns>
+	    public static IVariable Operation(this IVariable variable, OperationType operationType, params IVariable[] variables)
+	    {
+	        return Operation(variable, OperationTypeMapper.Map(operationType), variables);
+	    }
+
+        /// <summary>
+        /// Performs composite operation
+        /// </summary>
+        /// <typeparam name="TCompositeOperationType">Operation type</typeparam>
+        /// <param name="variable">Variable to perform operation on</param>
+        /// <param name="variables">Operation arguments</param>
+        /// <returns>Operation result</returns>
+        public static IEnumerable<IVariable> CompositeOperation<TCompositeOperationType>(this IVariable variable, params IVariable[] variables) where TCompositeOperationType : CompositeOperation
 		{
 			if (variable == null) throw new ArgumentNullException(nameof(variable));
 			return variable.MilpManager.CompositeOperation<TCompositeOperationType>(new[]{variable}.Concat(variables).ToArray());
-		}
+	    }
 
-		/// <summary>
-		/// Adds constraint to a solver
-		/// </summary>
-		/// <typeparam name="TConstraintType">Constraint type</typeparam>
-		/// <param name="variable">Variable to constrain</param>
-		/// <param name="right">Right hand side of a constraint</param>
-		/// <returns>Variable passed as an argument</returns>
-		public static IVariable Set<TConstraintType>(this IVariable variable, IVariable right) where TConstraintType : ConstraintType
+        /// <summary>
+        /// Performs composite operation
+        /// </summary>
+        /// <param name="variable">Variable to perform operation on</param>
+        /// <param name="compositeOperation">Operation type</param>
+        /// <param name="variables">Operation arguments</param>
+        /// <returns>Operation result</returns>
+        public static IEnumerable<IVariable> CompositeOperation(this IVariable variable, Type compositeOperation, params IVariable[] variables)
+	    {
+	        return (IEnumerable<IVariable>)typeof(VariableExtensions)
+	            .GetMethod(nameof(CompositeOperation), new[] { typeof(IVariable), typeof(IVariable[]) })
+	            .MakeGenericMethod(compositeOperation)
+	            .Invoke(null, new object[] { variable, variables });
+	    }
+
+	    /// <summary>
+	    /// Performs composite operation
+	    /// </summary>
+	    /// <param name="variable">Variable to perform operation on</param>
+	    /// <param name="compositeOperation">Operation type</param>
+	    /// <param name="variables">Operation arguments</param>
+	    /// <returns>Operation result</returns>
+	    public static IEnumerable<IVariable> CompositeOperation(this IVariable variable, CompositeOperationType compositeOperation, params IVariable[] variables)
+	    {
+	        if (variable == null) throw new ArgumentNullException(nameof(variable));
+            return CompositeOperation(variable, CompositeOperationTypeMapper.Map(compositeOperation), variables);
+	    }
+
+        /// <summary>
+        /// Performs composite operation
+        /// </summary>
+        /// <typeparam name="TCompositeOperationType">Operation type</typeparam>
+        /// <param name="variable">Variable to perform operation on</param>
+        /// <param name="parameters">Operation parameters</param>
+        /// <param name="variables">Operation arguments</param>
+        /// <returns>Operation result</returns>
+        public static IEnumerable<IVariable> CompositeOperation<TCompositeOperationType>(this IVariable variable, ICompositeOperationParameters parameters, params IVariable[] variables) where TCompositeOperationType : CompositeOperation
+	    {
+	        if (variable == null) throw new ArgumentNullException(nameof(variable));
+	        return variable.MilpManager.CompositeOperation<TCompositeOperationType>(parameters, new[] { variable }.Concat(variables).ToArray());
+	    }
+
+        /// <summary>
+        /// Performs composite operation
+        /// </summary>
+        /// <param name="variable">Variable to perform operation on</param>
+        /// <param name="compositeOperation">Operation type</param>
+        /// <param name="parameters">Operation parameters</param>
+        /// <param name="variables">Operation arguments</param>
+        /// <returns>Operation result</returns>
+        public static IEnumerable<IVariable> CompositeOperation(this IVariable variable, Type compositeOperation, ICompositeOperationParameters parameters, params IVariable[] variables)
+	    {
+	        return (IEnumerable<IVariable>)typeof(VariableExtensions)
+	            .GetMethod(nameof(CompositeOperation), new[] { typeof(IVariable), typeof(ICompositeOperationParameters), typeof(IVariable[]) })
+	            .MakeGenericMethod(compositeOperation)
+	            .Invoke(null, new object[] { variable, parameters, variables });
+        }
+
+	    /// <summary>
+	    /// Performs composite operation
+	    /// </summary>
+	    /// <param name="variable">Variable to perform operation on</param>
+	    /// <param name="compositeOperation">Operation type</param>
+	    /// <param name="parameters">Parameters of operation</param>
+	    /// <param name="variables">Operation arguments</param>
+	    /// <returns>Operation result</returns>
+	    public static IEnumerable<IVariable> CompositeOperation(this IVariable variable, CompositeOperationType compositeOperation, ICompositeOperationParameters parameters, params IVariable[] variables)
+	    {
+	        if (variable == null) throw new ArgumentNullException(nameof(variable));
+            return CompositeOperation(variable, CompositeOperationTypeMapper.Map(compositeOperation), parameters, variables);
+	    }
+
+        /// <summary>
+        /// Adds constraint to a solver
+        /// </summary>
+        /// <typeparam name="TConstraintType">Constraint type</typeparam>
+        /// <param name="variable">Variable to constrain</param>
+        /// <param name="right">Right hand side of a constraint</param>
+        /// <returns>Variable passed as an argument</returns>
+        public static IVariable Set<TConstraintType>(this IVariable variable, IVariable right) where TConstraintType : Abstraction.Constraint
 		{
 			if (variable == null) throw new ArgumentNullException(nameof(variable));
 			return variable.MilpManager.Set<TConstraintType>(variable, right);
 		}
 
-		/// <summary>
-		/// Adds constraint to a solver
-		/// </summary>
-		/// <param name="constraintType">Constraint type</param>
-		/// <param name="variable">Variable to constrain</param>
-		/// <param name="right">Right hand side of a constraint</param>
-		/// <returns>Variable passed as an argument</returns>
-		public static IVariable Set(this IVariable variable, Type constraintType, IVariable right)
+        /// <summary>
+        /// Adds constraint to a solver
+        /// </summary>
+        /// <param name="variable">Variable to constrain</param>
+        /// <param name="constraint">Constraint type</param>
+        /// <param name="right">Right hand side of a constraint</param>
+        /// <returns>Variable passed as an argument</returns>
+        public static IVariable Set(this IVariable variable, Type constraint, IVariable right)
 		{
 			if (variable == null) throw new ArgumentNullException(nameof(variable));
 			return (IVariable)typeof(VariableExtensions)
 				.GetMethod(nameof(Set), new[] { typeof(IVariable), typeof(IVariable) })
-				.MakeGenericMethod(constraintType)
+				.MakeGenericMethod(constraint)
 				.Invoke(null, new object[] { variable, right });
-		}
+	    }
 
-		/// <summary>
-		/// Adds composite constraint to a solver
-		/// <param name="variable">Variable to constraint</param>
-		/// </summary>
-		/// <typeparam name="TCompositeConstraintType">Constraint type</typeparam>
-		/// <param name="variable">Variable to constrain</param>
-		/// <param name="parameters">Additional constraint parameters</param>
-		/// <param name="right">Right hand side of a constraint</param>
-		/// <returns>Variable passed as an argument</returns>
-		public static IVariable Set<TCompositeConstraintType>(this IVariable variable, ICompositeConstraintParameters parameters, params IVariable[] right) where TCompositeConstraintType : CompositeConstraintType
+        /// <summary>
+        /// Adds constraint to a solver
+        /// </summary>
+        /// <param name="variable">Variable to constrain</param>
+        /// <param name="constraintType">Constraint type</param>
+        /// <param name="right">Right hand side of a constraint</param>
+        /// <returns>Variable passed as an argument</returns>
+        public static IVariable Set(this IVariable variable, ConstraintType constraintType, IVariable right)
+        {
+            if (variable == null) throw new ArgumentNullException(nameof(variable));
+            return Set(variable, ConstraintTypeMapper.Map(constraintType), right);
+        }
+
+	    /// <summary>
+	    /// Adds composite constraint to a solver
+	    /// </summary>
+	    /// <typeparam name="TCompositeConstraintType">Constraint type</typeparam>
+	    /// <param name="variable">Variable to constrain</param>
+	    /// <param name="right">Right hand side of a constraint</param>
+	    /// <returns>Variable passed as an argument</returns>
+	    public static IVariable Set<TCompositeConstraintType>(this IVariable variable, params IVariable[] right) where TCompositeConstraintType : CompositeConstraint
+	    {
+	        if (variable == null) throw new ArgumentNullException(nameof(variable));
+	        return variable.MilpManager.Set<TCompositeConstraintType>(variable, right);
+	    }
+
+	    /// <summary>
+	    /// Adds composite constraint to a solver
+	    /// </summary>
+	    /// <param name="variable">Variable to constrain</param>
+	    /// <param name="constraint">Constraint type</param>
+	    /// <param name="right">Right hand side of a constraint</param>
+	    /// <returns>Variable passed as an argument</returns>
+	    public static IVariable Set(this IVariable variable, Type constraint, params IVariable[] right)
+	    {
+	        if (variable == null) throw new ArgumentNullException(nameof(variable));
+	        return (IVariable)typeof(VariableExtensions)
+	            .GetMethod(nameof(Set), new[] { typeof(IVariable), typeof(IVariable) })
+	            .MakeGenericMethod(constraint)
+	            .Invoke(null, new object[] { variable, right });
+	    }
+
+	    /// <summary>
+	    /// Adds composite constraint to a solver
+	    /// </summary>
+	    /// <param name="variable">Variable to constrain</param>
+	    /// <param name="constraint">Constraint type</param>
+	    /// <param name="right">Right hand side of a constraint</param>
+	    /// <returns>Variable passed as an argument</returns>
+	    public static IVariable Set(this IVariable variable, CompositeConstraintType constraint, params IVariable[] right)
+	    {
+	        if (variable == null) throw new ArgumentNullException(nameof(variable));
+	        return Set(variable, CompositeConstraintTypeMapper.Map(constraint), right);
+	    }
+
+        /// <summary>
+        /// Adds composite constraint to a solver
+        /// </summary>
+        /// <typeparam name="TCompositeConstraintType">Constraint type</typeparam>
+        /// <param name="variable">Variable to constrain</param>
+        /// <param name="parameters">Additional constraint parameters</param>
+        /// <param name="right">Right hand side of a constraint</param>
+        /// <returns>Variable passed as an argument</returns>
+        public static IVariable Set<TCompositeConstraintType>(this IVariable variable, ICompositeConstraintParameters parameters, params IVariable[] right) where TCompositeConstraintType : CompositeConstraint
 		{
 			if (variable == null) throw new ArgumentNullException(nameof(variable));
-			return variable.MilpManager.Set< TCompositeConstraintType>(parameters, variable, right);
-		}
+			return variable.MilpManager.Set<TCompositeConstraintType>(parameters, variable, right);
+	    }
 
-		/// <summary>
-		/// Makes goal
-		/// </summary>
-		/// <typeparam name="TGoalType">Goal type</typeparam>
-		/// <param name="variable">Variable to make goal</param>
-		/// <param name="variables">Additional variables required to make a goal</param>
-		/// <returns>Variable representing goal</returns>
-		public static IVariable MakeGoal<TGoalType>(this IVariable variable, params IVariable[] variables) where TGoalType : GoalType
+        /// <summary>
+        /// Adds composite constraint to a solver
+        /// </summary>
+        /// <param name="variable">Variable to constrain</param>
+        /// <param name="constraint">Constraint type</param>
+        /// <param name="parameters">Additional constraint parameters</param>
+        /// <param name="right">Right hand side of a constraint</param>
+        /// <returns>Variable passed as an argument</returns>
+        public static IVariable Set(this IVariable variable, Type constraint, ICompositeConstraintParameters parameters, params IVariable[] right)
+	    {
+	        if (variable == null) throw new ArgumentNullException(nameof(variable));
+	        return (IVariable)typeof(VariableExtensions)
+	            .GetMethod(nameof(Set), new[] { typeof(IVariable), typeof(ICompositeConstraintParameters), typeof(IVariable) })
+	            .MakeGenericMethod(constraint)
+	            .Invoke(null, new object[] { variable, parameters, right });
+        }
+
+	    /// <summary>
+	    /// Adds composite constraint to a solver
+	    /// </summary>
+	    /// <param name="variable">Variable to constrain</param>
+	    /// <param name="constraint">Constraint type</param>
+	    /// <param name="parameters">Additional constraint parameters</param>
+	    /// <param name="right">Right hand side of a constraint</param>
+	    /// <returns>Variable passed as an argument</returns>
+	    public static IVariable Set(this IVariable variable, CompositeConstraintType constraint, ICompositeConstraintParameters parameters, params IVariable[] right)
+	    {
+	        if (variable == null) throw new ArgumentNullException(nameof(variable));
+	        return Set(variable, CompositeConstraintTypeMapper.Map(constraint), parameters, right);
+	    }
+
+        /// <summary>
+        /// Makes goal
+        /// </summary>
+        /// <typeparam name="TGoalType">Goal type</typeparam>
+        /// <param name="variable">Variable to make goal</param>
+        /// <param name="variables">Additional variables required to make a goal</param>
+        /// <returns>Variable representing goal</returns>
+        public static IVariable MakeGoal<TGoalType>(this IVariable variable, params IVariable[] variables) where TGoalType : Goal
 		{
 			if (variable == null) throw new ArgumentNullException(nameof(variable));
 			return variable.MilpManager.MakeGoal<TGoalType>(new[] { variable }.Concat(variables).ToArray());
-		}
+	    }
 
-		/// <summary>
-		/// Returns value of a variable in solved model
-		/// </summary>
-		/// <param name="variable">Variable to obtain value</param>
-		/// <returns>Value of a variable</returns>
-		public static double GetValue(this IVariable variable)
+        /// <summary>
+        /// Makes goal
+        /// </summary>
+        /// <param name="variable">Variable to make goal</param>
+        /// <param name="goal">Goal type</param>
+        /// <param name="variables">Additional variables required to make a goal</param>
+        /// <returns>Variable representing goal</returns>
+        public static IVariable MakeGoal(this IVariable variable, Type goal, params IVariable[] variables)
+        {
+            if (variable == null) throw new ArgumentNullException(nameof(variable));
+            return (IVariable)typeof(VariableExtensions)
+                .GetMethod(nameof(MakeGoal), new[] { typeof(IVariable), typeof(IVariable) })
+                .MakeGenericMethod(typeof(Goal))
+                .Invoke(null, new object[] { variable, variables });
+        }
+
+	    /// <summary>
+	    /// Makes goal
+	    /// </summary>
+	    /// <param name="variable">Variable to make goal</param>
+	    /// <param name="goal">Goal type</param>
+	    /// <param name="variables">Additional variables required to make a goal</param>
+	    /// <returns>Variable representing goal</returns>
+	    public static IVariable MakeGoal(this IVariable variable, GoalType goal, params IVariable[] variables)
+	    {
+	        if (variable == null) throw new ArgumentNullException(nameof(variable));
+	        return MakeGoal(variable, GoalTypeMapper.Map(goal), variables);
+	    }
+
+        /// <summary>
+        /// Returns value of a variable in solved model
+        /// </summary>
+        /// <param name="variable">Variable to obtain value</param>
+        /// <returns>Value of a variable</returns>
+        public static double GetValue(this IVariable variable)
 		{
 			if (!(variable.MilpManager is IMilpSolver))
 			{

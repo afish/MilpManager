@@ -2,17 +2,18 @@
 using System.Linq;
 using MilpManager.Abstraction;
 using MilpManager.Utilities;
+using Operation = MilpManager.Abstraction.Operation;
 
 namespace MilpManager.Implementation.Operations
 {
 	public abstract class BaseOperationCalculator : IOperationCalculator
 	{
-		public bool SupportsOperation<TOperationType>(params IVariable[] arguments) where TOperationType : OperationType
+		public bool SupportsOperation<TOperationType>(params IVariable[] arguments) where TOperationType : Operation
 		{
 			return SupportedTypes.Contains(typeof (TOperationType)) && SupportsOperationInternal<TOperationType>(arguments);
 		}
 
-		public IVariable Calculate<TOperationType>(IMilpManager milpManager, params IVariable[] arguments) where TOperationType : OperationType
+		public IVariable Calculate<TOperationType>(IMilpManager milpManager, params IVariable[] arguments) where TOperationType : Operation
 		{
 			if (!SupportsOperation<TOperationType>(arguments)) throw new NotSupportedException(SolverUtilities.FormatUnsupportedMessage(typeof(TOperationType), arguments));
 
@@ -29,13 +30,13 @@ namespace MilpManager.Implementation.Operations
 		}
 
 		protected abstract bool SupportsOperationInternal<TOperationType>(params IVariable[] arguments)
-			where TOperationType : OperationType;
+			where TOperationType : Operation;
 
 		protected abstract IVariable CalculateInternal<TOperationType>(IMilpManager milpManager, params IVariable[] arguments)
-			where TOperationType : OperationType;
+			where TOperationType : Operation;
 
 		protected abstract IVariable CalculateConstantInternal<TOperationType>(IMilpManager milpManager, params IVariable[] arguments)
-			where TOperationType : OperationType;
+			where TOperationType : Operation;
 
 		protected abstract Type[] SupportedTypes { get; }
 	}

@@ -50,7 +50,7 @@ namespace MilpManager.Abstraction
 		/// <typeparam name="TOperationType">Type of operation to perform</typeparam>
 		/// <param name="variables">Operation arguments</param>
 		/// <returns>Result of operation</returns>
-		IVariable Operation<TOperationType>(params IVariable[] variables) where TOperationType : OperationType;
+		IVariable Operation<TOperationType>(params IVariable[] variables) where TOperationType : Operation;
 
 		/// <summary>
 		///  Adds constraint for left hand side using value of right hand side
@@ -59,7 +59,7 @@ namespace MilpManager.Abstraction
 		/// <param name="left">Variable to set</param>
 		/// <param name="right">Variable representing constraint's right hand side</param>
 		/// <returns>Returns left</returns>
-		IVariable Set<TConstraintType>(IVariable left, IVariable right) where TConstraintType : ConstraintType;
+		IVariable Set<TConstraintType>(IVariable left, IVariable right) where TConstraintType : Constraint;
 
 		/// <summary>
 		///  Performs composite operation on passed arguments
@@ -67,7 +67,7 @@ namespace MilpManager.Abstraction
 		/// <typeparam name="TCompositeOperationType">Type of operation to perform</typeparam>
 		/// <param name="variables">Operation arguments</param>
 		/// <returns>Sequence of results of operation</returns>
-		IEnumerable<IVariable> CompositeOperation<TCompositeOperationType>(params IVariable[] variables) where TCompositeOperationType : CompositeOperationType;
+		IEnumerable<IVariable> CompositeOperation<TCompositeOperationType>(params IVariable[] variables) where TCompositeOperationType : CompositeOperation;
 
 		/// <summary>
 		///  Performs composite operation on passed arguments
@@ -76,7 +76,7 @@ namespace MilpManager.Abstraction
 		/// <param name="parameters">Additional operation parameters (depends on the type of operation)</param>
 		/// <param name="variables">Operation arguments</param>
 		/// <returns>Sequence of results of operation</returns>
-		IEnumerable<IVariable> CompositeOperation<TCompositeOperationType>(ICompositeOperationParameters parameters, params IVariable[] variables) where TCompositeOperationType : CompositeOperationType;
+		IEnumerable<IVariable> CompositeOperation<TCompositeOperationType>(ICompositeOperationParameters parameters, params IVariable[] variables) where TCompositeOperationType : CompositeOperation;
 
 		/// <summary>
 		///  Adds constraint for left hand side using values of right hand side
@@ -86,7 +86,7 @@ namespace MilpManager.Abstraction
 		/// <param name="variables">Variables to use as a right hand side</param>
 		/// <returns>Returns left</returns>
 		/// <remarks>Some constraints work on a sequence of variables, not on a left hand side directly. E.g., setting variables to AllDifferent.</remarks>
-		IVariable Set<TCompositeConstraintType>( IVariable left, params IVariable[] variables) where TCompositeConstraintType : CompositeConstraintType;
+		IVariable Set<TCompositeConstraintType>(IVariable left, params IVariable[] variables) where TCompositeConstraintType : CompositeConstraint;
 
 		/// <summary>
 		///  Adds constraint for left hand side using values of right hand side
@@ -97,7 +97,7 @@ namespace MilpManager.Abstraction
 		/// <param name="parameters">Additional constraint parameters (depends on the type of operation)</param>
 		/// <returns>Returns left</returns>
 		/// <remarks>Some constraints work on a sequence of variables, not on a left hand side directly. E.g., setting variables to AllDifferent.</remarks>
-		IVariable Set<TCompositeConstraintType>(ICompositeConstraintParameters parameters, IVariable left, params IVariable[] variables) where TCompositeConstraintType : CompositeConstraintType;
+		IVariable Set<TCompositeConstraintType>(ICompositeConstraintParameters parameters, IVariable left, params IVariable[] variables) where TCompositeConstraintType : CompositeConstraint;
 
 		/// <summary>
 		///  Makes goal based on variables. The goal is not added to solver
@@ -105,7 +105,7 @@ namespace MilpManager.Abstraction
 		/// <typeparam name="TGoalType">Goal type</typeparam>
 		/// <param name="variables">Variables to create goal from</param>
 		/// <returns>Variable representing goal</returns>
-		IVariable MakeGoal<TGoalType>(params IVariable[] variables) where TGoalType : GoalType;
+		IVariable MakeGoal<TGoalType>(params IVariable[] variables) where TGoalType : Goal;
 
 		/// <summary>
 		/// Calculates sum of variables.

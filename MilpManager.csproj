@@ -77,10 +77,10 @@
   <ItemGroup>
     <Compile Include="Abstraction\BaseMilpManager.cs" />
     <Compile Include="Abstraction\BaseMilpSolver.cs" />
-    <Compile Include="Abstraction\CompositeConstraintType.cs" />
+    <Compile Include="Abstraction\CompositeConstraint.cs" />
     <Compile Include="Abstraction\DefaultCalculators.cs" />
     <Compile Include="Abstraction\SaveFileSettings.cs" />
-    <Compile Include="Abstraction\GoalType.cs" />
+    <Compile Include="Abstraction\Goal.cs" />
     <Compile Include="Abstraction\ICompositeConstraintParameters.cs" />
     <Compile Include="Abstraction\IModelLoader.cs" />
     <Compile Include="Abstraction\IModelSaver.cs" />
@@ -105,12 +105,12 @@
     <Compile Include="Implementation\Goals\IGoalCalculator.cs" />
     <Compile Include="Abstraction\IMilpSolver.cs" />
     <Compile Include="Abstraction\ICompositeOperationParameters.cs" />
-    <Compile Include="Abstraction\CompositeOperationType.cs" />
-    <Compile Include="Abstraction\ConstraintType.cs" />
+    <Compile Include="Abstraction\CompositeOperation.cs" />
+    <Compile Include="Abstraction\Constraint.cs" />
     <Compile Include="Abstraction\Domain.cs" />
     <Compile Include="Abstraction\IMilpManager.cs" />
     <Compile Include="Abstraction\IVariable.cs" />
-    <Compile Include="Abstraction\OperationType.cs" />
+    <Compile Include="Abstraction\Operation.cs" />
     <Compile Include="Abstraction\SolutionStatus.cs" />
     <Compile Include="Implementation\CompositeConstraints\ICompositeConstraintCalculator.cs" />
     <Compile Include="Implementation\CompositeConstraints\CardinalityCalculator.cs" />
@@ -137,6 +137,9 @@
     <Compile Include="Implementation\CompositeOperations\NthElementsParameters.cs" />
     <Compile Include="Implementation\CompositeOperations\SelectionSortCalculator.cs" />
     <Compile Include="Implementation\CompositeOperations\UnsignedMagnitudeDecompositionCalculator.cs" />
+    <Compile Include="Utilities\CompositeConstraintType.cs" />
+    <Compile Include="Utilities\CompositeOperationType.cs" />
+    <Compile Include="Utilities\ConstraintType.cs" />
     <Compile Include="Utilities\DomainExtensions.cs" />
     <Compile Include="Implementation\Goals\MinimizeMinimumCalculator.cs" />
     <Compile Include="Implementation\Goals\MaximizeMaximumCalculator.cs" />
@@ -171,6 +174,9 @@
     <Compile Include="Implementation\Operations\NegationCalculator.cs" />
     <Compile Include="Implementation\Operations\AdditionCalculator.cs" />
     <Compile Include="Implementation\Operations\RemainderCalculator.cs" />
+    <Compile Include="Utilities\GoalType.cs" />
+    <Compile Include="Utilities\OperationType.cs" />
+    <Compile Include="Utilities\SolverExtensions.cs" />
     <Compile Include="Utilities\SolverUtilities.cs" />
     <Compile Include="Utilities\VariableExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

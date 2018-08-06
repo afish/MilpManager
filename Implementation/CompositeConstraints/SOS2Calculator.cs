@@ -7,7 +7,7 @@ namespace MilpManager.Implementation.CompositeConstraints
 	public class SOS2Calculator : ICompositeConstraintCalculator
 	{
 		public IVariable Set<TCompositeConstraintType>(IMilpManager milpManager, ICompositeConstraintParameters parameters,
-			IVariable leftVariable, params IVariable[] rightVariable) where TCompositeConstraintType : CompositeConstraintType
+			IVariable leftVariable, params IVariable[] rightVariable) where TCompositeConstraintType : CompositeConstraint
 
 		{
 			var maximumIntegerValue = milpManager.FromConstant(milpManager.MaximumIntegerValue);

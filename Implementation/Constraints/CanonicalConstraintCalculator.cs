@@ -1,13 +1,14 @@
 ﻿using System;
 using MilpManager.Abstraction;
 using MilpManager.Utilities;
+using Constraint = MilpManager.Abstraction.Constraint;
 
 namespace MilpManager.Implementation.Constraints
 {
 	public class CanonicalConstraintCalculator : IConstraintCalculator
 	{
 		public IVariable Set<TConstraintType>(IMilpManager milpManager, IVariable leftVariable,
-			IVariable rightVariable) where TConstraintType : ConstraintType
+			IVariable rightVariable) where TConstraintType : Constraint
 		{
 			if (typeof (TConstraintType) == typeof (Equal))
 			{

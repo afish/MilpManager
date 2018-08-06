@@ -55,7 +55,7 @@ namespace MilpManager.Abstraction
 			return variable;
 		}
 
-		public virtual IVariable Operation<TOperationType>(params IVariable[] variables) where TOperationType : OperationType
+		public virtual IVariable Operation<TOperationType>(params IVariable[] variables) where TOperationType : Operation
 		{
 			if (Operations[typeof(TOperationType)].SupportsOperation<TOperationType>(variables))
 			{
@@ -65,18 +65,18 @@ namespace MilpManager.Abstraction
 			throw new NotSupportedException(SolverUtilities.FormatUnsupportedMessage(typeof(TOperationType), variables));
 		}
 
-		public virtual IVariable Set<TConstraintType>(IVariable left, IVariable right) where TConstraintType : ConstraintType
+		public virtual IVariable Set<TConstraintType>(IVariable left, IVariable right) where TConstraintType : Constraint
 		{
 			return Constraints[typeof(TConstraintType)].Set<TConstraintType>(this, left, right);
 		}
 
-		public virtual IEnumerable<IVariable> CompositeOperation<TCompositeOperationType>(params IVariable[] variables) where TCompositeOperationType : CompositeOperationType
+		public virtual IEnumerable<IVariable> CompositeOperation<TCompositeOperationType>(params IVariable[] variables) where TCompositeOperationType : CompositeOperation
 		{
 			return CompositeOperation<TCompositeOperationType>(null, variables);
 		}
 
 		public virtual IEnumerable<IVariable> CompositeOperation<TCompositeOperationType>(ICompositeOperationParameters parameters, params IVariable[] variables)
-			where TCompositeOperationType : CompositeOperationType
+			where TCompositeOperationType : CompositeOperation
 		{
 			if (CompositeOperations[typeof(TCompositeOperationType)].SupportsOperation<TCompositeOperationType>(parameters, variables))
 			{
@@ -86,18 +86,18 @@ namespace MilpManager.Abstraction
 			throw new NotSupportedException(SolverUtilities.FormatUnsupportedMessage(typeof(TCompositeOperationType), parameters, variables));
 		}
 
-		public virtual IVariable Set<TCompositeConstraintType>(IVariable left, params IVariable[] variables) where TCompositeConstraintType : CompositeConstraintType
+		public virtual IVariable Set<TCompositeConstraintType>(IVariable left, params IVariable[] variables) where TCompositeConstraintType : CompositeConstraint
 		{
 			return Set< TCompositeConstraintType>(null, left, variables);
 		}
 
 		public virtual IVariable Set<TCompositeConstraintType>(ICompositeConstraintParameters parameters, IVariable left,
-			params IVariable[] variables) where TCompositeConstraintType : CompositeConstraintType
+			params IVariable[] variables) where TCompositeConstraintType : CompositeConstraint
 		{
 			return CompositeConstraints[typeof(TCompositeConstraintType)].Set<TCompositeConstraintType>(this, parameters, left, variables);
 		}
 
-		public IVariable MakeGoal<TGoalType>(params IVariable[] variables) where TGoalType : GoalType
+		public IVariable MakeGoal<TGoalType>(params IVariable[] variables) where TGoalType : Goal
 		{
 			if (GoalCalculators[typeof(TGoalType)].SupportsOperation<TGoalType>(variables))
 			{

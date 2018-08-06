@@ -6,7 +6,7 @@ namespace MilpManager.Implementation.CompositeConstraints
 	public class CardinalityCalculator : ICompositeConstraintCalculator
 	{
 		public IVariable Set<TCompositeConstraintType>(IMilpManager milpManager, ICompositeConstraintParameters parameters,
-			IVariable leftVariable, params IVariable[] rightVariable) where TCompositeConstraintType : CompositeConstraintType
+			IVariable leftVariable, params IVariable[] rightVariable) where TCompositeConstraintType : CompositeConstraint
 
 		{
 			leftVariable.Operation<DifferentValuesCount>(rightVariable)
