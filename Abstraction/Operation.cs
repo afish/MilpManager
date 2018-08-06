@@ -26,5 +26,6 @@
 	public abstract class Multiplication : Operation { }
 	public abstract class Negation : Operation { }
 	public abstract class Subtraction : Operation { }
+	public abstract class RealDivision : Operation { }
 	public abstract class Remainder : Operation { }
 }

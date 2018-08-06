@@ -23,12 +23,12 @@ namespace MilpManager.Implementation.Operations
 		    return Domain.AnyInteger;
 		}
 
-		private static bool IsDividingByConstant(IVariable[] arguments)
-		{
-			return arguments[1].IsConstant();
-		}
+	    private static bool AreArgumentsBinaries(IVariable[] arguments)
+	    {
+	        return arguments.All(a => a.IsBinary());
+	    }
 
-		protected override bool SupportsOperationInternal<TOperationType>(params IVariable[] arguments)
+        protected override bool SupportsOperationInternal<TOperationType>(params IVariable[] arguments)
 		{
 			return arguments.Length == 2 && arguments[1].IsInteger();
 		}
@@ -36,23 +36,18 @@ namespace MilpManager.Implementation.Operations
 		protected override IVariable CalculateInternal<TOperationType>(IMilpManager milpManager, params IVariable[] arguments)
 		{
 			var domain = CalculateDomain(arguments);
-			if (IsDividingByConstant(arguments))
-			{
-				var finalDomain = arguments.All(x => x.IsConstant()) ? domain.MakeConstant() : domain;
-				var physicalResult = milpManager.DivideVariableByConstant(arguments[0], arguments[1], finalDomain);
-				physicalResult.ConstantValue = arguments[0].ConstantValue / arguments[1].ConstantValue;
-				SolverUtilities.SetExpression(physicalResult, $"{arguments[0].FullExpression()} / {arguments[1].FullExpression()}");
 
-				return physicalResult;
-			}
-
-			IVariable one = milpManager.FromConstant(1);
+		    if (AreArgumentsBinaries(arguments))
+		    {
+		        return arguments[0];
+		    }
+            
 			var result = milpManager.CreateAnonymous(domain);
 
 		    result.ConstantValue = arguments.All(a => a.ConstantValue.HasValue)
 		        ? arguments[1].ConstantValue.Value == 0
 		            ? (double?)null
-		            : (long)arguments[0].ConstantValue.Value / (long)arguments[1].ConstantValue.Value
+		            : (long)(arguments[0].ConstantValue.Value / arguments[1].ConstantValue.Value)
 		        : null;
 
 		    var first = MultiplicationCalculator.MakePositiveIfNeeded(arguments[0]);
@@ -61,12 +56,12 @@ namespace MilpManager.Implementation.Operations
             result.Operation<Multiplication>(second)
 				.Set<LessOrEqual>(first);
 
-			result.Operation<Addition>(milpManager.FromConstant(1))
-			    .Operation<Multiplication>(second)
-				.Set<GreaterOrEqual>(first.Operation<Addition>(one));
+		    result.Operation<Addition>(milpManager.FromConstant(1))
+		        .Operation<Multiplication>(second)
+                .Set<GreaterThan>(first);
 
-		    result = MultiplicationCalculator.FixSign(milpManager, arguments, result);
-			SolverUtilities.SetExpression(result, $"{first.FullExpression()} / {second.FullExpression()}");
+            result = MultiplicationCalculator.FixSign(milpManager, arguments, result).ChangeDomain(domain);
+            SolverUtilities.SetExpression(result, $"{first.FullExpression()} / {second.FullExpression()}");
 
 			return result;
 		}
@@ -74,14 +69,7 @@ namespace MilpManager.Implementation.Operations
 		protected override IVariable CalculateConstantInternal<TOperationType>(IMilpManager milpManager, params IVariable[] arguments)
 		{
 			var constantResult = arguments[0].ConstantValue.Value / arguments[1].ConstantValue.Value;
-			if (arguments.All(a => a.IsInteger()))
-			{
-				return milpManager.FromConstant((int)constantResult);
-			}
-			else
-			{
-				return milpManager.FromConstant(constantResult);
-			}
+			return milpManager.FromConstant((int)constantResult);
 		}
 
 		protected override Type[] SupportedTypes => new[] {typeof (Division)};

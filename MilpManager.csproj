@@ -137,6 +137,7 @@
     <Compile Include="Implementation\CompositeOperations\NthElementsParameters.cs" />
     <Compile Include="Implementation\CompositeOperations\SelectionSortCalculator.cs" />
     <Compile Include="Implementation\CompositeOperations\UnsignedMagnitudeDecompositionCalculator.cs" />
+    <Compile Include="Implementation\Operations\RealDivisionCalculator.cs" />
     <Compile Include="Utilities\CompositeConstraintType.cs" />
     <Compile Include="Utilities\CompositeOperationType.cs" />
     <Compile Include="Utilities\ConstraintType.cs" />

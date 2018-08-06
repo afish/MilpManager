@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using MilpManager.Abstraction;
 using MilpManager.Utilities;
 
@@ -9,7 +8,7 @@ namespace MilpManager.Implementation.Operations
 	{
 		protected override bool SupportsOperationInternal<TOperationType>(params IVariable[] arguments)
 		{
-			return arguments.Length == 2 && (arguments.All(x => x.IsConstant()) || (arguments.All(x => x.IsPositiveOrZero() || x.IsBinary()) && arguments.All(a => a.IsInteger())));
+		    return arguments.Length == 2 && arguments[1].IsInteger();
 		}
 
 		protected override IVariable CalculateInternal<TOperationType>(IMilpManager milpManager, params IVariable[] arguments)
@@ -17,27 +16,42 @@ namespace MilpManager.Implementation.Operations
 			IVariable numerator = arguments[0];
 			IVariable denominator = arguments[1];
 
-			var one = milpManager.FromConstant(1);
-			var any = milpManager.CreateAnonymous(Domain.PositiveOrZeroInteger);
-			any.Operation<Multiplication>(denominator).Set<LessOrEqual>(numerator);
-			any.Operation<Addition>(one)
-				.Operation<Multiplication>(denominator)
-				.Set<GreaterOrEqual>(numerator.Operation<Addition>(one));
+            var domain = arguments[0].IsInteger()
+                ? arguments[0].IsBinary() ? Domain.BinaryInteger : arguments[0].IsNonNegative() && arguments[1].IsBinary() ? Domain.BinaryInteger : arguments[0].IsNonNegative() ? Domain.PositiveOrZeroInteger : Domain.AnyInteger
+                : arguments[0].IsNonNegative() ? Domain.PositiveOrZeroReal : Domain.AnyReal;
 
-			IVariable result = milpManager.CreateAnonymous(Domain.PositiveOrZeroInteger);
+		    IVariable result;
+		    if (arguments[0].IsBinary() && arguments[1].IsBinary())
+		    {
+		        result = milpManager.FromConstant(0);
+		    }
+		    else if (arguments[0].IsInteger() && arguments[0].IsPositiveOrZero() && arguments[1].IsBinary())
+		    {
+                result = milpManager.FromConstant(0);
+            }
+		    else
+		    {
+		        result = numerator.Operation<Subtraction>(numerator.Operation<Division>(denominator).Operation<Multiplication>(denominator)).ChangeDomain(domain);
+            }
+            
 		    result.ConstantValue = numerator.ConstantValue % denominator.ConstantValue;
 
-            result.Set<LessOrEqual>(denominator);
-			result.Set<Equal>(numerator.Operation<Subtraction>(denominator.Operation<Multiplication>(any)));
-
-			SolverUtilities.SetExpression(result, $"{numerator.FullExpression()} % {denominator.FullExpression()}");
+            SolverUtilities.SetExpression(result, $"{numerator.FullExpression()} % {denominator.FullExpression()}");
 			return result;
 		}
 
 		protected override IVariable CalculateConstantInternal<TOperationType>(IMilpManager milpManager, params IVariable[] arguments)
 		{
-			var constantResult = (int)arguments[0].ConstantValue.Value % (int)arguments[1].ConstantValue.Value;
-			return milpManager.FromConstant(constantResult);
+		    if (arguments[0].IsInteger())
+		    {
+		        var constantResult = (int)arguments[0].ConstantValue.Value % (int)arguments[1].ConstantValue.Value;
+		        return milpManager.FromConstant(constantResult);
+            }
+		    else
+		    {
+		        var constantResult = arguments[0].ConstantValue.Value % arguments[1].ConstantValue.Value;
+		        return milpManager.FromConstant(constantResult);
+            }
 		}
 
 		protected override Type[] SupportedTypes => new [] {typeof(Remainder)};

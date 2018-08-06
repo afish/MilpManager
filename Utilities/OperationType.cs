@@ -30,6 +30,7 @@ namespace MilpManager.Utilities
         Multiplication,
         Negation,
         Subtraction,
+        RealDivision,
         Remainder
     }
 
@@ -89,6 +90,8 @@ namespace MilpManager.Utilities
                     return typeof(Negation);
                 case OperationType.Subtraction:
                     return typeof(Subtraction);
+                case OperationType.RealDivision:
+                    return typeof(RealDivision);
                 case OperationType.Remainder:
                     return typeof(Remainder);
                 default:

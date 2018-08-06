@@ -74,10 +74,10 @@ namespace MilpManager.Implementation.Operations
 		    var two = milpManager.FromConstant(2);
 		    result =
 		        MultiplyByBinaryDigit(milpManager, result, sign)
-		            .Operation<Subtraction>(result.Operation<Division>(two))
-		            .Operation<Multiplication>(two);
+		            .Operation<Subtraction>(result.Operation<RealDivision>(two))
+                    .Operation<Multiplication>(two);
 
-		    return result;
+            return result;
 		}
 
 		private IVariable MakeLongMultiplication(IMilpManager milpManager, Domain domain, IVariable second,
@@ -135,7 +135,7 @@ namespace MilpManager.Implementation.Operations
 				var result = MultiplyByBinaryDigit(milpManager, absoluteNumber, digit);
 				var two = milpManager.FromConstant(2);
 				return MultiplyByBinaryDigit(milpManager, result, number.Operation<IsGreaterOrEqual>(milpManager.FromConstant(0)))
-						.Operation<Subtraction>(result.Operation<Division>(two))
+						.Operation<Subtraction>(result.Operation<RealDivision>(two))
 						.Operation<Multiplication>(two);
 			}
 

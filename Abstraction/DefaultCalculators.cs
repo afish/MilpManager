@@ -49,6 +49,7 @@ namespace MilpManager.Abstraction
 			{typeof(Maximum), new MaximumMinimumCalculator()},
 			{typeof(Minimum), new MaximumMinimumCalculator()},
 			{typeof(Negation), new NegationCalculator()},
+			{typeof(RealDivision), new RealDivisionCalculator()},
 			{typeof(Remainder), new RemainderCalculator()}
 		};
 
