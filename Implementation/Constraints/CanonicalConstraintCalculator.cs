@@ -1,5 +1,6 @@
 ﻿using System;
 using MilpManager.Abstraction;
+using MilpManager.Utilities;
 
 namespace MilpManager.Implementation.Constraints
 {

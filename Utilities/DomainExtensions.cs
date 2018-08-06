@@ -1,7 +1,7 @@
 ﻿using System;
 using MilpManager.Abstraction;
 
-namespace MilpManager.Implementation
+namespace MilpManager.Utilities
 {
     public static class DomainExtensions
     {

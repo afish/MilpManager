@@ -137,7 +137,7 @@
     <Compile Include="Implementation\CompositeOperations\NthElementsParameters.cs" />
     <Compile Include="Implementation\CompositeOperations\SelectionSortCalculator.cs" />
     <Compile Include="Implementation\CompositeOperations\UnsignedMagnitudeDecompositionCalculator.cs" />
-    <Compile Include="Implementation\DomainExtensions.cs" />
+    <Compile Include="Utilities\DomainExtensions.cs" />
     <Compile Include="Implementation\Goals\MinimizeMinimumCalculator.cs" />
     <Compile Include="Implementation\Goals\MaximizeMaximumCalculator.cs" />
     <Compile Include="Implementation\Goals\MaximizeMinimumCalculator.cs" />
@@ -171,8 +171,8 @@
     <Compile Include="Implementation\Operations\NegationCalculator.cs" />
     <Compile Include="Implementation\Operations\AdditionCalculator.cs" />
     <Compile Include="Implementation\Operations\RemainderCalculator.cs" />
-    <Compile Include="Implementation\SolverUtilities.cs" />
-    <Compile Include="Implementation\VariableExtensions.cs" />
+    <Compile Include="Utilities\SolverUtilities.cs" />
+    <Compile Include="Utilities\VariableExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

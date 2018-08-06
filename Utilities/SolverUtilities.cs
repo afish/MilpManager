@@ -1,7 +1,7 @@
 ﻿using System.Linq;
 using MilpManager.Abstraction;
 
-namespace MilpManager.Implementation
+namespace MilpManager.Utilities
 {
 	internal static class SolverUtilities
 	{

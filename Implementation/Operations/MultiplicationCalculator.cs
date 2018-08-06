@@ -2,6 +2,7 @@
 using System.Linq;
 using MilpManager.Abstraction;
 using MilpManager.Implementation.CompositeOperations;
+using MilpManager.Utilities;
 using Domain = MilpManager.Abstraction.Domain;
 
 namespace MilpManager.Implementation.Operations

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using MilpManager.Abstraction;
 
-namespace MilpManager.Implementation
+namespace MilpManager.Utilities
 {
 	public static class VariableExtensions
 	{

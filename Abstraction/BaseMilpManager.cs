@@ -6,6 +6,7 @@ using MilpManager.Implementation.CompositeOperations;
 using MilpManager.Implementation.Constraints;
 using MilpManager.Implementation.Goals;
 using MilpManager.Implementation.Operations;
+using MilpManager.Utilities;
 
 namespace MilpManager.Abstraction
 {

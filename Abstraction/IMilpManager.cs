@@ -8,22 +8,27 @@ namespace MilpManager.Abstraction
 		///  Size of integer in bits
 		/// </summary>
 		int IntegerWidth { get; }
+
 		/// <summary>
 		///  Positive value greater than any supported integer value, should be at least 4*MaximumIntegerValue + 1
 		/// </summary>
 		int IntegerInfinity { get; }
+
 		/// <summary>
 		///  Maximum supported positive integer value
 		/// </summary>
 		int MaximumIntegerValue { get; }
+
 		/// <summary>
 		///  Precision used when working with real numbers
 		/// </summary>
 		double Epsilon { get; }
+
 		/// <summary>
 		///  Settings used by manager
 		/// </summary>
 		MilpManagerSettings Settings { get; }
+
 		/// <summary>
 		///  Creates variable based on existing value
 		/// </summary>
@@ -31,6 +36,8 @@ namespace MilpManager.Abstraction
 		/// <param name="value">Value used to create variable</param>
 		/// <returns>Created variable</returns>
 		IVariable Create(string name, IVariable value);
+
+
 		/// <summary>
 		///  Creates anonymous variable based on existing value
 		/// </summary>
@@ -44,6 +51,7 @@ namespace MilpManager.Abstraction
 		/// <param name="variables">Operation arguments</param>
 		/// <returns>Result of operation</returns>
 		IVariable Operation<TOperationType>(params IVariable[] variables) where TOperationType : OperationType;
+
 		/// <summary>
 		///  Adds constraint for left hand side using value of right hand side
 		/// </summary>
@@ -52,6 +60,7 @@ namespace MilpManager.Abstraction
 		/// <param name="right">Variable representing constraint's right hand side</param>
 		/// <returns>Returns left</returns>
 		IVariable Set<TConstraintType>(IVariable left, IVariable right) where TConstraintType : ConstraintType;
+
 		/// <summary>
 		///  Performs composite operation on passed arguments
 		/// </summary>
@@ -59,6 +68,7 @@ namespace MilpManager.Abstraction
 		/// <param name="variables">Operation arguments</param>
 		/// <returns>Sequence of results of operation</returns>
 		IEnumerable<IVariable> CompositeOperation<TCompositeOperationType>(params IVariable[] variables) where TCompositeOperationType : CompositeOperationType;
+
 		/// <summary>
 		///  Performs composite operation on passed arguments
 		/// </summary>
@@ -67,6 +77,7 @@ namespace MilpManager.Abstraction
 		/// <param name="variables">Operation arguments</param>
 		/// <returns>Sequence of results of operation</returns>
 		IEnumerable<IVariable> CompositeOperation<TCompositeOperationType>(ICompositeOperationParameters parameters, params IVariable[] variables) where TCompositeOperationType : CompositeOperationType;
+
 		/// <summary>
 		///  Adds constraint for left hand side using values of right hand side
 		/// </summary>
@@ -76,6 +87,7 @@ namespace MilpManager.Abstraction
 		/// <returns>Returns left</returns>
 		/// <remarks>Some constraints work on a sequence of variables, not on a left hand side directly. E.g., setting variables to AllDifferent.</remarks>
 		IVariable Set<TCompositeConstraintType>( IVariable left, params IVariable[] variables) where TCompositeConstraintType : CompositeConstraintType;
+
 		/// <summary>
 		///  Adds constraint for left hand side using values of right hand side
 		/// </summary>
@@ -86,6 +98,7 @@ namespace MilpManager.Abstraction
 		/// <returns>Returns left</returns>
 		/// <remarks>Some constraints work on a sequence of variables, not on a left hand side directly. E.g., setting variables to AllDifferent.</remarks>
 		IVariable Set<TCompositeConstraintType>(ICompositeConstraintParameters parameters, IVariable left, params IVariable[] variables) where TCompositeConstraintType : CompositeConstraintType;
+
 		/// <summary>
 		///  Makes goal based on variables. The goal is not added to solver
 		/// </summary>
@@ -93,6 +106,7 @@ namespace MilpManager.Abstraction
 		/// <param name="variables">Variables to create goal from</param>
 		/// <returns>Variable representing goal</returns>
 		IVariable MakeGoal<TGoalType>(params IVariable[] variables) where TGoalType : GoalType;
+
 		/// <summary>
 		/// Calculates sum of variables.
 		/// </summary>
@@ -101,6 +115,7 @@ namespace MilpManager.Abstraction
 		/// <param name="domain">Domain of a result</param>
 		/// <returns>Variable representing sum of arguments</returns>
 		IVariable SumVariables(IVariable first, IVariable second, Domain domain);
+
 		/// <summary>
 		/// Calculates negation of a variable
 		/// </summary>
@@ -108,6 +123,7 @@ namespace MilpManager.Abstraction
 		/// <param name="domain">Domain of a result</param>
 		/// <returns>Variable representing negation of an argument</returns>
 		IVariable NegateVariable(IVariable variable, Domain domain);
+
 		/// <summary>
 		/// Calculates multiplication of a variable and a constant
 		/// </summary>
@@ -116,6 +132,7 @@ namespace MilpManager.Abstraction
 		/// <param name="domain">Domain of a result</param>
 		/// <returns>Variable representing multiplciation of arguments</returns>
 		IVariable MultiplyVariableByConstant(IVariable variable, IVariable constant, Domain domain);
+
 		/// <summary>
 		/// Calculates quotient of a variable and a constant
 		/// </summary>
@@ -124,30 +141,35 @@ namespace MilpManager.Abstraction
 		/// <param name="domain">Domain of a result</param>
 		/// <returns>Variable representing quotient of argument</returns>
 		IVariable DivideVariableByConstant(IVariable variable, IVariable constant, Domain domain);
+
 		/// <summary>
 		/// Adds LE constraint
 		/// </summary>
 		/// <param name="variable">Variable to constrain</param>
 		/// <param name="bound">Right hand side of a constraint</param>
 		void SetLessOrEqual(IVariable variable, IVariable bound);
+
 		/// <summary>
 		/// Adds GE constraint
 		/// </summary>
 		/// <param name="variable">Variable to constrain</param>
 		/// <param name="bound">Right hand side of a constraint</param>
 		void SetGreaterOrEqual(IVariable variable, IVariable bound);
+
 		/// <summary>
 		/// Adds EQ constraint
 		/// </summary>
 		/// <param name="variable">Variable to constrain</param>
 		/// <param name="bound">Right hand side of a constraint</param>
 		void SetEqual(IVariable variable, IVariable bound);
+
 		/// <summary>
 		/// Creates variable representing constant
 		/// </summary>
 		/// <param name="value">Constant value for variable</param>
 		/// <returns>Variable representing constant</returns>
 		IVariable FromConstant(int value);
+
 		/// <summary>
 		/// Creates variable representing constant with specified domain
 		/// </summary>
@@ -155,6 +177,7 @@ namespace MilpManager.Abstraction
 		/// <param name="domain">Domain for variable</param>
 		/// <returns>Variable representing constant</returns>
 		IVariable FromConstant(int value, Domain domain);
+
 		/// <summary>
 		/// Creates variable representing constant with specified domain
 		/// </summary>
@@ -162,12 +185,14 @@ namespace MilpManager.Abstraction
 		/// <param name="domain">Domain for variable</param>
 		/// <returns>Variable representing constant</returns>
 		IVariable FromConstant(double value, Domain domain);
+
 		/// <summary>
 		/// Creates variable representing constant
 		/// </summary>
 		/// <param name="value">Constant value for variable</param>
 		/// <returns>Variable representing constant</returns>
 		IVariable FromConstant(double value);
+
 		/// <summary>
 		/// Creates variable with specified name and domain
 		/// </summary>
@@ -175,6 +200,7 @@ namespace MilpManager.Abstraction
 		/// <param name="domain">Domain of a variable</param>
 		/// <returns>Variable with specified name and domain</returns>
 		IVariable Create(string name, Domain domain);
+
 		/// <summary>
 		/// Creates anonymous (with implementation dependent name) variable with specified domain
 		/// </summary>
