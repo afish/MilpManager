@@ -8,7 +8,7 @@ namespace MilpManager.Implementation.Operations
 	{
 		protected override bool SupportsOperationInternal<TOperationType>(params IVariable[] arguments)
 		{
-		    return arguments.Length == 2 && arguments[1].IsInteger();
+		    return arguments.Length == 2;
 		}
 
 		protected override IVariable CalculateInternal<TOperationType>(IMilpManager milpManager, params IVariable[] arguments)
@@ -31,7 +31,7 @@ namespace MilpManager.Implementation.Operations
             }
 		    else
 		    {
-		        result = numerator.Operation<Subtraction>(numerator.Operation<Division>(denominator).Operation<Multiplication>(denominator)).ChangeDomain(domain);
+                result = numerator.Operation<Subtraction>(numerator.Operation<Division>(denominator).Operation<Multiplication>(denominator)).ChangeDomain(domain);
             }
             
 		    result.ConstantValue = numerator.ConstantValue % denominator.ConstantValue;
@@ -42,15 +42,15 @@ namespace MilpManager.Implementation.Operations
 
 		protected override IVariable CalculateConstantInternal<TOperationType>(IMilpManager milpManager, params IVariable[] arguments)
 		{
+		    var divisionResult = arguments[0].ConstantValue.Value % arguments[1].ConstantValue.Value;
+
 		    if (arguments[0].IsInteger())
 		    {
-		        var constantResult = (int)arguments[0].ConstantValue.Value % (int)arguments[1].ConstantValue.Value;
-		        return milpManager.FromConstant(constantResult);
+		        return milpManager.FromConstant((int)divisionResult);
             }
 		    else
 		    {
-		        var constantResult = arguments[0].ConstantValue.Value % arguments[1].ConstantValue.Value;
-		        return milpManager.FromConstant(constantResult);
+		        return milpManager.FromConstant(divisionResult);
             }
 		}
 

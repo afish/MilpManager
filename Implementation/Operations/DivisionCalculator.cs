@@ -30,7 +30,7 @@ namespace MilpManager.Implementation.Operations
 
         protected override bool SupportsOperationInternal<TOperationType>(params IVariable[] arguments)
 		{
-			return arguments.Length == 2 && arguments[1].IsInteger();
+			return arguments.Length == 2;
 		}
 
 		protected override IVariable CalculateInternal<TOperationType>(IMilpManager milpManager, params IVariable[] arguments)
@@ -63,8 +63,8 @@ namespace MilpManager.Implementation.Operations
             result = MultiplicationCalculator.FixSign(milpManager, arguments, result).ChangeDomain(domain);
             SolverUtilities.SetExpression(result, $"{first.FullExpression()} / {second.FullExpression()}");
 
-			return result;
-		}
+            return result;
+        }
 
 		protected override IVariable CalculateConstantInternal<TOperationType>(IMilpManager milpManager, params IVariable[] arguments)
 		{
