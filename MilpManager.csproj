@@ -75,14 +75,15 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Abstraction\BaseMilpManager.cs" />
-    <Compile Include="Abstraction\BaseMilpSolver.cs" />
+    <Compile Include="Abstraction\MilpManager.cs" />
+    <Compile Include="Abstraction\MilpSolver.cs" />
+    <Compile Include="Abstraction\PersistableMilpSolver.cs" />
     <Compile Include="Abstraction\CompositeConstraint.cs" />
     <Compile Include="Abstraction\DefaultCalculators.cs" />
     <Compile Include="Abstraction\SaveFileSettings.cs" />
     <Compile Include="Abstraction\Goal.cs" />
     <Compile Include="Abstraction\ICompositeConstraintParameters.cs" />
-    <Compile Include="Abstraction\IModelLoader.cs" />
+    <Compile Include="Abstraction\IModelManager.cs" />
     <Compile Include="Abstraction\IModelSaver.cs" />
     <Compile Include="Abstraction\LoadFileSettings.cs" />
     <Compile Include="Abstraction\MilpManagerSettings.cs" />

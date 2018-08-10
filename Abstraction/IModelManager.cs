@@ -2,7 +2,7 @@
 
 namespace MilpManager.Abstraction
 {
-	public interface IModelLoader<in TSettings>
+	public interface IModelManager<in TSettings>
 	{
 		/// <summary>
 		/// Loads model and solver's internal data so it is possible to resume working on a model
