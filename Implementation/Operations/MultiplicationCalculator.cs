@@ -65,12 +65,12 @@ namespace MilpManager.Implementation.Operations
 
 		public static IVariable FixSign(IMilpManager milpManager, IVariable[] arguments, IVariable result)
 		{
-		    var mightBeNegatives = !(arguments[0].IsNonNegative() && arguments[1].IsNonNegative());
+		    var mightBeNegatives = !arguments.All(a => a.IsNonNegative());
             if (!mightBeNegatives) return result;
 
 		    var zero = milpManager.FromConstant(0);
-            var sign = arguments[0].Operation<IsGreaterOrEqual>(zero)
-		            .Operation<IsEqual>(arguments[1].Operation<IsGreaterOrEqual>(zero));
+		    var sign = arguments.Select(a => a.Operation<IsGreaterOrEqual>(zero)).Aggregate((a, b) => a.Operation<IsEqual>(b));
+                
 		    var two = milpManager.FromConstant(2);
 		    result =
 		        MultiplyByBinaryDigit(milpManager, result, sign)

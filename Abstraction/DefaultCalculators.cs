@@ -50,8 +50,9 @@ namespace MilpManager.Abstraction
 			{typeof(Minimum), new MaximumMinimumCalculator()},
 			{typeof(Negation), new NegationCalculator()},
 			{typeof(RealDivision), new RealDivisionCalculator()},
-			{typeof(Remainder), new RemainderCalculator()}
-		};
+			{typeof(Remainder), new RemainderCalculator()},
+		    {typeof(Truncation), new TruncationCalculator()}
+        };
 
 		public static IDictionary<Type, ICompositeOperationCalculator> CompositeOperations => new Dictionary
 			<Type, ICompositeOperationCalculator>

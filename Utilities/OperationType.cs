@@ -29,9 +29,10 @@ namespace MilpManager.Utilities
         Minimum,
         Multiplication,
         Negation,
-        Subtraction,
         RealDivision,
-        Remainder
+        Remainder,
+        Subtraction,
+        Truncation
     }
 
     public static class OperationTypeMapper
@@ -94,6 +95,8 @@ namespace MilpManager.Utilities
                     return typeof(RealDivision);
                 case OperationType.Remainder:
                     return typeof(Remainder);
+                case OperationType.Truncation:
+                    return typeof(Truncation);
                 default:
                     throw new ArgumentOutOfRangeException(nameof(type), type, null);
             }
