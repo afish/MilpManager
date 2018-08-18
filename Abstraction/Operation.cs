@@ -13,7 +13,9 @@
 	public abstract class ExclusiveDisjunction : Operation { }
 	public abstract class Exponentiation : Operation { }
 	public abstract class GCD : Operation { }
-	public abstract class Factorial : Operation { }
+	public abstract class GreatestPowerDividing : Operation { }
+    public abstract class GreatestPowerNotAbove : Operation { }
+    public abstract class Factorial : Operation { }
     public abstract class IsEqual : Operation { }
 	public abstract class IsGreaterOrEqual : Operation { }
 	public abstract class IsGreaterThan : Operation { }

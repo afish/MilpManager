@@ -17,6 +17,8 @@ namespace MilpManager.Utilities
         ExclusiveDisjunction,
         Exponentiation,
         GCD,
+        GreatestPowerDividing,
+        GreatestPowerNotAbove,
         Factorial,
         IsEqual,
         IsGreaterOrEqual,
@@ -65,6 +67,10 @@ namespace MilpManager.Utilities
                     return typeof(Exponentiation);
                 case OperationType.GCD:
                     return typeof(GCD);
+                case OperationType.GreatestPowerDividing:
+                    return typeof(GreatestPowerDividing);
+                case OperationType.GreatestPowerNotAbove:
+                    return typeof(GreatestPowerNotAbove);
                 case OperationType.Factorial:
                     return typeof(Factorial);
                 case OperationType.IsEqual:

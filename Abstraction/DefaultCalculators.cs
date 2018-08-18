@@ -36,6 +36,8 @@ namespace MilpManager.Abstraction
 			{typeof(Exponentiation), new ExponentiationCalculator()},
 			{typeof(Factorial), new FactorialCalculator()},
 			{typeof(GCD), new GcdCalculator()},
+			{typeof(GreatestPowerDividing), new GreatestPowerDividingCalculator()},
+			{typeof(GreatestPowerNotAbove), new GreatestPowerNotAboveCalculator()},
 		    {typeof(Division), new DivisionCalculator()},
             {typeof(Subtraction), new SubtractionCalculator()},
 			{typeof(MaterialImplication), new MaterialImplicationCalculator()},

@@ -138,6 +138,8 @@
     <Compile Include="Implementation\CompositeOperations\NthElementsParameters.cs" />
     <Compile Include="Implementation\CompositeOperations\SelectionSortCalculator.cs" />
     <Compile Include="Implementation\CompositeOperations\UnsignedMagnitudeDecompositionCalculator.cs" />
+    <Compile Include="Implementation\Operations\GreatestPowerNotAboveCalculator.cs" />
+    <Compile Include="Implementation\Operations\GreatestPowerDividingCalculator.cs" />
     <Compile Include="Implementation\Operations\RealDivisionCalculator.cs" />
     <Compile Include="Implementation\Operations\TruncationCalculator.cs" />
     <Compile Include="Utilities\CompositeConstraintType.cs" />

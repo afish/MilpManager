@@ -32,35 +32,35 @@ namespace MilpManager.Utilities
                 case CompositeOperationType.Approximate:
                     return typeof(Approximate);
                 case CompositeOperationType.Approximate2D:
-                    return typeof(Approximate);
+                    return typeof(Approximate2D);
                 case CompositeOperationType.ArrayGet:
-                    return typeof(Approximate);
+                    return typeof(ArrayGet);
                 case CompositeOperationType.ArraySet:
-                    return typeof(Approximate);
+                    return typeof(ArraySet);
                 case CompositeOperationType.CountingSort:
-                    return typeof(Approximate);
+                    return typeof(CountingSort);
                 case CompositeOperationType.Decomposition:
-                    return typeof(Approximate);
+                    return typeof(Decomposition);
                 case CompositeOperationType.Loop:
-                    return typeof(Approximate);
+                    return typeof(Loop);
                 case CompositeOperationType.IsLexicographicalEqual:
-                    return typeof(Approximate);
+                    return typeof(IsLexicographicalEqual);
                 case CompositeOperationType.IsLexicographicalGreaterOrEqual:
-                    return typeof(Approximate);
+                    return typeof(IsLexicographicalGreaterOrEqual);
                 case CompositeOperationType.IsLexicographicalGreaterThan:
-                    return typeof(Approximate);
+                    return typeof(IsLexicographicalGreaterThan);
                 case CompositeOperationType.IsLexicographicalLessOrEqual:
-                    return typeof(Approximate);
+                    return typeof(IsLexicographicalLessOrEqual);
                 case CompositeOperationType.IsLexicographicalLessThan:
-                    return typeof(Approximate);
+                    return typeof(IsLexicographicalLessThan);
                 case CompositeOperationType.IsLexicographicalNotEqual:
-                    return typeof(Approximate);
+                    return typeof(IsLexicographicalNotEqual);
                 case CompositeOperationType.NthElements:
-                    return typeof(Approximate);
+                    return typeof(NthElements);
                 case CompositeOperationType.SelectionSort:
-                    return typeof(Approximate);
+                    return typeof(SelectionSort);
                 case CompositeOperationType.UnsignedMagnitudeDecomposition:
-                    return typeof(Approximate);
+                    return typeof(UnsignedMagnitudeDecomposition);
                 default:
                     throw new ArgumentOutOfRangeException(nameof(type), type, null);
             }
