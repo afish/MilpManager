@@ -73,6 +73,7 @@ namespace MilpManager.Abstraction
 			{typeof(IsLexicographicalNotEqual), new IsLexicographicalNotEqualCalculator()},
 			{typeof(Loop), new LoopCalculator()},
 			{typeof(NthElements), new NthElementsCalculator()},
+			{typeof(OneHotEncoding), new OneHotEncodingCalculator()},
 			{typeof(SelectionSort), new SelectionSortCalculator()},
 			{typeof(UnsignedMagnitudeDecomposition), new UnsignedMagnitudeDecompositionCalculator()}
 		};

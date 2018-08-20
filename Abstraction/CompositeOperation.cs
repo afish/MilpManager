@@ -14,6 +14,7 @@
 	public abstract class IsLexicographicalLessOrEqual : CompositeOperation { }
 	public abstract class IsLexicographicalLessThan : CompositeOperation { }
 	public abstract class IsLexicographicalNotEqual : CompositeOperation { }
+	public abstract class OneHotEncoding : CompositeOperation { }
 	public abstract class NthElements : CompositeOperation { }
 	public abstract class SelectionSort : CompositeOperation { }
 	public abstract class UnsignedMagnitudeDecomposition : CompositeOperation { }

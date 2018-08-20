@@ -102,6 +102,8 @@
     <Compile Include="Implementation\CompositeOperations\IsLexicographicalLessOrEqualCalculator.cs" />
     <Compile Include="Implementation\CompositeOperations\IsLexicographicalLessThanCalculator.cs" />
     <Compile Include="Implementation\CompositeOperations\IsLexicographicalNotEqualCalculator.cs" />
+    <Compile Include="Implementation\CompositeOperations\OneHotEncodingCalculator.cs" />
+    <Compile Include="Implementation\CompositeOperations\OneHotEncodingParameters.cs" />
     <Compile Include="Implementation\Goals\BaseGoalCalculator.cs" />
     <Compile Include="Implementation\Goals\IGoalCalculator.cs" />
     <Compile Include="Abstraction\IMilpSolver.cs" />

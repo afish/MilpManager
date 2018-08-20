@@ -19,6 +19,7 @@ namespace MilpManager.Utilities
         IsLexicographicalLessThan,
         IsLexicographicalNotEqual,
         NthElements,
+        OneHotEncoding,
         SelectionSort,
         UnsignedMagnitudeDecomposition
     }
@@ -57,6 +58,8 @@ namespace MilpManager.Utilities
                     return typeof(IsLexicographicalNotEqual);
                 case CompositeOperationType.NthElements:
                     return typeof(NthElements);
+                case CompositeOperationType.OneHotEncoding:
+                    return typeof(OneHotEncoding);
                 case CompositeOperationType.SelectionSort:
                     return typeof(SelectionSort);
                 case CompositeOperationType.UnsignedMagnitudeDecomposition:
