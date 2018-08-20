@@ -1,4 +1,6 @@
-﻿namespace MilpManager.Abstraction
+﻿using System.Collections.Generic;
+
+namespace MilpManager.Abstraction
 {
     public interface IVariable
     {
@@ -27,5 +29,10 @@
         /// Textual representation of a variable
         /// </summary>
         string Expression { get; set; }
+
+        /// <summary>
+        /// Textual representation of a variable
+        /// </summary>
+        ICollection<string> Constraints { get; }
     }
 }

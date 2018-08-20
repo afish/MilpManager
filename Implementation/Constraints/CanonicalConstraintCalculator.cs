@@ -17,13 +17,24 @@ namespace MilpManager.Implementation.Constraints
 					milpManager.SetEqual(leftVariable, rightVariable);
 					leftVariable.ConstantValue = rightVariable.ConstantValue ?? leftVariable.ConstantValue;
 					rightVariable.ConstantValue = leftVariable.ConstantValue ?? rightVariable.ConstantValue;
-				}
+
+				    if (milpManager.Settings.StoreDebugConstraints)
+				    {
+				        leftVariable.Constraints.Add($"== {rightVariable.FullExpression()}");
+				        rightVariable.Constraints.Add($"== {leftVariable.FullExpression()}");
+                    }
+                }
 			}
 			else if (typeof (TConstraintType) == typeof (LessOrEqual))
 			{
 				if (leftVariable != rightVariable)
 				{
 					milpManager.SetLessOrEqual(leftVariable, rightVariable);
+
+				    if (milpManager.Settings.StoreDebugConstraints)
+				    {
+                        leftVariable.Constraints.Add($"<= {rightVariable.FullExpression()}");
+				    }
 				}
 			}
 			else if (typeof (TConstraintType) == typeof (GreaterOrEqual))
@@ -31,7 +42,12 @@ namespace MilpManager.Implementation.Constraints
 				if (leftVariable != rightVariable)
 				{
 					milpManager.SetGreaterOrEqual(leftVariable, rightVariable);
-				}
+
+				    if (milpManager.Settings.StoreDebugConstraints)
+				    {
+				        leftVariable.Constraints.Add($">= {rightVariable.FullExpression()}");
+				    }
+                }
 			}
 			else if (typeof (TConstraintType) == typeof (LessThan))
 			{
