@@ -25,7 +25,7 @@ namespace MilpManager.Implementation.Operations
 		    var result = milpManager.Operation<Maximum>(variables.ToArray());
 
 		    result.ConstantValue = arguments[0].ConstantValue.HasValue ? (double?)powers.LastOrDefault(p => p <= arguments[0].ConstantValue.Value) : null;
-		    SolverUtilities.SetExpression(result, $"greatestPowerDividing{arguments[0].FullExpression()} power = {arguments[1].FullExpression()}");
+		    SolverUtilities.SetExpression(result, $"greatestPowerDividing({arguments[0].FullExpression()}, power = {arguments[1].FullExpression()})");
 		    return result;
         }
 
