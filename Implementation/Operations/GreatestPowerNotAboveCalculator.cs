@@ -9,7 +9,7 @@ namespace MilpManager.Implementation.Operations
 	{
 		protected override bool SupportsOperationInternal<TOperationType>(params IVariable[] arguments)
 		{
-			return arguments.Length == 2 && arguments.All(a => a.IsInteger() && a.IsNonNegative()) && arguments[1].IsConstant();
+			return arguments.Length == 2 && arguments.All(a => a.IsNonNegative()) && arguments[1].IsConstant() && arguments[1].IsInteger();
 		}
 
 		protected override IVariable CalculateInternal<TOperationType>(IMilpManager milpManager, params IVariable[] arguments)
