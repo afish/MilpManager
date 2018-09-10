@@ -10,7 +10,7 @@
     <projectUrl>https://github.com/afish/MilpManager</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>$description$</description>
-    <copyright>Copyright 2016</copyright>
+    <copyright>Copyright 2018</copyright>
     <tags>ILP MILP LP MilpManager MilpSolver</tags>
   </metadata>
 </package>
