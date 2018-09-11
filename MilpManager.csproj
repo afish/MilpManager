@@ -87,6 +87,7 @@
     <Compile Include="Abstraction\IModelSaver.cs" />
     <Compile Include="Abstraction\LoadFileSettings.cs" />
     <Compile Include="Abstraction\MilpManagerSettings.cs" />
+    <Compile Include="Implementation\CompositeConstraints\CompositeCalculator.cs" />
     <Compile Include="Implementation\CompositeOperations\Approximate2DCalculator.cs" />
     <Compile Include="Implementation\CompositeOperations\Approximate2DParameters.cs" />
     <Compile Include="Implementation\CompositeOperations\ArraySetCalculator.cs" />

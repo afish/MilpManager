@@ -7,6 +7,7 @@ namespace MilpManager.Utilities
     {
         AllDifferent,
         Cardinality,
+        Composite,
         FromSet,
         NotFromSet,
         SpecialOrderedSetType1,
@@ -23,6 +24,8 @@ namespace MilpManager.Utilities
                     return typeof(AllDifferent);
                 case CompositeConstraintType.Cardinality:
                     return typeof(Cardinality);
+                case CompositeConstraintType.Composite:
+                    return typeof(Composite);
                 case CompositeConstraintType.FromSet:
                     return typeof(FromSet);
                 case CompositeConstraintType.NotFromSet:

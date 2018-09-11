@@ -83,7 +83,8 @@ namespace MilpManager.Abstraction
 		{
 			{typeof(AllDifferent), new AllDifferentCalculator()},
 			{typeof(Cardinality), new CardinalityCalculator()},
-			{typeof(FromSet), new FromSetCalculator()},
+		    {typeof(Composite), new CompositeCalculator()},
+            {typeof(FromSet), new FromSetCalculator()},
 			{typeof(NotFromSet), new NotFromSetCalculator()},
 			{typeof(SpecialOrderedSetType1), new SOS1Calculator()},
 			{typeof(SpecialOrderedSetType2), new SOS2Calculator()}
