@@ -17,10 +17,10 @@ namespace MilpManager.Implementation.Operations
 			var trueBranch = arguments[0].Operation<Multiplication>(arguments[1]);
 			var falseBranch = arguments[0].Operation<BinaryNegation>()
 				.Operation<Multiplication>(arguments[2]);
-			var result = milpManager.Create(milpManager.Operation<Addition>(
+			var result = milpManager.Operation<Addition>(
 				trueBranch,
 				falseBranch
-				).ChangeDomain(trueBranch.LowestEncompassingDomain(falseBranch)));
+				).ChangeDomain(trueBranch.LowestEncompassingDomain(falseBranch));
 			SolverUtilities.SetExpression(result, $"{arguments[0].FullExpression()} ? {arguments[1].FullExpression()} : {arguments[2].FullExpression()}");
 			result.ConstantValue = !arguments[0].ConstantValue.HasValue
 				? null

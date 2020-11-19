@@ -46,11 +46,7 @@ namespace MilpManager.Abstraction
 
 		public virtual IVariable Create(IVariable value)
 		{
-			var variable = CreateAnonymous(value.Domain.MakeNonConstant());
-			variable.ConstantValue = value.ConstantValue;
-			SolverUtilities.SetExpression(variable, $"{value.FullExpression()}");
-			Set<Equal>(variable, value);
-			return variable;
+			return Create(NewVariableName(), value);
 		}
 
 		public virtual IVariable Operation<TOperationType>(params IVariable[] variables) where TOperationType : Operation
