@@ -72,10 +72,9 @@ namespace MilpManager.Implementation.Operations
 		    var sign = arguments.Select(a => a.Operation<IsGreaterOrEqual>(zero)).Aggregate((a, b) => a.Operation<IsEqual>(b));
                 
 		    var two = milpManager.FromConstant(2);
-		    result =
-		        MultiplyByBinaryDigit(milpManager, result, sign)
-		            .Operation<Subtraction>(result.Operation<RealDivision>(two))
-                    .Operation<Multiplication>(two);
+			result =
+				MultiplyByBinaryDigit(milpManager, result, sign)
+					.Operation<Addition>(MultiplyByBinaryDigit(milpManager, result, sign.Operation<BinaryNegation>()).Operation<Negation>());
 
             return result;
 		}
