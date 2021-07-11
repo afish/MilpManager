@@ -26,7 +26,11 @@ namespace MilpManager.Implementation.Operations
 				.Operation<Addition>(
 					result.Operation<Multiplication>(milpManager.FromConstant(milpManager.IntegerInfinity)))
 				.Set<GreaterOrEqual>(milpManager.FromConstant(0))
-				.Set<LessOrEqual>(milpManager.FromConstant(milpManager.IntegerInfinity - (arguments.Any(a => a.IsReal()) ? milpManager.Epsilon : 1)));
+				.Set<LessOrEqual>(
+					arguments.Any(a => a.IsReal())
+					? milpManager.FromConstant(milpManager.IntegerInfinity - milpManager.Epsilon)
+					: milpManager.FromConstant(milpManager.IntegerInfinity - 1)
+				);
 
 			SolverUtilities.SetExpression(result, $"{arguments[0].FullExpression()} ?> {arguments[1].FullExpression()}");
 			return result;
