@@ -132,10 +132,7 @@ namespace MilpManager.Implementation.Operations
 			{
 				var absoluteNumber = number.Operation<AbsoluteValue>();
 				var result = MultiplyByBinaryDigit(milpManager, absoluteNumber, digit);
-				var two = milpManager.FromConstant(2);
-				return MultiplyByBinaryDigit(milpManager, result, number.Operation<IsGreaterOrEqual>(milpManager.FromConstant(0)))
-						.Operation<Subtraction>(result.Operation<RealDivision>(two))
-						.Operation<Multiplication>(two);
+				return FixSign(milpManager, new[] { number }, result);
 			}
 
 			IVariable digitMultipliedByInfinity = digit.Operation<Multiplication>(milpManager.FromConstant(milpManager.MaximumIntegerValue));
